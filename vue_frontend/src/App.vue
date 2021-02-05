@@ -111,8 +111,9 @@ export default {
           ]
         },
         {
-          label: 'Events',
+          label: 'Posts',
           icon: 'pi pi-fw pi-calendar',
+          to: '/',
           items: [
             {
               label: 'Edit',

@@ -11,8 +11,13 @@ import 'primeicons/primeicons.css' // icons
 import 'primeflex/primeflex.css' // CSS Utility Library
 
 import Menubar from 'primevue/menubar'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
 
 const app = createApp(App).use(store).use(router).use(Primevue)
 
 app.component('Menubar', Menubar)
+app.component('Card', Card)
+app.component('Button', Button)
+
 app.mount('#app')

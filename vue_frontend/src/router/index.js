@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Posts from '../views/Posts.vue'
+import Posts from '../views/Posts.vue' // Could also use a similar method to the 'about' route
 
 const routes = [
   {
@@ -25,6 +25,7 @@ const routes = [
 
 const router = createRouter({
   history: createWebHashHistory(),
+  // base: process.env.BASE_url, (?) -------------------------
   routes
 })
 
