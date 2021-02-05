@@ -25,25 +25,35 @@
 
 <script>
 import { AxiosInstance } from '../plugins/axios'
+import { mapState } from 'vuex'
 
 export default {
     name: 'Posts',
     data () {
         return {
-            APIData: []
         }
     },
+    computed: mapState(['APIData']),
     components: {
     },
     created () {
-        AxiosInstance.get('/posts/')
-            .then(response => {
-                console.log('Post API has received data')
-                this.APIData = response.data
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        AxiosInstance.get('/posts/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+          .then(response => {
+            this.$store.state.APIData = response.data
+          })
+          .catch(err => {
+            console.log(err)
+          })
     }
 }
+//         ('/posts/')
+//             .then(response => {
+//                 console.log('Post API has received data')
+//                 this.APIData = response.data
+//             })
+//             .catch(err => {
+//                 console.log(err)
+//             })
+//     }
+// }
 </script>
