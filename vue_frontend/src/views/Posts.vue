@@ -29,13 +29,19 @@ import { mapState } from 'vuex'
 
 export default {
     name: 'Posts',
+    onIdle () {
+      this.$store.dispatch('userLogout')
+        .then(() => {
+          this.$router.push({ name: 'login' })
+        })
+    },
     data () {
         return {
         }
     },
-    computed: mapState(['APIData']),
     components: {
     },
+    computed: mapState(['APIData']),
     created () {
         AxiosInstance.get('/posts/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
           .then(response => {

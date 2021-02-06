@@ -12,10 +12,13 @@ import 'primeicons/primeicons.css' // icons
 import 'primeflex/primeflex.css' // CSS Utility Library
 
 import Menubar from 'primevue/menubar'
+import Menu from 'primevue/menu'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
+
+// const eventsHub = createApp
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresLogin)) {
@@ -29,12 +32,10 @@ router.beforeEach((to, from, next) => {
     }
   })
 
-
-
-const app = createApp(App).use(store).use(router).use(Primevue)
-// .use(IdleVue, { eventEmitter: eventsHub, idleTime: 10000 }) eventsHub?
+const app = createApp(App).use(store).use(router).use(Primevue).use(IdleVue, { idleTime: 5000, store }) // after 10sec idle
 
 app.component('Menubar', Menubar)
+app.component('Menu', Menu)
 app.component('Card', Card)
 app.component('Button', Button)
 app.component('InputText', InputText)
