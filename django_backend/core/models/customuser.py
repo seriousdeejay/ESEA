@@ -16,6 +16,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        if not self.last_name_prefix:
-            return f"{self.first_name} {self.last_name}"
-        return f"{self.first_name} {self.last_name_prefix} {self.last_name}"
+        return self.username
+        # if not self.last_name_prefix:
+        #     return f"{self.first_name} {self.last_name}"
+        # return f"{self.first_name} {self.last_name_prefix} {self.last_name}"
