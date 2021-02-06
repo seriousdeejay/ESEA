@@ -139,6 +139,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'contenttype',
 ]
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
