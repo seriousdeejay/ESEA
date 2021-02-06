@@ -5,6 +5,7 @@ export default createStore({
   state: {
     accessToken: null,
     refreshToken: null,
+    currentuser: '',
     APIData: ''
  },
  mutations: {
@@ -29,6 +30,7 @@ export default createStore({
      }
    },
    userLogin (context, usercredentials) {
+     this.state.currentuser = usercredentials.username
      return new Promise((resolve, reject) => {
        AxiosInstance.post('/api-token/', {
          username: usercredentials.username,

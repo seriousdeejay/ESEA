@@ -9,7 +9,12 @@
                     <InputText type="text" id="username" v-model="customuser.username" />
                 </div>
             </div>
-
+            <div class="p-field p-grid">
+                <label for="email" class="p-col">Email</label>
+                <div class="p-col">
+                    <InputText type="text" id="email" v-model="customuser.email" />
+                </div>
+            </div>
             <div class="p-field p-grid">
                 <label for="password" class="p-col" >Password</label>
                 <div class="p-col">
@@ -18,19 +23,12 @@
             </div>
 
             <div class="p-field p-grid">
-                <label for="password2" class="p-col" >Password2</label>
+                <label for="password2" class="p-col" >Confirm Password</label>
                 <div class="p-col">
                     <Password id="password2" v-model="customuser.password2" :feedback="false" />
                 </div>
             </div>
-
-            <div class="p-field p-grid">
-                <label for="email" class="p-col">Email</label>
-                <div class="p-col">
-                    <InputText type="text" id="email" v-model="customuser.email" />
-                </div>
-            </div>
-
+            <h4 class="p-text-left">Optional fields</h4>
             <div class="p-field p-grid">
                 <label for="firstname" class="p-col">First Name</label>
                 <div class="p-col">

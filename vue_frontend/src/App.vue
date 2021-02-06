@@ -2,10 +2,10 @@
 
 <Menubar :model="items" v-if="accessToken!=null">
      <template #start>
-        <img alt="logo" src="./assets/logo.png" height="40" class="p-mr-2">
+        <img alt="logo" src="./assets/logo.png" height="40" class="p-mr-5">
     </template>
     <template #end>
-      <Button type="button" label="Account" @click="toggle" aria-haspopup="true" aria-controls="profile_menu" class="p-button-raised p-button-text p-button-plain"/>
+      <Button type="button" :label="'account ('+ currentuser + ')'" @click="toggle" aria-haspopup="true" aria-controls="profile_menu" class="p-button-raised p-button-text p-button-plain"/>
       <Menu id="profile_menu" ref="menu" :model="profile" :popup="true"/>
       <!--<Button label="Logout" icon="pi pi-power-off" :style="{'margin-left': '0 .5em'}"/>-->
     </template>
@@ -27,7 +27,7 @@ export default {
       items: [
         {
           label: 'Home',
-          icon: 'pi pi-fw pi-file',
+          // icon: 'pi pi-home',
           to: '/home',
           items: [
             {
@@ -44,9 +44,8 @@ export default {
           ]
         },
         {
-          label: 'About',
-          icon: 'pi pi-fw pi-pencil',
-          to: '/about',
+          label: 'Networks',
+          icon: 'pi pi-cloud',
           items: [
             {
               label: 'Left',
@@ -55,21 +54,31 @@ export default {
           ]
         },
         {
-          label: 'Posts',
-          icon: 'pi pi-fw pi-calendar',
-          to: '/',
+          label: 'organisations',
+          icon: 'pi pi-globe',
           items: [
             {
-              label: 'Edit',
-              icon: 'pi pi-fw pi-pencil'
+              label: 'Left',
+              icon: 'pi pi-fw pi-align-left'
             }
           ]
+        },
+        {
+          label: 'Methods',
+          icon: 'pi pi-briefcase',
+          to: '/'
+        },
+         {
+          label: 'Users',
+          icon: 'pi pi-users',
+          to: 'users'
         }
       ],
       profile: [
             {
               label: 'Personal Details',
-              icon: 'pi pi-id-card'
+              icon: 'pi pi-id-card',
+              to: 'userprofile'
             },
             {
               label: 'Log out',
@@ -84,7 +93,8 @@ export default {
             this.$refs.menu.toggle(event)
         }
   },
-  computed: mapState(['accessToken'])
+  computed:
+    mapState(['accessToken', 'currentuser'])
 }
 </script>
 

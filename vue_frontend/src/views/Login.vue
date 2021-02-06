@@ -41,8 +41,8 @@ export default {
     name: 'login',
     data () {
         return {
-            username: '',
-            password: '',
+            username: 'admin', // Filled in for easy login, should remove it before deployment!
+            password: 'admin',
             incorrectAuth: false
         }
     },
