@@ -38,8 +38,8 @@ export default {
     data () {
         return {
             post: {
-                title: 'wie',
-                content: 'ee',
+                title: '',
+                content: '',
                 owner: this.currentuser
             }
         }
