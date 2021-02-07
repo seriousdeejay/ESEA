@@ -2,18 +2,18 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
-from ..models import Post
-from ..serializers import PostSerializer
+from ..models import Organisation
+from ..serializers import OrganisationSerializer
 
-class PostView(generics.ListCreateAPIView): # RetrieveAPIView):
+class OrganisationView(generics.ListCreateAPIView): # RetrieveAPIView):
     # permission_classes = (IsAuthenticated,) # Authentication required
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    queryset = Organisation.objects.all()
+    serializer_class = OrganisationSerializer
 
 
-class PostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+class OrganisationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Organisation.objects.all()
+    serializer_class = OrganisationSerializer
 
     # def post(self, request, *args, **kwargs):
     #     print(str(request.POST))

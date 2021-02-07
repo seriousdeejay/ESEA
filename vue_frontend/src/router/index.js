@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Posts from '../views/Posts.vue' // Could also use a similar method to the 'about' route
 
 const routes = [
   {
@@ -57,8 +56,8 @@ const routes = [
   },
   {
     path: '/',
-    name: 'posts',
-    component: Posts,
+    name: 'methods',
+    component: () => import('../views/Methods.vue'),
     meta: {
       requiresLogin: true
     }

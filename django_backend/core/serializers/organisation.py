@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from ..models import Post
+from ..models import Organisation
 
 
-class PostSerializer(serializers.ModelSerializer):
+class OrganisationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Post        
+        model = Organisation        
         fields = ('id', 'name', 'description', 'creator', 'participants', 'title', 'content')

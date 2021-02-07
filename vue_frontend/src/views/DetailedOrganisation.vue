@@ -39,7 +39,7 @@ export default {
         }
     },
     mounted () {
-        AxiosInstance.get(`http://127.0.0.1:8000/posts/${this.$route.params.id}/`)
+        AxiosInstance.get(`http://127.0.0.1:8000/organisations/${this.$route.params.id}/`)
             .then(response => {
                 console.log(response.data)
                 this.post = response.data

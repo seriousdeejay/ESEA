@@ -1,2 +1,2 @@
-from .post import PostSerializer
+from .organisation import OrganisationSerializer
 from .user import RegisterUserSerializer

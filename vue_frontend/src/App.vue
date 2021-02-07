@@ -46,7 +46,7 @@ export default {
         {
           label: 'Networks',
           icon: 'pi pi-cloud',
-          to: 'networks',
+          to: '/networks',
           items: [
             {
               label: 'Left',
@@ -57,7 +57,7 @@ export default {
         {
           label: 'organisations',
           icon: 'pi pi-globe',
-          to: 'organisations',
+          to: '/organisations',
           items: [
             {
               label: 'Left',
@@ -73,7 +73,7 @@ export default {
          {
           label: 'Users',
           icon: 'pi pi-users',
-          to: 'users'
+          to: '/users'
         }
       ],
       profile: [

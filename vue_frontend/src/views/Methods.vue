@@ -2,20 +2,20 @@
     <div style="margin: 0px 50px">
          <h1>-Posts-</h1>
         <div class="p-grid">
-            <div v-for="posts in APIData" :key="posts.id"  class="p-col-4">
+            <div v-for="organisation in APIData" :key="organisation.id"  class="p-col-4">
                 <Card style="margin-bottom: 2em" class="p-shadow-5">
                     <template #title>
-                        {{ posts.title }}
+                        {{ organisation.title }}
                     </template>
                     <template #content>
-                        <p> {{ posts.content }}</p>
+                        <p> {{ organisation.content }}</p>
                         <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
                     </template>
                     <template #footer>
                         <div class="p-d-flex">
                         <Button icon="pi pi-chevron-down" label="View" />
-                        <Button icon="pi pi-pencil" label="Edit" @click="$router.push({name: 'editorganisation', params: { id: posts.id }})" class="p-button-secondary" style="margin-left: .5em" />
-                         <p class="p-ml-auto">{{ posts.creator }} 9 min</p>
+                        <Button icon="pi pi-pencil" label="Edit" @click="$router.push({name: 'editorganisation', params: { id: organisation.id }})" class="p-button-secondary" style="margin-left: .5em" />
+                         <p class="p-ml-auto">{{ organisation.creator }} 9 min</p>
                         </div>
                     </template>
                 </Card>
@@ -29,7 +29,7 @@ import { AxiosInstance } from '../plugins/axios'
 import { mapState } from 'vuex'
 
 export default {
-    name: 'Posts',
+    name: 'Organisations',
     onIdle () {
       this.$store.dispatch('userLogout')
         .then(() => {
@@ -44,7 +44,7 @@ export default {
     },
     computed: mapState(['APIData']),
     created () {
-        AxiosInstance.get('/posts/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+        AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
           .then(response => {
             this.$store.state.APIData = response.data
           })
