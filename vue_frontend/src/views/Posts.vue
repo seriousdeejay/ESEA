@@ -1,5 +1,6 @@
 <template>
     <div style="margin: 0px 50px">
+         <h1>-Posts-</h1>
         <div class="p-grid">
             <div v-for="posts in APIData" :key="posts.id"  class="p-col-4">
                 <Card style="margin-bottom: 2em" class="p-shadow-5">
@@ -13,8 +14,8 @@
                     <template #footer>
                         <div class="p-d-flex">
                         <Button icon="pi pi-chevron-down" label="View" />
-                        <Button icon="pi pi-pencil" label="Edit" class="p-button-secondary" style="margin-left: .5em" />
-                        <p class="p-ml-auto">9 min</p>
+                        <Button icon="pi pi-pencil" label="Edit" @click="$router.push({name: 'editorganisation', params: { id: posts.id }})" class="p-button-secondary" style="margin-left: .5em" />
+                         <p class="p-ml-auto">9 min</p>
                         </div>
                     </template>
                 </Card>

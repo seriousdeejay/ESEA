@@ -51,6 +51,11 @@ const routes = [
     }
   },
   {
+    path: '/edit-organisation/:id',
+    name: 'editorganisation',
+    component: () => import('../views/DetailedOrganisation.vue')
+  },
+  {
     path: '/',
     name: 'posts',
     component: Posts,
