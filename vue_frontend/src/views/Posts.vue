@@ -15,7 +15,7 @@
                         <div class="p-d-flex">
                         <Button icon="pi pi-chevron-down" label="View" />
                         <Button icon="pi pi-pencil" label="Edit" @click="$router.push({name: 'editorganisation', params: { id: posts.id }})" class="p-button-secondary" style="margin-left: .5em" />
-                         <p class="p-ml-auto">9 min</p>
+                         <p class="p-ml-auto">{{ posts.creator }} 9 min</p>
                         </div>
                     </template>
                 </Card>

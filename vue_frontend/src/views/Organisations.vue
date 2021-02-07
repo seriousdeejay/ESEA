@@ -40,7 +40,7 @@ export default {
             post: {
                 title: '',
                 content: '',
-                owner: this.currentuser
+                creator: this.currentuser
             }
         }
     },

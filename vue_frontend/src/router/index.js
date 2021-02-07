@@ -51,7 +51,7 @@ const routes = [
     }
   },
   {
-    path: '/edit-organisation/:id',
+    path: '/organisations/edit/:id',
     name: 'editorganisation',
     component: () => import('../views/DetailedOrganisation.vue')
   },
