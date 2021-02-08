@@ -3,12 +3,13 @@
          <h1>-Posts-</h1>
         <div class="p-grid">
             <div v-for="organisation in APIData" :key="organisation.id"  class="p-col-4">
+                <div v-if="organisation.ispublic">
                 <Card style="margin-bottom: 2em" class="p-shadow-5">
                     <template #title>
-                        {{ organisation.title }}
+                        {{ organisation.name }}
                     </template>
                     <template #content>
-                        <p> {{ organisation.content }}</p>
+                        <p> {{ organisation.description }}</p>
                         <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
                     </template>
                     <template #footer>
@@ -19,6 +20,8 @@
                         </div>
                     </template>
                 </Card>
+                </div>
+                <div v-else>Private Post</div>
             </div>
         </div>
     </div>

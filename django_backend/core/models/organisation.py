@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Organisation(models.Model):
-    # public = models.BooleanField      Public organisation yes or no?
+    ispublic = models.BooleanField(default=True)     # Public organisation yes or no?
     name = models.CharField(max_length=255, unique=False, blank=False)
     description = models.TextField(max_length=1000)
     # image = models.ImageField(blank=True, upload_to="organisation/", default="organisation/default.png")

@@ -13,9 +13,9 @@
                     <Button label="Export" icon="pi pi-upload" class="p-button-help"   /> <!-- @click="exportCSV($event)" -->
                 </template>
             </Toolbar>
-            <DataTable ref="dt" :value="organisations" v-model:selection="selectedOrganisations" dataKey="id" :paginator="true" :rows="10" :filters="filters"
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[5,10,25]"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products">
+            <DataTable ref="dt" :value="organisations" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id" @row-select="goToOrganisation"
+            :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products">
                 <template #header>
                     <div class="table-header p-d-flex p-jc-between p-ai-center">
                         <h2 class="p-m-0">Manage Organisations</h2>
@@ -26,10 +26,10 @@
                     </div>
                 </template>
                 <Column selectionMode="multiple" headerStyle="width: 3rem" :exportable="false"></Column>
+                <Column field="ispublic" header="Public" :sortable="true"></Column>
                 <Column field="name" header="Name" :sortable="true"></Column>
                 <Column field="description" header="Description" :sortable="true"></Column>
                 <Column field="creator" header="Creator" :sortable="true"></Column>
-                <Column field="category" header="Category" :sortable="true"></Column>
                 <Column :exportable="false">
                     <template #body="slotProps">
                         <Button icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" @click="editOrganisation(slotProps.data)" />
@@ -49,6 +49,10 @@
         <div class="p-field">
             <label for="description">Description</label>
             <Textarea id="description" v-model="organisation.description" required="true" rows="3" cols="20" />
+        </div>
+        <div class="p-field">
+            <label for="ispublic">Public or not? </label>
+            <InputSwitch id="ispublic" v-model="organisation.ispublic" />
         </div>
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
@@ -105,6 +109,7 @@ export default {
             organisations: [
                 {
                     id: 1,
+                    ispublic: true,
                     name: 'Organisation 3',
                     description: 'Des',
                     creator: 1,
@@ -114,6 +119,7 @@ export default {
                 },
                 {
                     id: 2,
+                    ispublic: false,
                     name: 'Organisation 2',
                     description: 'Description of Organisation 2',
                     creator: 1,
@@ -147,19 +153,45 @@ export default {
             this.selectedOrganisations = null
             this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisations removed', life: 3000 })
         },
+        deleteOrganisation () {
+            this.deleteOrganisationDialog = false
+            this.organisations = this.organisations.filter(val => val.id !== this.organisation.id)
+            this.organisation = {}
+            this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Deleted', life: 3000 })
+        },
         hideDialog () {
             this.organisationDialog = false
             this.submitted = true
         },
-        saveOrganisation () {
+        saveOrganisation (organisation) {
             this.submitted = true
-            this.organisations.push(this.organisation)
-            this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Created', life: 3000 })
-
+            if (this.organisation.name.trim()) {
+                if (this.organisation.id) {
+                    this.organisations[this.findIndexById(this.organisation.id)] = this.organisation
+                    this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Updated', life: 3000 })
+                } else {
+                this.organisations.push(this.organisation)
+                this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Created', life: 3000 })
+                }
             this.organisationDialog = false
             this.organisation = {}
+            }
         },
-        pushed () {
+        findIndexById (id) {
+            let index = -1
+            for (let i = 0; i < this.organisations.length; i++) {
+                if (this.organisations[i].id === id) {
+                    index = i
+                    break
+                }
+            }
+
+            return index
+        },
+        goToOrganisation (organisation) {
+            this.organisation = { ...organisation }
+            this.$toast.add({ severity: 'info', summary: 'Product Selected', detail: 'Name: ' + organisation.name, life: 3000 })
+            this.$router.push({ name: 'editorganisation', params: { id: this.selectedOrganisations.id } })
         }
     }
 }
