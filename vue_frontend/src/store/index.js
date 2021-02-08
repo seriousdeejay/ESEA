@@ -6,7 +6,8 @@ export default createStore({
     accessToken: null,
     refreshToken: null,
     currentuser: '',
-    APIData: ''
+    APIData: '',
+    organisations: ''
  },
  mutations: {
    updateStorage (state, { access, refresh }) {

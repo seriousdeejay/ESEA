@@ -1,6 +1,7 @@
 <template>
     <div class="networks">
-        <h1>Networks</h1>
+        <h1>Organisations</h1>
+        <Toast position="top-right"/>
         <div class="card p-px-5">
             <Toolbar class="p-mb-4">
                 <template #left>
@@ -79,7 +80,19 @@
 </template>
 
 <script>
+// import { useToast } from 'primevue/usetoast'
+
 export default {
+    // setup () {
+    //     const toast = useToast()
+
+    //     const succesmessage = () => {
+    //         toast.add(({ severity: 'success', summary: 'Successful', detail: 'Message Content', life: 3000 }))
+    //     }
+    //     return {
+    //         succesmessage
+    //     }
+    // },
     data () {
         return {
             selectedOrganisations: null,
@@ -118,7 +131,7 @@ export default {
             this.organisationDialog = true
         },
         confirmDeleteSelected () {
-            this.deleteOrganisationsDialog = false
+            this.deleteOrganisationsDialog = true
         },
         confirmDeleteOrganisation (organisation) {
             this.organisation = organisation
@@ -129,10 +142,10 @@ export default {
             this.organisationDialog = true
         },
         deleteSelectedOrganisations () {
-            this.organisation = this.organisations.filter(val => !this.selectedorganisations.includes(val))
+            this.organisations = this.organisations.filter(val => !this.selectedOrganisations.includes(val))
             this.deleteOrganisationsDialog = false
             this.selectedOrganisations = null
-            this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisations Deleted', life: 3000 })
+            this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisations removed', life: 3000 })
         },
         hideDialog () {
             this.organisationDialog = false
@@ -142,6 +155,9 @@ export default {
             this.submitted = true
             this.organisations.push(this.organisation)
             this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Created', life: 3000 })
+
+            this.organisationDialog = false
+            this.organisation = {}
         },
         pushed () {
         }

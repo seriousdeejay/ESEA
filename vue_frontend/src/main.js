@@ -5,6 +5,7 @@ import store from './store'
 import IdleVue from 'idle-vue'
 // import Vuelidate from 'vuelidate'
 import Primevue from 'primevue/config'
+import ToastService from 'primevue/toastservice'
 
 import 'primevue/resources/themes/saga-blue/theme.css' // theme
 import 'primevue/resources/primevue.min.css' // core css
@@ -23,9 +24,8 @@ import ColumnGroup from 'primevue/columngroup' // optional for column grouping
 import Paginator from 'primevue/paginator'
 import Toolbar from 'primevue/toolbar'
 import Dialog from 'primevue/dialog'
-import ToastService from 'primevue/toastservice'
 import Textarea from 'primevue/textarea'
-
+import Toast from 'primevue/toast'
 // const eventsHub = createApp
 
 router.beforeEach((to, from, next) => {
@@ -40,7 +40,7 @@ router.beforeEach((to, from, next) => {
     }
   })
 
-const app = createApp(App).use(store).use(router).use(Primevue).use(IdleVue, { idleTime: 5000, store }).use(ToastService) // after 10sec idle
+const app = createApp(App).use(store).use(router).use(Primevue).use(ToastService).use(IdleVue, { idleTime: 5000, store }) // after 10sec idle
 
 app.component('Menubar', Menubar)
 app.component('Menu', Menu)
@@ -55,5 +55,6 @@ app.component('Paginator', Paginator)
 app.component('Toolbar', Toolbar)
 app.component('Dialog', Dialog)
 app.component('Textarea', Textarea)
+app.component('Toast', Toast)
 
 app.mount('#app')
