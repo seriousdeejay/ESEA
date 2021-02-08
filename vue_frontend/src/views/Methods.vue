@@ -3,7 +3,7 @@
          <h1>-Posts-</h1>
         <div class="p-grid">
             <div v-for="organisation in APIData" :key="organisation.id"  class="p-col-4">
-                <div v-if="organisation.ispublic">
+                <!-- <div v-if="organisation.ispublic"> -->
                 <Card style="margin-bottom: 2em" class="p-shadow-5">
                     <template #title>
                         {{ organisation.name }}
@@ -20,8 +20,8 @@
                         </div>
                     </template>
                 </Card>
-                </div>
-                <div v-else>Private Post</div>
+                <!-- </div>
+                <div v-else>Private Post</div> -->
             </div>
         </div>
     </div>
@@ -47,7 +47,7 @@ export default {
     },
     computed: mapState(['APIData']),
     created () {
-        AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+        AxiosInstance.get('/personalorganisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
           .then(response => {
             this.$store.state.APIData = response.data
           })

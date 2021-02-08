@@ -2,8 +2,9 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
+from django.db.models import Q
 
-from ..models import Organisation
+from ..models import Organisation, CustomUser
 from ..serializers import OrganisationSerializer
 
 
@@ -34,9 +35,11 @@ class OrganisationViewSet(viewsets.ModelViewSet):
     serializer_class = OrganisationSerializer
     queryset = Organisation.objects.all()
 
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     return Organisation.objects.filter(user=user)
-
-    # def perform_create(self, serializer):
-    #     return serializer.save(users=[self.request.user])
+class PersonalOrganisationViewSet(viewsets.ModelViewSet):
+    serializer_class = OrganisationSerializer
+   
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            return Organisation.objects.filter(Q(creator=user) | Q(ispublic = True))
+        return Organisation.objects.all()
