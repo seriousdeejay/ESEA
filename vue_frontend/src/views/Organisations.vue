@@ -1,6 +1,13 @@
 <template>
     <div class="organisations">
         <h1>Organisations</h1>
+        <div v-if="organisations.length">
+            <DataTable :value="organisations">
+                <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field"></Column>
+            </DataTable>
+        </div>
+        <div v-else>Organisations are being loaded...</div>
+
         <form @submit.prevent="createpost" method="post">
             <div class="p-field p-grid">
                 <label for="title" class="p-col">title</label>
@@ -37,6 +44,8 @@ import { mapState } from 'vuex'
 export default {
     data () {
         return {
+            organisations: [],
+            columns: null,
             post: {
                 title: '',
                 content: '',
@@ -55,8 +64,18 @@ export default {
                     })
         }
     },
-    computed: mapState(['accessToken', 'currentuser'])
-
+    computed: mapState(['accessToken', 'currentuser']),
+    created () {
+            this.columns = [
+            { field: 'name', header: 'Name' },
+            { field: 'description', header: 'Description' },
+            { field: 'participants', header: 'Participants' },
+            { field: 'title', header: 'Title' },
+            { field: 'content', header: 'Content' }
+        ]
+        AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+          .then(response => { this.organisations = response.data })
+          .catch(err => { console.log(err) })
+    }
 }
-
 </script>
