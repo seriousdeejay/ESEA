@@ -9,6 +9,7 @@ router = DefaultRouter()
 router.register(r'organisations', organisationview.OrganisationViewSet)
 router.register(r'personalorganisations', organisationview.PersonalOrganisationViewSet, basename='Organisation')
 router.register(r'networks', networkview.NetworkViewSet)
+router.register(r'users', userview.UsersViewSet)
 
 urlpatterns = [
     path('account/register/', userview.RegisterUserView.as_view(), name='user_registration'),

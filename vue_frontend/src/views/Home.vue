@@ -1,69 +1,49 @@
 <template>
-    <div style="margin: 0px 50px">
-         <h1>-Posts-</h1>
-        <div class="p-grid">
-            <div v-for="organisation in APIData" :key="organisation.id"  class="p-col-4">
-                <!-- <div v-if="organisation.ispublic"> -->
-                <Card style="margin-bottom: 2em" class="p-shadow-5">
-                    <template #title>
-                        {{ organisation.name }}
-                    </template>
-                    <template #content>
-                        <p> {{ organisation.description }}</p>
-                        <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
-                    </template>
-                    <template #footer>
-                        <div class="p-d-flex">
-                        <Button icon="pi pi-chevron-down" label="View" />
-                        <Button icon="pi pi-pencil" label="Edit" @click="$router.push({name: 'editorganisation', params: { id: organisation.id }})" class="p-button-secondary" style="margin-left: .5em" />
-                         <p class="p-ml-auto">{{ organisation.creator }} 9 min</p>
-                        </div>
-                    </template>
-                </Card>
-                <!-- </div>
-                <div v-else>Private Post</div> -->
+    <div class="companydetails">
+         <form @submit.prevent="updatecompany" method="post">
+            <div class="">
+                <label for="title">Title</label>
+                <input
+                    type="text"
+                    id="title"
+                    v-model="post.title"
+                    name="title"
+                    placeholder="enter title"
+                >
             </div>
-        </div>
+            <div class="">
+                <label for="content">Content</label>
+                 <input
+                    type="text"
+                    id="content"
+                    v-model="post.content"
+                    name="content"
+                    placeholder="enter content"
+                >
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
 </template>
 
 <script>
 import { AxiosInstance } from '../plugins/axios'
-import { mapState } from 'vuex'
-
 export default {
-    name: 'Organisations',
-    onIdle () {
-      this.$store.dispatch('userLogout')
-        .then(() => {
-          this.$router.push({ name: 'login' })
-        })
-    },
     data () {
         return {
+            post: {
+                title: '',
+                content: ''
+            },
+            submitted: false
         }
     },
-    components: {
-    },
-    computed: mapState(['APIData']),
-    created () {
-        AxiosInstance.get('/personalorganisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-          .then(response => {
-            this.$store.state.APIData = response.data
-          })
-          .catch(err => {
-            console.log(err)
-          })
+    mounted () {
+        AxiosInstance.get(`http://127.0.0.1:8000/organisations/${this.$route.params.id}/`)
+            .then(response => {
+                console.log(response.data)
+                this.post = response.data
+            })
     }
 }
-//         ('/posts/')
-//             .then(response => {
-//                 console.log('Post API has received data')
-//                 this.APIData = response.data
-//             })
-//             .catch(err => {
-//                 console.log(err)
-//             })
-//     }
-// }
 </script>

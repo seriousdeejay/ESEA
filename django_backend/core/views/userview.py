@@ -1,10 +1,17 @@
+from rest_framework import viewsets
 from rest_framework.generics import CreateAPIView
-from ..serializers import RegisterUserSerializer
+
+from ..serializers import RegisterUserSerializer, UserSerializer
+from ..models import CustomUser
 
 
 class RegisterUserView(CreateAPIView):
     serializer_class = RegisterUserSerializer
 
+class UsersViewSet(viewsets.ReadOnlyModelViewSet):
+    model = CustomUser
+    serializer_class = UserSerializer
+    queryset = CustomUser.objects.all()
 
 # May be removed if there are no errors
 # from django.shortcuts import render

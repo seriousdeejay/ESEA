@@ -1,6 +1,6 @@
 <template>
 
-<div style="width: 30rem; border-radius:0.25rem" class="p-d-block p-mx-auto p-p-5 p-shadow-10">
+<div style="width: 30rem; border-radius:0.25rem;" class="p-d-block p-mx-auto p-p-5 p-shadow-10">
             <h1>Open ESEA - Login Page</h1>
         <p v-if="incorrectAuth">Incorrect username or password entered - please try again!</p>
         <form v-on:submit.prevent="login">

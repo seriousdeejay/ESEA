@@ -7,6 +7,7 @@ export default createStore({
     refreshToken: null,
     currentuser: '',
     APIData: '',
+    networks: '',
     organisations: ''
  },
  mutations: {

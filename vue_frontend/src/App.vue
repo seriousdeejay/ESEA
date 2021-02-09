@@ -1,23 +1,21 @@
 <template>
+  <div v-if="accessToken!=null" class="window card p-m-5 p-p-3 p-shadow-3" style="min-height: 800px; height: auto; background-color: #F8F9FA;">
+    <Menubar :model="items" v-if="accessToken!=null" style="background-color: #EFEEEE;">
+        <template #start>
+            <img alt="logo" src="./assets/logo.png" height="40" class="p-mr-5">
+        </template>
+        <template #end>
+          <Button type="button" :label="'account ('+ currentuser + ')'" @click="toggle" aria-haspopup="true" aria-controls="profile_menu" class="p-button-raised p-button-text p-button-plain"/>
+          <Menu id="profile_menu" ref="menu" :model="profile" :popup="true" />
 
-<Menubar :model="items" v-if="accessToken!=null">
-     <template #start>
-        <img alt="logo" src="./assets/logo.png" height="40" class="p-mr-5">
-    </template>
-    <template #end>
-      <Button type="button" :label="'account ('+ currentuser + ')'" @click="toggle" aria-haspopup="true" aria-controls="profile_menu" class="p-button-raised p-button-text p-button-plain"/>
-      <Menu id="profile_menu" ref="menu" :model="profile" :popup="true"/>
-      <!--<Button label="Logout" icon="pi pi-power-off" :style="{'margin-left': '0 .5em'}"/>-->
-    </template>
-</Menubar>
-  <div id="nav">
-    <!-- <router-link to="/">Dashboard</router-link> |
-    <router-link to="/home">Home</router-link> |
-    <router-link to="/about">About</router-link> -->
+        </template>
+    </Menubar>
+      <router-view/>
   </div>
-  <router-view/>
+  <div v-else class="centered" style="">
+    <router-view style="background-color: white;"/>
+  </div>
 </template>
-
 <script>
 import { mapState } from 'vuex'
 
@@ -68,7 +66,7 @@ export default {
         {
           label: 'Methods',
           icon: 'pi pi-briefcase',
-          to: '/'
+          to: '/methods'
         },
          {
           label: 'Users',
@@ -101,6 +99,11 @@ export default {
 </script>
 
 <style lang="scss">
+body, html, #app {
+  min-height: 100%;
+  background-color: lightgray;
+  }
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -120,5 +123,12 @@ export default {
       color: #42b983;
     }
   }
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

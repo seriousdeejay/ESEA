@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from '../views/Home.vue'
 
 const routes = [
   {
@@ -16,6 +15,14 @@ const routes = [
     path: '/logout',
     name: 'logout',
     component: () => import('../views/Logout.vue')
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('../views/Home.vue'),
+    meta: {
+      requiresLogin: true
+    }
   },
   {
     path: '/users',
@@ -55,17 +62,12 @@ const routes = [
     component: () => import('../views/DetailedOrganisation.vue')
   },
   {
-    path: '/',
+    path: '/methods',
     name: 'methods',
     component: () => import('../views/Methods.vue'),
     meta: {
       requiresLogin: true
     }
-  },
-  {
-    path: '/home',
-    name: 'home',
-    component: Home
   }
 ]
 
