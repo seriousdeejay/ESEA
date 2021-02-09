@@ -53,7 +53,7 @@ export default {
                 password: this.password
             })
             .then(() => {
-                this.$router.push({ name: 'methods' })
+                this.$router.push({ name: 'home' })
             })
             .catch(err => {
                 console.log(err)

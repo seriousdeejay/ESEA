@@ -49,6 +49,14 @@ const routes = [
     }
   },
   {
+    path: '/networks/edit/:id',
+    name: 'networkdetails',
+    component: () => import('../views/NetworkDetails.vue'),
+    meta: {
+      requiresLogin: true
+    }
+  },
+  {
     path: '/organisations',
     name: 'organisations',
     component: () => import('../views/Organisations.vue'),
@@ -58,8 +66,11 @@ const routes = [
   },
   {
     path: '/organisations/edit/:id',
-    name: 'editorganisation',
-    component: () => import('../views/DetailedOrganisation.vue')
+    name: 'organisationdetails',
+    component: () => import('../views/OrganisationDetails.vue'),
+    meta: {
+      requiresLogin: true
+    }
   },
   {
     path: '/methods',

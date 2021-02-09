@@ -12,7 +12,7 @@
     <h1>Breadcrumb with Chosen Network>Chosen Organisation>Chosen Method</h1>
       <router-view/>
   </div>
-  <div v-else class="centered" style="">
+  <div v-else class="centered">
     <router-view style="background-color: white;"/>
   </div>
 </template>

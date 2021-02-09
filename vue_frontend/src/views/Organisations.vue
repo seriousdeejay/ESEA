@@ -192,7 +192,7 @@ export default {
         goToOrganisation (organisation) {
             this.organisation = { ...organisation }
             this.$toast.add({ severity: 'info', summary: 'Organisation Selected', detail: 'Name: ' + organisation.name, life: 3000 })
-            this.$router.push({ name: 'editorganisation', params: { id: this.selectedOrganisations.id } })
+            this.$router.push({ name: 'organisationdetails', params: { id: this.selectedOrganisations.id } })
         }
     }
 }

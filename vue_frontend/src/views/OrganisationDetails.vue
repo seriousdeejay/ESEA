@@ -1,13 +1,18 @@
 <template>
+<h1> Test</h1>
+
+<h1>Organisations {{ organisation.id }} {{ organisation.name }} {{ organisation.participants }}</h1>
+    <!--
     <div class="organisations">
-        <h1>Organisations</h1>
-        <div v-if="organisations.length">
-            <DataTable :value="organisations">
-                <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field"></Column>
+        <div v-if="organisation">
+            <DataTable ref="dt" :value="organisation">
+                <Column field="ispublic" header="Public" :sortable="true"></Column>
+                <Column field="name" header="Name" :sortable="true"></Column>
+                <Column field="description" header="Description" :sortable="true"></Column>
             </DataTable>
         </div>
         <div v-else>Organisations are being loaded...</div>
-
+    </div>
         <form @submit.prevent="createpost" method="post">
             <div class="p-field p-grid">
                 <label for="title" class="p-col">title</label>
@@ -22,18 +27,18 @@
                 </div>
             </div>
 
-            <!-- <div class="p-field p-grid">
+            <div class="p-field p-grid">
                 <label for="title" class="p-col" >owner</label>
                  <div class="p-col">
                     <InputText type="text" id="owner" v-model="post.owner" />
                 </div>
-            </div> -->
+            </div>
                 {{currentuser}}
             <div style="text-align:right">
                 <Button type="submit" value="submit">Create Post</Button>
             </div>
         </form>
-    </div>
+    </div> -->
 </template>
 
 <script>
@@ -44,38 +49,25 @@ import { mapState } from 'vuex'
 export default {
     data () {
         return {
-            organisations: [],
-            columns: null,
-            post: {
-                title: '',
-                content: '',
-                creator: this.currentuser
-            }
         }
     },
     methods: {
-        createpost: function (e) {
-                AxiosInstance
-                    .post('http://127.0.0.1:8000/posts/',
-                        this.post
-                    )
-                    .then(response => {
-                        this.$router.push('/')
-                    })
-        }
+        // createpost: function (e) {
+        //         AxiosInstance
+        //             .post('http://127.0.0.1:8000/posts/',
+        //                 this.post
+        //             )
+        //             .then(response => {
+        //                 this.$router.push('/')
+        //             })
+        // }
     },
     computed: mapState(['accessToken', 'currentuser']),
     created () {
-            this.columns = [
-            { field: 'name', header: 'Name' },
-            { field: 'description', header: 'Description' },
-            { field: 'participants.length', header: 'Participants' },
-            { field: 'title', header: 'Title' },
-            { field: 'content', header: 'Content' }
-        ]
-        AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-          .then(response => { this.organisations = response.data })
+        AxiosInstance.get(`/organisations/${this.$route.params.id}/`, { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+          .then(response => { organisation = response.data })
           .catch(err => { console.log(err) })
     }
+
 }
 </script>

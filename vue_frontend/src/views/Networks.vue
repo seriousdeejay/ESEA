@@ -144,7 +144,7 @@ export default {
         goToNetwork (network) {
           this.network = { ...network }
           this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + network.name, life: 3000 })
-          this.$router.push({ name: 'users', params: { id: this.selectedNetworks.id } })
+          this.$router.push({ name: 'networkdetails', params: { id: this.selectedNetworks.id } })
         }
       }
 }
