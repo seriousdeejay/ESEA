@@ -8,7 +8,10 @@ export default createStore({
     currentuser: '',
     APIData: '',
     networks: '',
+    network: '',
     organisations: '',
+    organisation: '',
+    organisationusers: '',
     users: ''
  },
  mutations: {

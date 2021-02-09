@@ -1,7 +1,13 @@
 <template>
 <h1> Test</h1>
 
-<h1>Organisations {{ organisation.id }} {{ organisation.name }} {{ organisation.participants }}</h1>
+<h1>{{organisation.id }} {{ organisation.name }} {{ organisation.participants }}</h1>
+{{ organisationusers }}
+<br>
+<br>
+<div v-for="user in organisationusers" :key="user.id">
+    {{ user.username }}
+</div>
     <!--
     <div class="organisations">
         <div v-if="organisation">
@@ -62,11 +68,14 @@ export default {
         //             })
         // }
     },
-    computed: mapState(['accessToken', 'currentuser']),
+    computed: mapState(['accessToken', 'currentuser', 'organisation', 'organisationusers']),
     created () {
         AxiosInstance.get(`/organisations/${this.$route.params.id}/`, { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-          .then(response => { organisation = response.data })
+          .then(response => { this.$store.state.organisation = response.data })
           .catch(err => { console.log(err) })
+        AxiosInstance.get(`/organisationparticipants/${this.$route.params.id}/`, { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+        .then(response => { this.$store.state.organisationusers = response.data })
+        .catch(err => { console.log(err) })
     }
 
 }

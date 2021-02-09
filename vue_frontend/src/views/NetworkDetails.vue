@@ -3,14 +3,13 @@
 </template>
 
 <script>
-import { AxiosInstance } from '../plugins/axios'
+// import { AxiosInstance } from '../plugins/axios'
 import { mapState } from 'vuex'
 // import { required, minLength } from 'vuelidate/lib/validators'
 
 export default {
     data () {
         return {
-            organisation: null
         }
     },
     methods: {
@@ -26,9 +25,9 @@ export default {
     },
     computed: mapState(['accessToken', 'currentuser']),
     created () {
-        AxiosInstance.get(`/networks/${this.$route.params.id}/`, { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-          .then(response => { this.organisation = response.data })
-          .catch(err => { console.log(err) })
+        // AxiosInstance.get(`/networks/${this.$route.params.id}/`, { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+        //   .then(response => {  = response.data })
+        //   .catch(err => { console.log(err) })
     }
 
 }

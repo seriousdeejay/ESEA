@@ -13,6 +13,7 @@ class UsersViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     queryset = CustomUser.objects.all()
 
+
 # May be removed if there are no errors
 # from django.shortcuts import render
 # from rest_framework.response import Response

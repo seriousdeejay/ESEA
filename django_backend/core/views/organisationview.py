@@ -5,7 +5,7 @@ from rest_framework import viewsets
 from django.db.models import Q
 
 from ..models import Organisation, CustomUser
-from ..serializers import OrganisationSerializer
+from ..serializers import OrganisationSerializer, UserSerializer
 
 
 class OrganisationView(generics.ListCreateAPIView): # RetrieveAPIView):
@@ -35,11 +35,22 @@ class OrganisationViewSet(viewsets.ModelViewSet):
     serializer_class = OrganisationSerializer
     queryset = Organisation.objects.all()
 
+
+# Get all the available organisations of a user
 class PersonalOrganisationViewSet(viewsets.ModelViewSet):
     serializer_class = OrganisationSerializer
    
-    def get_queryset(self):
+    def get_queryset(self): # First query on localhost/organisations
         if self.request.user.is_authenticated:
             user = self.request.user
             return Organisation.objects.filter(Q(creator=user) | Q(ispublic = True))
         return Organisation.objects.all()
+    
+
+# Get all the participants of an organisation
+class OrganisationUserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        organisation_id = int(self.kwargs['pk'])
+        return CustomUser.objects.filter(accessible_organisations=organisation_id)

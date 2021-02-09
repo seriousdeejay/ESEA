@@ -28,6 +28,7 @@
                 <Column field="ispublic" header="Public" :sortable="true"></Column>
                 <Column field="name" header="Name" :sortable="true"></Column>
                 <Column field="description" header="Description" :sortable="true"></Column>
+                <Column field="participants.length" header="Participants" :sortable="true"></Column>
                 <Column field="creator" header="Creator" :sortable="true"></Column>
                 <Column :exportable="false">
                     <template #body="slotProps">
@@ -83,6 +84,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 // import { useToast } from 'primevue/usetoast'
 
 export default {
@@ -114,7 +116,7 @@ export default {
                     name: 'Organisation 3',
                     description: 'Des',
                     creator: 1,
-                    participants: [],
+                    participants: [1, 2],
                     title: 'gg',
                     content: 'ddd'
                 },
@@ -124,13 +126,14 @@ export default {
                     name: 'Organisation 2',
                     description: 'Description of Organisation 2',
                     creator: 1,
-                    participants: [],
+                    participants: [1, 2, 3],
                     title: 'jj',
                     content: 'jj'
                 }
             ]
         }
     },
+    computed: mapState(['organisations']),
     methods: {
         openNew () {
             this.organisation = {}
