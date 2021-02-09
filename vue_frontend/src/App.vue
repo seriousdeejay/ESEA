@@ -7,9 +7,9 @@
         <template #end>
           <Button type="button" :label="'account ('+ currentuser + ')'" @click="toggle" aria-haspopup="true" aria-controls="profile_menu" class="p-button-raised p-button-text p-button-plain"/>
           <Menu id="profile_menu" ref="menu" :model="profile" :popup="true" />
-
         </template>
     </Menubar>
+    <h1>Breadcrumb with Chosen Network>Chosen Organisation>Chosen Method</h1>
       <router-view/>
   </div>
   <div v-else class="centered" style="">

@@ -1,4 +1,10 @@
 <template>
+    <div>
+        <h1>
+        to do:
+        -List of Methods (just like Network and Organisations)
+        </h1>
+    </div>
     <div style="margin: 0px 50px">
          <h1>-Posts-</h1>
         <div class="p-grid">

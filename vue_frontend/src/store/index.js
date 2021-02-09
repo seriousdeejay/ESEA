@@ -8,7 +8,8 @@ export default createStore({
     currentuser: '',
     APIData: '',
     networks: '',
-    organisations: ''
+    organisations: '',
+    users: ''
  },
  mutations: {
    updateStorage (state, { access, refresh }) {
