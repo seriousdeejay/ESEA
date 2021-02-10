@@ -2,7 +2,7 @@ from rest_framework import serializers
 from ..models import Topic
 
 
-classic TopicSerializer(serializers.ModelSerializer):
+class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
         fields = '__all__'
