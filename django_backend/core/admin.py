@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import (Network, Organisation, CustomUser)
+from .models import (Network, Organisation, CustomUser, Method, Topic, DirectIndicator, Question, QuestionOption)
 
 class NetworkAdmin(admin.ModelAdmin):
     readonly_fields = ['created_by']
@@ -16,5 +16,11 @@ class NetworkAdmin(admin.ModelAdmin):
         obj.save()
 
 admin.site.register(CustomUser, UserAdmin)
-admin.site.register(Organisation)
 admin.site.register(Network, NetworkAdmin)
+admin.site.register(Organisation)
+admin.site.register(Method)
+admin.site.register(Topic)
+admin.site.register(DirectIndicator)
+admin.site.register(Question)
+admin.site.register(QuestionOption)
+# admin.site.register(IndirectIndicator)

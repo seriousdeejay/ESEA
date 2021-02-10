@@ -27,7 +27,8 @@
 </template>
 
 <script>
-import { AxiosInstance } from '../plugins/axios'
+// import { AxiosInstance } from '../plugins/axios'
+
 export default {
     data () {
         return {
@@ -39,11 +40,11 @@ export default {
         }
     },
     mounted () {
-        AxiosInstance.get(`http://127.0.0.1:8000/organisations/${this.$route.params.id}/`)
-            .then(response => {
-                console.log(response.data)
-                this.post = response.data
-            })
+        // AxiosInstance.get(`http://127.0.0.1:8000/organisations/${this.$route.params.id}/`)
+        //     .then(response => {
+        //         console.log(response.data)
+        //         this.post = response.data
+        //     })
     }
 }
 </script>
