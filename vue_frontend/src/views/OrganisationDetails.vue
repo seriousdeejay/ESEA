@@ -1,50 +1,33 @@
 <template>
-<h1> Test</h1>
-
-<h1>{{organisation.id }} {{ organisation.name }} {{ organisation.participants }}</h1>
-{{ organisationusers }}
-<br>
-<br>
-<div v-for="user in organisationusers" :key="user.id">
-    {{ user.username }}
-</div>
-    <!--
-    <div class="organisations">
-        <div v-if="organisation">
-            <DataTable ref="dt" :value="organisation">
-                <Column field="ispublic" header="Public" :sortable="true"></Column>
-                <Column field="name" header="Name" :sortable="true"></Column>
-                <Column field="description" header="Description" :sortable="true"></Column>
-            </DataTable>
-        </div>
-        <div v-else>Organisations are being loaded...</div>
+    <h1>{{ organisation.name }}</h1>
+    <div class="card p-m-5 p-shadow-2">
+    <!-- <Toolbar class="p-mb-4">
+        <template #left>
+            <Button label="New" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openNew" />
+            <Button label="Delete" icon="pi pi-trash" class="p-button-danger" @click="confirmDeleteSelected" :disabled="!selectedOrganisations || !selectedOrganisations.length" />
+        </template>
+        </Toolbar> -->
+        <DataTable ref="dt" :value="organisationparticipants" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id"
+        :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
+            <template #header>
+                <div class="table-header p-d-flex p-jc-between p-ai-center">
+                    <Button label="New" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openNew" :disabled=true />
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <InputText v-model="filters['global']" placeholder="Search..." />
+                    </span>
+                </div>
+            </template>
+            <Column field="username" header="Username" :sortable="true"></Column>
+            <Column field="first_name" header="First name" :sortable="true"></Column>
+            <!-- <template #body="slotProps">
+                <Button icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" @click="editOrganisation(slotProps.data)" />
+                <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="confirmDeleteOrganisation(slotProps.data)" />
+            </template>
+            </Column> -->
+        </DataTable>
     </div>
-        <form @submit.prevent="createpost" method="post">
-            <div class="p-field p-grid">
-                <label for="title" class="p-col">title</label>
-                <div class="p-col">
-                    <InputText type="text" id="title" v-model="post.title" />
-                </div>
-            </div>
-            <div class="p-field p-grid">
-                <label for="title" class="p-col" >Content</label>
-                 <div class="p-col">
-                    <InputText type="text" id="content" v-model="post.content" />
-                </div>
-            </div>
-
-            <div class="p-field p-grid">
-                <label for="title" class="p-col" >owner</label>
-                 <div class="p-col">
-                    <InputText type="text" id="owner" v-model="post.owner" />
-                </div>
-            </div>
-                {{currentuser}}
-            <div style="text-align:right">
-                <Button type="submit" value="submit">Create Post</Button>
-            </div>
-        </form>
-    </div> -->
 </template>
 
 <script>
@@ -55,26 +38,19 @@ import { mapState } from 'vuex'
 export default {
     data () {
         return {
+            selectedOrganisations: null,
+            filters: {}
         }
     },
     methods: {
-        // createpost: function (e) {
-        //         AxiosInstance
-        //             .post('http://127.0.0.1:8000/posts/',
-        //                 this.post
-        //             )
-        //             .then(response => {
-        //                 this.$router.push('/')
-        //             })
-        // }
     },
-    computed: mapState(['accessToken', 'currentuser', 'organisation', 'organisationusers']),
+    computed: mapState(['accessToken', 'currentuser', 'organisation', 'organisationparticipants']),
     created () {
         AxiosInstance.get(`/organisations/${this.$route.params.id}/`, { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
           .then(response => { this.$store.state.organisation = response.data })
           .catch(err => { console.log(err) })
         AxiosInstance.get(`/organisationparticipants/${this.$route.params.id}/`, { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-        .then(response => { this.$store.state.organisationusers = response.data })
+        .then(response => { this.$store.state.organisationparticipants = response.data })
         .catch(err => { console.log(err) })
     }
 

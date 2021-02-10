@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from .customuser import CustomUser
 
 
-
 class Organisation(models.Model):
     ispublic = models.BooleanField(default=True)     # Public organisation yes or no?
     name = models.CharField(max_length=255, unique=False, blank=False)

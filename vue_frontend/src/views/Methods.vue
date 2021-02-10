@@ -1,12 +1,12 @@
 <template>
     <div>
-        <h1>
+        <!-- <h1>
         to do:
         -List of Methods (just like Network and Organisations)
-        </h1>
+        </h1> -->
     </div>
     <div style="margin: 0px 50px">
-         <h1>-Posts-</h1>
+         <h1>Manage Methods</h1>
         <div class="p-grid">
             <div v-for="organisation in APIData" :key="organisation.id"  class="p-col-4">
                 <!-- <div v-if="organisation.ispublic"> -->
@@ -21,7 +21,7 @@
                     <template #footer>
                         <div class="p-d-flex">
                         <Button icon="pi pi-chevron-down" label="View" />
-                        <Button icon="pi pi-pencil" label="Edit" @click="$router.push({name: 'editorganisation', params: { id: organisation.id }})" class="p-button-secondary" style="margin-left: .5em" />
+                        <Button icon="pi pi-pencil" label="Edit" @click="$router.push({name: 'organisationdetails', params: { id: organisation.id }})" class="p-button-secondary" style="margin-left: .5em" />
                          <p class="p-ml-auto">{{ organisation.creator }} 9 min</p>
                         </div>
                     </template>
@@ -53,7 +53,7 @@ export default {
     },
     computed: mapState(['APIData']),
     created () {
-        AxiosInstance.get('/personalorganisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+        AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
           .then(response => {
             this.$store.state.APIData = response.data
           })

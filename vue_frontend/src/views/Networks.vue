@@ -20,7 +20,8 @@
                 <Column field="ispublic" header="Public" :sortable="true"></Column>
                 <Column field="name" header="Name" :sortable="true"></Column>
                 <Column field="description" header="Description" :sortable="true"></Column>
-                <Column field="creator" header="Creator" :sortable="true"></Column>
+                <Column field="organisations.length" header="Organisations" :sortable="true"></Column>
+                <Column field="created_by" header="Created by" :sortable="true"></Column>
                 <Column :exportable="false">
                     <template #body="slotProps">
                         <Button icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" @click="editNetwork(slotProps.data)" />
@@ -63,89 +64,88 @@
     </Dialog>
 </template>
 
-<script>
-import { AxiosInstance } from '../plugins/axios'
-import { mapState } from 'vuex'
+ <script>
+ import { AxiosInstance } from '../plugins/axios'
+ import { mapState } from 'vuex'
 
-export default {
-    name: 'Networks',
-    data () {
-        return {
-          deleteNetworkDialog: false,
-          filters: {},
-          ispublicbool: ['true', 'false'],
-          network: {},
-          networkDialog: false,
-          selectedNetworks: null,
-          submitted: false
-        }
-    },
-    components: {
-    },
-    computed: mapState(['networks']),
-    created () {
-        AxiosInstance.get('/networks/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-          .then(response => {
-            this.$store.state.networks = response.data
-          })
-          .catch(err => {
-            console.log(err)
-          })
-    },
-    methods: {
-      openNew () {
-        this.network = {}
-        this.submitted = false
-        this.networkDialog = true
-      },
-      editNetwork (network) {
-        this.network = { ...network }
-        this.networkDialog = true
-      },
-      deleteNetwork () {
-        this.deleteNetworkDialog = true
-        this.networks = this.networks.filter(val => val.id !== this.network.id)
-        this.network = {}
-        this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
-      },
-      confirmDeleteNetwork (network) {
-        this.network = network
-        this.deleteNetworkDialog = true
-      },
-      saveNetwork (network) {
-        this.submitted = true
-        if (this.network.name.trim()) {
-          if (this.network.id) {
-            this.networks[this.findIndexById(this.network.id)] = this.network
-            this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network updated', life: 3000 })
-          } else {
-            this.networks.push(this.network)
-            this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network created', life: 3000 })
-          }
-        this.networkDialog = false
-        this.network = {}
-        }
-      },
-      hideDialog () {
-        this.networkDialog = false
-        this.submitted = true
-      },
-      findIndexById (id) {
-          let index = -1
-          for (let i = 0; i < this.networks.length; i++) {
-              if (this.networks[i].id === id) {
-                index = i
-                  break
-              }
-          }
-
-          return index
-        },
-        goToNetwork (network) {
-          this.network = { ...network }
-          this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + network.name, life: 3000 })
-          this.$router.push({ name: 'networkdetails', params: { id: this.selectedNetworks.id } })
-        }
-      }
-}
-</script>
+ export default {
+     name: 'Networks',
+     data () {
+         return {
+           deleteNetworkDialog: false,
+           filters: {},
+           ispublicbool: ['true', 'false'],
+           network: {},
+           networkDialog: false,
+           selectedNetworks: null,
+           submitted: false
+         }
+     },
+     components: {
+     },
+     computed: mapState(['networks']),
+     created () {
+         AxiosInstance.get('/networks/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+           .then(response => {
+             this.$store.state.networks = response.data
+           })
+           .catch(err => {
+             console.log(err)
+           })
+     },
+     methods: {
+       openNew () {
+         this.network = {}
+         this.submitted = false
+         this.networkDialog = true
+       },
+       editNetwork (network) {
+         this.network = { ...network }
+         this.networkDialog = true
+       },
+       deleteNetwork () {
+         this.deleteNetworkDialog = true
+         this.$store.state.networks = this.$store.state.networks.filter(val => val.id !== this.network.id)
+         this.network = {}
+         this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
+       },
+       confirmDeleteNetwork (network) {
+         this.network = network
+         this.deleteNetworkDialog = true
+       },
+       saveNetwork (network) {
+         this.submitted = true
+         if (this.network.name.trim()) {
+           if (this.network.id) {
+             this.$store.state.networks[this.findIndexById(this.network.id)] = this.network
+             this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network updated', life: 3000 })
+           } else {
+             this.$store.state.networks.push(this.network)
+             this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network created', life: 3000 })
+           }
+         this.networkDialog = false
+         this.network = {}
+         }
+       },
+       hideDialog () {
+         this.networkDialog = false
+         this.submitted = true
+       },
+       findIndexById (id) {
+           let index = -1
+           for (let i = 0; i < this.$store.state.networks.length; i++) {
+               if (this.$store.state.networks[i].id === id) {
+                 index = i
+                   break
+               }
+           }
+           return index
+         },
+       goToNetwork (network) {
+         this.network = { ...network }
+         this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + network.name, life: 3000 })
+         this.$router.push({ name: 'networkdetails', params: { id: this.selectedNetworks.id } })
+       }
+     }
+ }
+ </script>

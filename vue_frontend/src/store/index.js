@@ -9,9 +9,10 @@ export default createStore({
     APIData: '',
     networks: '',
     network: '',
+    networkorganisations: '',
     organisations: '',
     organisation: '',
-    organisationusers: '',
+    organisationparticipants: '',
     users: ''
  },
  mutations: {

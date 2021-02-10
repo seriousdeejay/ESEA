@@ -9,7 +9,7 @@
           <Menu id="profile_menu" ref="menu" :model="profile" :popup="true" />
         </template>
     </Menubar>
-    <h1>Breadcrumb with Chosen Network>Chosen Organisation>Chosen Method</h1>
+    <!-- <h1>Breadcrumb with Chosen Network>Chosen Organisation>Chosen Method</h1> -->
       <router-view/>
   </div>
   <div v-else class="centered">
@@ -47,7 +47,7 @@ export default {
           to: '/networks',
           items: [
             {
-              label: 'Left',
+              label: 'Information',
               icon: 'pi pi-fw pi-align-left'
             }
           ]
@@ -58,7 +58,7 @@ export default {
           to: '/organisations',
           items: [
             {
-              label: 'Left',
+              label: 'Information',
               icon: 'pi pi-fw pi-align-left'
             }
           ]
@@ -68,7 +68,7 @@ export default {
           icon: 'pi pi-briefcase',
           to: '/methods'
         },
-         {
+        {
           label: 'Users',
           icon: 'pi pi-users',
           to: '/users'

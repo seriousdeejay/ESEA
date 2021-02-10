@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <!-- <div>
         <h1>
         to do:
         -User column with organisations and Networks
         - firstname+prefix+lastname in 1 column
         - Remove Buttons
         </h1>
-    </div>
+    </div> -->
 
     <div class="users">
         <h1>Manage Users</h1>
