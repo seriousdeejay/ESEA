@@ -1,7 +1,14 @@
 import { createStore } from 'vuex'
 import { AxiosInstance } from '../plugins/axios'
 
+import organisation from './modules/organisation'
+import method from './modules/method/method'
+
 export default createStore({
+  modules:{
+    organisation,
+    method
+  },
   state: {
     accessToken: null,
     refreshToken: null,

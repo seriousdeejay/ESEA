@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
-from .views import (userview, networkview, organisationview, methodview, topicview)
+from .views import (userview, networkview, organisationview, methodview, topicview, direct_indicatorview, surveyview)
 
 
 router = DefaultRouter()
@@ -11,6 +11,9 @@ router.register(r'networks', networkview.NetworkViewSet, basename="Networks")
 router.register(r'organisations', organisationview.OrganisationViewSet, basename='Organisations')
 router.register(r'methods', methodview.MethodViewSet, basename='methods')
 router.register(r'topics', topicview.TopicViewSet, basename='topics')
+router.register(r'questions', direct_indicatorview.DirectIndicatorViewSet, basename='questions')
+router.register(r'surveys', surveyview.SurveyViewSet, basename='surveys')
+router.register(r'public-surveys', surveyview.PublicSurveyViewSet, basename='public-surveys')
 # router.register(r'personalorganisations', organisationview.PersonalOrganisationViewSet, basename='Organisation')
 
 
