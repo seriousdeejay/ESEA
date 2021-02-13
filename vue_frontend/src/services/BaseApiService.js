@@ -1,28 +1,27 @@
-// import apiCall from '@utils/api'
+import apiCall from '../utils/api'
 
-
-export default class BaseApiService{
-    constructor(createUrl) {
+export default class BaseApiService {
+    constructor (createUrl) {
         this.createUrl = createUrl
     }
 
-    get(payload) {
+    get (payload) {
         const url = this.createUrl(payload)
-        return apiCall({url})
+        return apiCall({ url })
     }
 
-    post(payload) {
+    post (payload) {
         const newPayload = { ...payload, id: undefined }
         const url = this.createUrl(newPayload)
         return apiCall({ method: 'post', url, data: payload.data })
     }
 
-    put(payload) {
+    put (payload) {
         const url = this.createUrl(payload)
         return apiCall({ method: 'put', url, data: payload.data })
     }
 
-    delete(payload) {
+    delete (payload) {
         const url = this.createUrl(payload)
         return apiCall({ method: 'delete', url })
     }

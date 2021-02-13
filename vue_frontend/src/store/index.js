@@ -1,11 +1,12 @@
 import { createStore } from 'vuex'
 import { AxiosInstance } from '../plugins/axios'
+import { STATUS } from '../utils/constants'
 
 import organisation from './modules/organisation'
 import method from './modules/method/method'
 
 export default createStore({
-  modules:{
+  modules: {
     organisation,
     method
   },
@@ -20,7 +21,8 @@ export default createStore({
     organisations: '',
     organisation: '',
     organisationparticipants: '',
-    users: ''
+    users: '',
+    status: ''
  },
  mutations: {
    updateStorage (state, { access, refresh }) {
@@ -30,6 +32,9 @@ export default createStore({
    destroyToken (state) {
      state.accessToken = null
      state.refreshToken = null
+   },
+   error (state) {
+     state.status = STATUS.ERROR
    }
  },
  getters: {

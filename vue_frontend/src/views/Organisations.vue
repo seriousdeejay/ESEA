@@ -74,9 +74,9 @@
 </template>
 
 <script>
-import { AxiosInstance } from '../plugins/axios'
-import { mapState } from 'vuex'
- import { useToast } from 'primevue/usetoast'
+// import { AxiosInstance } from '../plugins/axios'
+import { mapState, mapActions } from 'vuex'
+import { useToast } from 'primevue/usetoast'
 
 export default {
      setup () {
@@ -102,17 +102,26 @@ export default {
             submitted: false
         }
     },
-    computed: mapState(['organisations']),
+    computed: {
+        ...mapState('organisation', ['organisations'])
+    },
     created () {
-        AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-          .then(response => {
-            this.$store.state.organisations = response.data
-          })
-          .catch(err => {
-            console.log(err)
-          })
+        this.initialize()
+        // AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+        //   .then(response => {
+        //     this.$store.state.organisations = response.data
+        //   })
+        //   .catch(err => {
+        //     console.log(err)
+        //   })
     },
     methods: {
+        ...mapActions('actions', ['fetchOrganisations']),
+        async initialize () {
+            console.log('orgcheck')
+            await this.fetchOrganisations({})
+        },
+
          openNew () {
              this.organisation = {}
              this.submitted = false
