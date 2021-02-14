@@ -57,7 +57,7 @@
         </div>
         <template #footer>
             <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteOrganisationDialog = false"/>
-            <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteOrganisation" />
+            <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="removeOrganisation(organisation)" />
         </template>
     </Dialog>
 
@@ -92,7 +92,7 @@ export default {
     data () {
         return {
             selectedOrganisations: null,
-            organisation: {},
+            // organisation: {},
             ispublicbool: ['true', 'false'
             ],
             organisationDialog: false,
@@ -116,12 +116,16 @@ export default {
         //   })
     },
     methods: {
-        ...mapActions('actions', ['fetchOrganisations']),
+        ...mapActions('organisation', ['fetchOrganisations', 'deleteOrganisation']),
         async initialize () {
-            console.log('orgcheck')
             await this.fetchOrganisations({})
         },
-
+        async removeOrganisation (organisation) {
+            this.deleteOrganisationDialog = false
+            this.deleteOrganisation({ id: organisation.id })
+            // this.organisation = {}
+            this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Deleted', life: 3000 })
+        },
          openNew () {
              this.organisation = {}
              this.submitted = false
@@ -144,12 +148,11 @@ export default {
               this.selectedOrganisations = null
               this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisations removed', life: 3000 })
           },
-         deleteOrganisation () {
-             this.deleteOrganisationDialog = false
-             this.$store.state.organisations = this.$store.state.organisations.filter(val => val.id !== this.organisation.id)
-             this.organisation = {}
-             this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Deleted', life: 3000 })
-         },
+        //  deleteOrganisation () {
+        //      this.$store.state.organisations = this.$store.state.organisations.filter(val => val.id !== this.organisation.id)
+        //      this.organisation = {}
+        //      this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Deleted', life: 3000 })
+        //  },
          hideDialog () {
              this.organisationDialog = false
              this.submitted = true

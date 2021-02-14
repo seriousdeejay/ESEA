@@ -35,16 +35,19 @@
     <Dialog v-model:visible="networkDialog" :style="{width: '450px'}" header="Network Details" :modal="true" class="p-fluid">
         <div class="p-field">
             <label for="name">Name</label>
-            <InputText id="name" v-model.trim="network.name" required="true" autofocus :class="{'p-invalid': submitted && !network.name}" />
+            <InputText id="name" v-model.trim="network.name" required="true" autofocus :class="{'p-invalid': submitted && !network.name}"
+            @blur="updateOrganizationForm({ name: $event.target.value })" />
             <small class="p-error" v-if="submitted && !network.name">Name is required.</small>
         </div>
         <div class="p-field">
             <label for="description">Description</label>
-            <Textarea id="description" v-model="network.description" required="true" rows="3" cols="20" />
+            <Textarea id="description" v-model="network.description" required="true" rows="3" cols="20"
+            @blur="updateOrganizationForm({ description: $event.target.value })" />
         </div>
         <div class="p-field">
             <label for="ispublic">Should this network be public? </label>
-            <SelectButton id="ispublic" v-model="network.ispublic" :options="ispublicbool" />
+            <SelectButton id="ispublic" v-model="network.ispublic" :options="ispublicbool"
+            @blur="updateOrganizationForm({ ispublic: $event.target.value })" />
         </div>
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
@@ -59,23 +62,22 @@
       </div>
       <template #footer>
         <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteNetworkDialog = false"/>
-        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteNetwork" />
+        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="removeNetwork()" />
       </template>
     </Dialog>
 </template>
 
  <script>
- import { AxiosInstance } from '../plugins/axios'
- import { mapState } from 'vuex'
+ // import { AxiosInstance } from '../plugins/axios'
+ import { mapState, mapActions } from 'vuex'
 
  export default {
-     name: 'Networks',
      data () {
          return {
            deleteNetworkDialog: false,
            filters: {},
            ispublicbool: ['true', 'false'],
-           network: {},
+           // network: {},
            networkDialog: false,
            selectedNetworks: null,
            submitted: false
@@ -83,17 +85,30 @@
      },
      components: {
      },
-     computed: mapState(['networks']),
+     computed: {
+       ...mapState('network', ['networks', 'network'])
+       },
      created () {
-         AxiosInstance.get('/networks/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-           .then(response => {
-             this.$store.state.networks = response.data
-           })
-           .catch(err => {
-             console.log(err)
-           })
+       this.initialize()
+        //  AxiosInstance.get('/networks/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+        //    .then(response => {
+        //      this.$store.state.networks = response.data
+        //    })
+        //    .catch(err => {
+        //      console.log(err)
+        //    })
      },
      methods: {
+       ...mapActions('network', ['fetchNetworks', 'deleteNetwork', 'createNetwork', 'updateOrganizationForm']),
+       async initialize () {
+         await this.fetchNetworks({})
+       },
+       async removeNetwork (network) {
+         this.deleteNetworkDialog = false
+         this.deleteNetwork({ id: network.id })
+         // this.network = {}
+         this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
+       },
        openNew () {
          this.network = {}
          this.submitted = false
@@ -103,24 +118,25 @@
          this.network = { ...network }
          this.networkDialog = true
        },
-       deleteNetwork () {
-         this.deleteNetworkDialog = true
-         this.$store.state.networks = this.$store.state.networks.filter(val => val.id !== this.network.id)
-         this.network = {}
-         this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
-       },
+      //  deleteNetwork () {
+      //    this.deleteNetworkDialog = true
+      //    this.$store.state.networks = this.$store.state.networks.filter(val => val.id !== this.network.id)
+      //    this.network = {}
+      //    this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
+      //  },
        confirmDeleteNetwork (network) {
          this.network = network
          this.deleteNetworkDialog = true
        },
-       saveNetwork (network) {
+       saveNetwork () {
          this.submitted = true
          if (this.network.name.trim()) {
            if (this.network.id) {
              this.$store.state.networks[this.findIndexById(this.network.id)] = this.network
              this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network updated', life: 3000 })
            } else {
-             this.$store.state.networks.push(this.network)
+             console.log(this.network)
+             this.createNetwork({})
              this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network created', life: 3000 })
            }
          this.networkDialog = false

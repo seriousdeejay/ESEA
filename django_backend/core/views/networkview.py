@@ -17,6 +17,9 @@ class NetworkViewSet(viewsets.ModelViewSet):
             user = self.request.user
             return Network.objects.filter(Q(created_by=user) | Q(ispublic = True))
         return Network.objects.all()
+    
+    # def perform_create(self, serializer):
+    #     return serializer.save(created_by=[self.request.user])
 
 
 # Get all the organisations of a network

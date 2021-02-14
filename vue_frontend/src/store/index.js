@@ -2,11 +2,13 @@ import { createStore } from 'vuex'
 import { AxiosInstance } from '../plugins/axios'
 import { STATUS } from '../utils/constants'
 
+import network from './modules/network'
 import organisation from './modules/organisation'
 import method from './modules/method/method'
 
 export default createStore({
   modules: {
+    network,
     organisation,
     method
   },

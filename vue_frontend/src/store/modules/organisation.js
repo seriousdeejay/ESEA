@@ -19,17 +19,23 @@ export default {
     },
     mutations: {
         setOrganisations (state, { data }) {
-            console.log(data)
             state.organisations = data
             console.log(state.organisations)
         },
         setOrganisation (state, { data }) {
             state.organisation = data || {}
         },
-        updateOrganisation (state, { id, data }) {
-        },
         addOrganisationToList (state, { data }) {
             state.organisations.push(data)
+        },
+        updateOrganisation (state, { id, data }) {
+            state.organisations = state.organisations.map((item) => {
+                if (item.id !== id) { return item }
+                return { ...item, ...data }
+            })
+        },
+        deleteOrganisation (state, { id }) {
+            state.organisations = state.organisations.filter(o => o.id !== id)
         },
         setError (state, { error }) {
             state.error = error
@@ -38,8 +44,10 @@ export default {
     actions: {
         async fetchOrganisations ({ commit }, payload) { // Working function
             const { response, error } = await OrganisationService.get(payload)
-            console.log(response)
-            console.log(error)
+            if (error) {
+                commit('setError', { error })
+                return
+            }
             commit('setOrganisations', response)
         // async fetchOrganisations () {
         //     await TestService.get()
@@ -69,6 +77,25 @@ export default {
             commit('setOrganisation', response)
         },
         async updateOrganisation ({ state, commit }) {
+        },
+        async deleteOrganisation ({ commit, dispatch }, payload) {
+            const { error } = await OrganisationService.delete(payload)
+            if (error) {
+                commit('setError', { error })
+                return
+            }
+            commit('deleteOrganisation', payload)
+            dispatch('setOrganisation', {})
+        },
+        setOrganisation ({ state, commit }, { id }) {
+            let data = state.organisations.find(o => o.id === id)
+            if (!data) {
+                [data] = state.organisations
+            commit('setOrganisation', { data })
+            }
+        },
+        resetError ({ commit }) {
+            commit('setError', { error: undefined })
         }
         // }
         // async fetchOrganisations({ commit }, payload) {

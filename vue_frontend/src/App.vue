@@ -26,7 +26,7 @@ export default {
         {
           label: 'Home',
           // icon: 'pi pi-home',
-          to: '/home',
+          to: '/',
           items: [
             {
               label: 'New',

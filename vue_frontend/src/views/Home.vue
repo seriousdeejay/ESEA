@@ -41,9 +41,7 @@ export default {
 //             // await this.fetchOrganisations({})
        },
        async initialize2 () {
-           console.log('check')
            await this.fetchOrganisations({})
-           console.log('check2')
        }
     }
 }
