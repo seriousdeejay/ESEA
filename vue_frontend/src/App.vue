@@ -9,6 +9,7 @@
           <Menu id="profile_menu" ref="menu" :model="profile" :popup="true" />
         </template>
     </Menubar>
+    {{ currentuser }}
     <!-- <h1>Breadcrumb with Chosen Network>Chosen Organisation>Chosen Method</h1> -->
       <router-view/>
   </div>
@@ -93,8 +94,9 @@ export default {
             this.$refs.menu.toggle(event)
         }
   },
-  computed:
-    mapState(['accessToken', 'currentuser'])
+  computed: {
+    ...mapState('authentication', ['accessToken', 'currentuser'])
+  }
 }
 </script>
 

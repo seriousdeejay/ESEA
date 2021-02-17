@@ -15,8 +15,9 @@ class OrganisationViewSet(viewsets.ModelViewSet):
     def get_queryset(self): # First query on localhost/organisations
         if self.request.user.is_authenticated:
             user = self.request.user
+            print(self.request.user)
             return Organisation.objects.filter(Q(creator=user) | Q(ispublic = True))
-        return Organisation.objects.all()
+        # return Organisation.objects.all()
     
 
 # Get all the participants of an organisation

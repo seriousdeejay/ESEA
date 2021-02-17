@@ -31,7 +31,7 @@ import SelectButton from 'primevue/selectbutton'
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresLogin)) {
-      if (!store.getters.loggedIn) {
+      if (!store.getters['authentication/loggedIn']) {
         next({ name: 'login' })
       } else {
         next()

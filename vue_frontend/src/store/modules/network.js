@@ -1,4 +1,9 @@
+/* eslint-disable */
 import NetworkService from '../../services/NetworkService'
+import { mapState } from 'vuex'
+// import { AxiosInstance } from '../../plugins/axios'
+import axios from 'axios'
+// import authentication from './authentication'
 // import { getRequestData } from '../../utils/helpers'
 
 // const baseNetwork = {
@@ -19,10 +24,12 @@ export default {
                 2
             ]
         },
-        error: []
+        error: [],
+        accessToken: ''
     },
     mutations: {
         setNetworks (state, { data }) {
+            console.log(data.data)
             state.networks = data
         },
         setNetwork (state, { data }) {
@@ -48,21 +55,43 @@ export default {
 			state.form = { ...state.form, ...data }
 		}
     },
+    computed: {
+        ...mapState('authentication', ['accesToken'])
+    },
+    getters: {
+        AuthenticationToken (state, getters, rootState, rootGetters) {
+            return rootGetters['authentication/AuthenticationToken']
+          }
+    },
     actions: {
-        async fetchNetworks ({ commit }, payload) {
-            const { response, error } = await NetworkService.get(payload)
-            console.log(error)
-            commit('setNetworks', response)
+        async fetchNetworks ({ commit, getters, state }, payload) {
+            console.log(getters.AuthenticationToken)
+            const token = ''
+            // const { response, error } = await NetworkService.get({ Authorization: `Bearer ${getters.AuthenticationToken}` })
+            await axios.post('http://localhost:8000/api-token/', {
+                username: 'admin',
+                password: 'admin'
+              }).then( response => (this.accessToken = response.data.access, console.log(this.accessToken)))
+              console.log('c')
+              var config = {
+                headers: { 'Authorization': 'Bearer ' +this.accessToken }
+            }            
+            // axios({ method: 'get', url: 'http://localhost:8000/networks/', headers: { Authorization: 'Bearer ' + this.accessToken } })
+            axios.get('http://localhost:8000/networks/', config)
+            .then(response => (console.log(response.data)))
+            // console.log('>>')
+            // console.log('??', response)
+            // commit('setNetworks', response)
         },
         // async createNetwork ({ state, commit }, network) {
         //     console.log('check3')
         //     console.log(network)
         //     commit('setNetwork', network)
         // },
-        async createNetwork ({ state, commit }) {
-            console.log(state.form)
+        async createNetwork ({ state, getters, commit }) {
             const data = state.form // getRequestData(state.form)
-            const { response, error } = await NetworkService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } }) // , Authorization: `Bearer ${rootState.accessToken}`
+            console.log(getters.AuthenticationToken)
+            const { response, error } = await NetworkService.post({ data, headers: { 'Content-Type': 'multipart/form-data' }, Authorization: `Bearer ${getters.AuthenticationToken}` })
             if (error) {
                 commit('setError', { error })
                 return
