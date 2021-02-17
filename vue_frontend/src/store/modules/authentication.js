@@ -1,7 +1,7 @@
 // import { createStore } from '../vuex'
 import { AxiosInstance } from '../../plugins/axios'
 import { STATUS } from '../../utils/constants'
-import axios from 'axios'
+// import axios from 'axios'
 
 export default {
     namespaced: true,
@@ -25,8 +25,7 @@ export default {
             state.accessToken = access
             state.refreshToken = refresh
             console.log(access)
-            axios.get('http://localhost:8000/networks/', { headers: { Authorization: `bearer ${access}` } })
-            .then(response => (console.log(response.data)))
+            console.log(state.accessToken)
           },
         destroyToken (state) {
             state.accessToken = null

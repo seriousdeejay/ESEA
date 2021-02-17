@@ -77,8 +77,11 @@ export default {
                 headers: { 'Authorization': 'Bearer ' +this.accessToken }
             }            
             // axios({ method: 'get', url: 'http://localhost:8000/networks/', headers: { Authorization: 'Bearer ' + this.accessToken } })
-            axios.get('http://localhost:8000/networks/', config)
-            .then(response => (console.log(response.data)))
+            // axios.get('http://localhost:8000/networks/', config)
+            // .then(response => (console.log(response.data)))
+            const { response, error } = await NetworkService.get(payload)
+            console.log('>>>', response.data)
+            console.log(error)
             // console.log('>>')
             // console.log('??', response)
             // commit('setNetworks', response)
