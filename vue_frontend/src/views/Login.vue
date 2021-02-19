@@ -47,6 +47,9 @@ export default {
             incorrectAuth: false
         }
     },
+    created () {
+        this.login()
+    },
     methods: {
         ...mapActions('authentication', ['userLogin']),
         login () {

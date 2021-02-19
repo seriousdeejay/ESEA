@@ -23,5 +23,7 @@ class Organisation(models.Model):
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return self.name
     # o1.userorganisation_set.all() & o1.participants.all()
     # u1.userorganisation_set.all() & u1.accessible_organisations.all()

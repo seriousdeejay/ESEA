@@ -3,8 +3,9 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
-from ..models import Network, Organisation
+from ..models import Network, Organisation, CustomUser
 from ..serializers import NetworkSerializer, OrganisationSerializer
 
 
@@ -20,9 +21,10 @@ class NetworkViewSet(viewsets.ModelViewSet):
         # return Network.objects.all()
     
     def perform_create(self, serializer):
+        creator = get_object_or_404(CustomUser, pk=self.request.user.id)
         serializer = NetworkSerializer(data=self.request.data)
         if serializer.is_valid():
-            serializer.save(created_by=[self.request.user])
+            serializer.save(created_by=creator)
         return Response(serializer.data)
 
 

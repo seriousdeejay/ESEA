@@ -11,7 +11,7 @@ class Network(models.Model):
     description = models.TextField(max_length=1000)
     # image = models.ImageField(blank=True, upload_to="network/", default="network/default.png")
     created_by = models.ForeignKey('CustomUser', null=True, blank=True, default=None, editable=False, related_name='network_creator', on_delete=models.SET_DEFAULT)
-    organisations = models.ManyToManyField(Organisation) 
+    organisations = models.ManyToManyField(Organisation, blank=True) 
 
     class Meta: 
         verbose_name = _('network')

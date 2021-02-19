@@ -1,9 +1,7 @@
-/* eslint-disable */
 import NetworkService from '../../services/NetworkService'
 import { mapState } from 'vuex'
-// import { AxiosInstance } from '../../plugins/axios'
 import axios from 'axios'
-// import authentication from './authentication'
+// import { AxiosInstance } from '../../plugins/axios'
 // import { getRequestData } from '../../utils/helpers'
 
 // const baseNetwork = {
@@ -11,25 +9,34 @@ import axios from 'axios'
 // 	description: 'Network for testing purposes'
 // }
 
+//  var config = { headers: { 'Authorization': 'Bearer ' +this.accessToken }
+// axios({ method: 'get', url: 'http://localhost:8000/networks/', headers: { Authorization: 'Bearer ' + this.accessToken } })
+// axios.get('http://localhost:8000/networks/', config)
+// .then(response => (console.log(response.data)))
+
+// const { response, error } = axios({ method: 'get', url: 'http://localhost:8000/networkorganisations/1/', headers: { Authorization: 'Bearer ' + this.accessToken } })
+// if (error) {
+// 	commit('setError', { error })
+//     return
+// }
+
 export default {
     namespaced: true,
     state: {
         networks: [],
         network: {},
+        networkorganisations: [],
         form: {
-            name: '',
-            description: '',
+            name: 'Network N',
+            description: 'Description of Network N',
             ispublic: true,
             organisations: [
-                2
             ]
         },
-        error: [],
-        accessToken: ''
+        error: []
     },
     mutations: {
         setNetworks (state, { data }) {
-            console.log(data.data)
             state.networks = data
         },
         setNetwork (state, { data }) {
@@ -48,10 +55,14 @@ export default {
         deleteNetwork (state, { id }) {
             state.networks = state.networks.filter(n => n.id !== id)
         },
+        setNetworkOrganisations (state, { data }) {
+            state.networkorganisations = data || {}
+            console.log(data)
+        },
         setError (state, { error }) {
             state.error = error
         },
-        updateOrganizationForm (state, data) {
+        updateNetworkForm (state, data) {
 			state.form = { ...state.form, ...data }
 		}
     },
@@ -59,42 +70,41 @@ export default {
         ...mapState('authentication', ['accesToken'])
     },
     getters: {
-        AuthenticationToken (state, getters, rootState, rootGetters) {
-            return rootGetters['authentication/AuthenticationToken']
-          }
+        AuthenticationToken (state, getters, rootState, rootGetters) { // Apparently state, getters & rootState are needed here
+           return rootGetters['authentication/AuthenticationToken']
+         }
     },
     actions: {
-        async fetchNetworks ({ commit, getters, state }, payload) {
-            console.log(getters.AuthenticationToken)
-            const token = ''
-            // const { response, error } = await NetworkService.get({ Authorization: `Bearer ${getters.AuthenticationToken}` })
-            await axios.post('http://localhost:8000/api-token/', {
-                username: 'admin',
-                password: 'admin'
-              }).then( response => (this.accessToken = response.data.access, console.log(this.accessToken)))
-              console.log('c')
-              var config = {
-                headers: { 'Authorization': 'Bearer ' +this.accessToken }
-            }            
-            // axios({ method: 'get', url: 'http://localhost:8000/networks/', headers: { Authorization: 'Bearer ' + this.accessToken } })
-            // axios.get('http://localhost:8000/networks/', config)
-            // .then(response => (console.log(response.data)))
+        async fetchNetworks ({ commit }, payload) {
+            const { response, error } = await NetworkService.get(payload) // How can i import id as payload?
+            if (error) {
+				commit('setError', { error })
+                return
+            }
+            commit('setNetworks', response)
+        },
+        async fetchNetwork ({ commit }, payload) {
             const { response, error } = await NetworkService.get(payload)
-            console.log('>>>', response.data)
-            console.log(error)
-            // console.log('>>')
-            // console.log('??', response)
-            // commit('setNetworks', response)
+            if (error) {
+                commit('setError', { error })
+                return
+            }
+            commit('setNetwork', response)
+        },
+        async fetchNetworkOrganisations ({ commit, state, getters }, payload) {
+            console.log(getters.AuthenticationToken)
+            var config = { headers: { Authorization: 'Bearer ' + getters.AuthenticationToken } }
+            const response = await axios.get(`http://localhost:8000/networkorganisations/${payload}/`, config)
+            console.log(response)
+            commit('setNetworkOrganisations', response)
         },
         // async createNetwork ({ state, commit }, network) {
-        //     console.log('check3')
         //     console.log(network)
         //     commit('setNetwork', network)
         // },
-        async createNetwork ({ state, getters, commit }) {
+        async createNetwork ({ state, commit }) {
             const data = state.form // getRequestData(state.form)
-            console.log(getters.AuthenticationToken)
-            const { response, error } = await NetworkService.post({ data, headers: { 'Content-Type': 'multipart/form-data' }, Authorization: `Bearer ${getters.AuthenticationToken}` })
+            const { response, error } = await NetworkService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } })
             if (error) {
                 commit('setError', { error })
                 return
@@ -104,7 +114,18 @@ export default {
             commit('setNetwork', response)
             // commit('resetOrganisationForm')
         },
-
+        async updateNetwork ({ state, commit }) {
+            console.log(state.network)
+            const id = state.network.id
+            const data = state.network
+            const { response, error } = await NetworkService.put({ id, data, headers: { 'Content-Type': 'multipart/form-data' } })
+            if (error) {
+                commit('setError', { error })
+                return
+            }
+            commit('updateNetwork', { ...response, id })
+            commit('setNetwork', response)
+        },
         async deleteNetwork ({ commit, dispatch }, payload) {
             const { error } = await NetworkService.delete(payload)
             if (error) {
@@ -115,17 +136,21 @@ export default {
             dispatch('setNetwork', {})
         },
         setNetwork ({ state, commit }, { id }) {
-            let data = state.networks.find(n => n.id === id)
-            if (!data) {
-                [data] = state.networks
+            if (id) {
+                const data = state.networks.find(n => n.id === id)
+                commit('setNetwork', { data })
+            } else {
+                commit('setNetwork', {})
             }
-            commit('setNetwork', { data })
+            // if (!data) {
+            //     [data] = state.networks
+            // }
         },
         addNetworkToList (state, { data }) {
 			state.organizations.push(data)
         },
-        updateOrganizationForm ({ commit }, payload) {
-			commit('updateOrganizationForm', payload)
+        updateNetworkForm ({ commit }, payload) {
+			commit('updateNetworkForm', payload)
 		}
     }
 }

@@ -1,4 +1,3 @@
-// import { createStore } from '../vuex'
 import { AxiosInstance } from '../../plugins/axios'
 import { STATUS } from '../../utils/constants'
 // import axios from 'axios'
@@ -9,23 +8,21 @@ export default {
         accessToken: null,
         refreshToken: null,
         currentuser: 'Username here',
-
-        APIData: '',
-        networks: '',
-        network: '',
-        networkorganisations: '',
-        organisations: '',
-        organisation: '',
-        organisationparticipants: '',
-        users: '',
         status: ''
+
+        // APIData: '',
+        // networks: '',
+        // network: '',
+        // networkorganisations: '',
+        // organisations: '',
+        // organisation: '',
+        // organisationparticipants: '',
+        // users: '',
     },
     mutations: {
         updateStorage (state, { access, refresh }) {
             state.accessToken = access
             state.refreshToken = refresh
-            console.log(access)
-            console.log(state.accessToken)
           },
         destroyToken (state) {
             state.accessToken = null
@@ -61,7 +58,6 @@ export default {
                 password: usercredentials.password
               })
                 .then(response => {
-                  console.log(response.data.access)
                   context.commit('updateStorage', { access: response.data.access, refresh: response.data.refresh })
                   resolve()
                 })

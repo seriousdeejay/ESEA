@@ -27,6 +27,7 @@ import Dialog from 'primevue/dialog'
 import Textarea from 'primevue/textarea'
 import Toast from 'primevue/toast'
 import SelectButton from 'primevue/selectbutton'
+import Divider from 'primevue/divider'
 // const eventsHub = createApp
 
 router.beforeEach((to, from, next) => {
@@ -58,5 +59,6 @@ app.component('Dialog', Dialog)
 app.component('Textarea', Textarea)
 app.component('Toast', Toast)
 app.component('SelectButton', SelectButton)
+app.component('Divider', Divider)
 
 app.mount('#app')

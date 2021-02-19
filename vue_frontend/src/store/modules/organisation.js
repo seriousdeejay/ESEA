@@ -20,7 +20,7 @@ export default {
     mutations: {
         setOrganisations (state, { data }) {
             state.organisations = data
-            console.log(state.organisations)
+            // console.log(state.organisations)
         },
         setOrganisation (state, { data }) {
             state.organisation = data || {}
@@ -49,22 +49,6 @@ export default {
                 return
             }
             commit('setOrganisations', response)
-        // async fetchOrganisations () {
-        //     await TestService.get()
-        //     .then(response => {
-        //         this.organisations = response.data
-        //         console.log(this.organisations)
-        //     })
-        //     .catch(err => {
-        //     console.log(err)
-
-            // AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-            // .then(response => {
-            //   commit('setOrganisations', response)
-            // })
-            // .catch(err => {
-            //   console.log(err)
-          //  })
         },
         async createOrganisation ({ state, commit }) {
             const data = getRequestData(state.form)
@@ -112,5 +96,20 @@ export default {
         //     }
         //     commit('setOrganisations', response)
         //
+                // async fetchOrganisations () {
+        //     await TestService.get()
+        //     .then(response => {
+        //         this.organisations = response.data
+        //         console.log(this.organisations)
+        //     })
+        //     .catch(err => {
+        //     console.log(err)
+            // AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+            // .then(response => {
+            //   commit('setOrganisations', response)
+            // })
+            // .catch(err => {
+            //   console.log(err)
+          //  })
     }
 }

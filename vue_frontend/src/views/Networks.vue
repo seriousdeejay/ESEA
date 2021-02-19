@@ -7,27 +7,21 @@
             :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
 
-                <template #header>
-                    <div class="table-header p-d-flex p-jc-between p-ai-center">
-                        <Button label="New" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openNew" />
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText v-model="filters['global']" placeholder="Search..." />
-                        </span>
-                    </div>
-                </template>
+              <template #header>
+                <div class="table-header p-d-flex p-jc-between p-ai-center">
+                  <Button label="New" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreateNetworkDialog" />
+                  <span class="p-input-icon-left">
+                    <i class="pi pi-search" />
+                    <InputText v-model="filters['global']" placeholder="Search..." />
+                  </span>
+                </div>
+              </template>
 
-                <Column field="ispublic" header="Public" :sortable="true"></Column>
-                <Column field="name" header="Name" :sortable="true"></Column>
-                <Column field="description" header="Description" :sortable="true"></Column>
-                <Column field="organisations.length" header="Organisations" :sortable="true"></Column>
-                <Column field="created_by" header="Created by" :sortable="true"></Column>
-                <Column :exportable="false">
-                    <template #body="slotProps">
-                        <Button icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" @click="editNetwork(slotProps.data)" />
-                        <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="confirmDeleteNetwork(slotProps.data)" />
-                    </template>
-                </Column>
+              <Column field="ispublic" header="Public" :sortable="true"></Column>
+              <Column field="name" header="Name" :sortable="true"></Column>
+              <Column field="description" header="Description" :sortable="true"></Column>
+              <Column field="organisations.length" header="Organisations" :sortable="true"></Column>
+              <Column field="created_by" header="Created by" :sortable="true"></Column>
             </DataTable>
         </div>
     </div>
@@ -36,18 +30,18 @@
         <div class="p-field">
             <label for="name">Name</label>
             <InputText id="name" v-model.trim="network.name" required="true" autofocus :class="{'p-invalid': submitted && !network.name}"
-            @blur="updateOrganizationForm({ name: $event.target.value })" />
+            @blur="updateNetworkForm({ name: $event.target.value })" />
             <small class="p-error" v-if="submitted && !network.name">Name is required.</small>
         </div>
         <div class="p-field">
             <label for="description">Description</label>
             <Textarea id="description" v-model="network.description" required="true" rows="3" cols="20"
-            @blur="updateOrganizationForm({ description: $event.target.value })" />
+            @blur="updateNetworkForm({ description: $event.target.value })" />
         </div>
         <div class="p-field">
             <label for="ispublic">Should this network be public? </label>
-            <SelectButton id="ispublic" v-model="network.ispublic" :options="ispublicbool"
-            @blur="updateOrganizationForm({ ispublic: $event.target.value })" />
+            <SelectButton id="ispublic" v-model="network.ispublic" required="true" :options="ispublicbool"
+            @blur="updateNetworkForm({ ispublic: $event.target.value })" />
         </div>
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
@@ -55,31 +49,18 @@
         </template>
     </Dialog>
 
-    <Dialog v-model:visible="deleteNetworkDialog" :style="{width: '450px'}" header="Confirm" :modal="true">
-      <div class="confirmation-content">
-          <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
-            <span v-if="network">Are you sure you want to delete <b>{{network.name}}</b>?</span>
-      </div>
-      <template #footer>
-        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteNetworkDialog = false"/>
-        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="removeNetwork()" />
-      </template>
-    </Dialog>
 </template>
 
  <script>
- // import { AxiosInstance } from '../plugins/axios'
+// Potentially remove @blur if it won't be used
  import { mapState, mapActions } from 'vuex'
 
  export default {
      data () {
          return {
-           deleteNetworkDialog: false,
            filters: {},
            ispublicbool: ['true', 'false'],
-           // network: {},
            networkDialog: false,
-           selectedNetworks: null,
            submitted: false
          }
      },
@@ -90,27 +71,14 @@
        },
      created () {
        this.initialize()
-        //  AxiosInstance.get('/networks/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-        //    .then(response => {
-        //      this.$store.state.networks = response.data
-        //    })
-        //    .catch(err => {
-        //      console.log(err)
-        //    })
      },
      methods: {
-       ...mapActions('network', ['fetchNetworks', 'deleteNetwork', 'createNetwork', 'updateOrganizationForm']),
+       ...mapActions('network', ['fetchNetworks', 'setNetwork', 'createNetwork', 'updateNetworkForm']),
        async initialize () {
          await this.fetchNetworks({})
        },
-       async removeNetwork (network) {
-         this.deleteNetworkDialog = false
-         this.deleteNetwork({ id: network.id })
-         // this.network = {}
-         this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
-       },
-       openNew () {
-         this.network = {}
+       async openCreateNetworkDialog () {
+         this.setNetwork({})
          this.submitted = false
          this.networkDialog = true
        },
@@ -118,12 +86,6 @@
          this.network = { ...network }
          this.networkDialog = true
        },
-      //  deleteNetwork () {
-      //    this.deleteNetworkDialog = true
-      //    this.$store.state.networks = this.$store.state.networks.filter(val => val.id !== this.network.id)
-      //    this.network = {}
-      //    this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
-      //  },
        confirmDeleteNetwork (network) {
          this.network = network
          this.deleteNetworkDialog = true
@@ -131,37 +93,51 @@
        saveNetwork () {
          this.submitted = true
          if (this.network.name.trim()) {
-           if (this.network.id) {
-             this.$store.state.networks[this.findIndexById(this.network.id)] = this.network
-             this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network updated', life: 3000 })
-           } else {
-             console.log(this.network)
              this.createNetwork({})
              this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network created', life: 3000 })
            }
          this.networkDialog = false
          this.network = {}
-         }
        },
        hideDialog () {
          this.networkDialog = false
          this.submitted = true
        },
-       findIndexById (id) {
-           let index = -1
-           for (let i = 0; i < this.$store.state.networks.length; i++) {
-               if (this.$store.state.networks[i].id === id) {
-                 index = i
-                   break
-               }
-           }
-           return index
-         },
-       goToNetwork (network) {
-         this.network = { ...network }
-         this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + network.name, life: 3000 })
+       goToNetwork (event) {
+         console.log({ ...event.data })
+         this.setNetwork({ ...event.data })
+         this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
          this.$router.push({ name: 'networkdetails', params: { id: this.selectedNetworks.id } })
        }
      }
  }
+      //  async removeNetwork (network) {
+      //    this.deleteNetworkDialog = false
+      //    this.deleteNetwork({ id: network.id })
+      //    // this.network = {}
+      //    this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
+      //  },
+
+            //  deleteNetwork () {
+      //    this.deleteNetworkDialog = true
+      //    this.$store.state.networks = this.$store.state.networks.filter(val => val.id !== this.network.id)
+      //    this.network = {}
+      //    this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
+      //  },
+
+          //  if (this.network.id) {
+          //    this.$store.state.networks[this.findIndexById(this.network.id)] = this.network
+          //    this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network updated', life: 3000 })
+          //  } else {
+
+      //  findIndexById (id) {
+      //      let index = -1
+      //      for (let i = 0; i < this.$store.state.networks.length; i++) {
+      //          if (this.$store.state.networks[i].id === id) {
+      //            index = i
+      //              break
+      //          }
+      //      }
+        //    return index
+        //  },
  </script>
