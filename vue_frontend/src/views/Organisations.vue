@@ -9,7 +9,7 @@
 
                 <template #header>
                     <div class="table-header p-d-flex p-jc-between p-ai-center">
-                        <Button label="New" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreateOrganisationDialog" />
+                        <Button label="Create Organisation" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreateOrganisationDialog" />
                         <span class="p-input-icon-left">
                             <i class="pi pi-search" />
                             <InputText v-model="filters['global']" placeholder="Search..." />

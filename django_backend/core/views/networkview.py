@@ -27,6 +27,21 @@ class NetworkViewSet(viewsets.ModelViewSet):
             serializer.save(created_by=creator)
         return Response(serializer.data)
 
+    def partial_update(self, request, *args, **kwargs):
+        print(request)
+        network_object = get_object_or_404(Network, pk=self.get_object().id)
+        data = request.data
+        try: 
+            organisation = Organisation.objects.get(id=data['id'])
+            if network_object.organisations.filter(pk=organisation.pk).exists():
+                network_object.organisations.remove(organisation)
+            else:
+                network_object.organisations.add(organisation)
+        except KeyError:
+            pass
+        network_object.save()
+        serializer = NetworkSerializer(network_object)
+        return Response(serializer.data)
 
 # Get all the organisations of a network
 class NetworkOrganisationsViewSet(viewsets.ModelViewSet):

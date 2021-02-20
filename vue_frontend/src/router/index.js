@@ -79,6 +79,14 @@ const routes = [
     meta: {
       requiresLogin: true
     }
+  },
+  {
+    path: '/methods/edit/:id',
+    name: 'methoddetails',
+    component: () => import('../views/MethodDetails.vue'),
+    meta: {
+      requiresLogin: true
+    }
   }
 ]
 

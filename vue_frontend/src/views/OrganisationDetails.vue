@@ -13,7 +13,7 @@
             </div>
             <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
                  <p>{{ organisation.creator }}</p>
-                <Button label="Edit Organisation" icon="pi pi-user-plus" class="p-button-success p-mr-2"></Button>
+                <Button label="Edit Organisation" icon="pi pi-user-plus" class="p-button-success p-mr-2" @click="editOrganisationDialog = true"/>
                 <Button label="Delete Organisation" icon="pi pi-trash" class="p-button-danger" @click="confirmDeletion" />
             </div>
         </div>
@@ -60,7 +60,7 @@
         </div>
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialogs"/>
-            <Button label="Save" icon="pi pi-check" class="p-button-text" @click="editOrganisation" :disabled="!Organisation.name" />
+            <Button label="Save" icon="pi pi-check" class="p-button-text" @click="editOrganisation" :disabled="!organisation.name" />
         </template>
     </Dialog>
 
@@ -112,7 +112,7 @@ export default {
             // await this.fetchOrganisationParticipants(this.organisation?.id || 0)
         },
         async editOrganisation () {
-            this.editOrganisationDialog = true
+            this.editOrganisationDialog = false
             await this.updateOrganisation({})
             this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Updated', life: 3000 })
         },

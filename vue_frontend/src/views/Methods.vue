@@ -1,15 +1,69 @@
 <template>
-    <div>
-        <!-- <h1>
+    <div class="methods">
+        <h1>Methods Overview</h1>
+        <Toast position="top-right"/>
+        <div class="card p-m-5 p-shadow-2">
+            <DataTable ref="dt" :value="methods" v-model:selection="selectedMethods" selectionMode="single" dataKey="id" @row-select="goToMethod"
+            :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
+
+            <Toolbar>
+                <template #left>
+                    <Button label="Create Method" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreateMethodDialog" />
+                    <Button label="Import YAML" icon="pi pi-upload" class="p-button-success" disabled='true' />
+                </template>
+
+                <template #right>
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search" />
+                                <InputText v-model="filters['global']" placeholder="Search..." />
+                            </span>
+                </template>
+            </Toolbar>
+
+              <Column field="ispublic" header="Public" :sortable="true"></Column>
+              <Column field="name" header="Name" :sortable="true"></Column>
+              <Column field="description" header="Description" :sortable="true"></Column>
+              <Column field="organisations.length" header="Organisations" :sortable="true"></Column>
+              <Column field="" header="Created by" :sortable="true"></Column> <!-- Created_by attribute needs to be added to the Method model -->
+            </DataTable>
+        </div>
+    </div>
+
+    <Dialog v-model:visible="methodDialog" :style="{width: '450px'}" header="Method Details" :modal="true" class="p-fluid">
+        <div class="p-field">
+            <label for="name">Name</label>
+            <InputText id="name" v-model.trim="method.name" required="true" autofocus :class="{'p-invalid': submitted && !method.name}"
+            @blur="updateMethodForm({ name: $event.target.value })" />
+            <small class="p-error" v-if="submitted && !method.name">Name is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="description">Description</label>
+            <Textarea id="description" v-model="method.description" required="true" rows="3" cols="20"
+            @blur="updateMethodForm({ description: $event.target.value })" />
+        </div>
+        <div class="p-field">
+            <label for="ispublic">Should this method be public? </label>
+            <SelectButton id="ispublic" v-model="method.ispublic" required="true" :options="ispublicbool"
+            @blur="updateMethodForm({ ispublic: $event.target.value })" />
+        </div>
+        <template #footer>
+            <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
+            <Button label="Save" icon="pi pi-check" class="p-button-text" @click="saveMethod" :disabled="!method.name" />
+        </template>
+    </Dialog>
+
+    <!-- <div>
+        <h1>
         to do:
-        -List of Methods (just like Network and Organisations)
-        </h1> -->
+        -List of Methods (just like Method and Organisations)
+        </h1>
     </div>
     <div style="margin: 0px 50px">
          <h1>Manage Methods</h1>
         <div class="p-grid">
             <div v-for="organisation in APIData" :key="organisation.id"  class="p-col-4">
-                <!-- <div v-if="organisation.ispublic"> -->
+                <div v-if="organisation.ispublic">
                 <Card style="margin-bottom: 2em" class="p-shadow-5">
                     <template #title>
                         {{ organisation.name }}
@@ -26,50 +80,58 @@
                         </div>
                     </template>
                 </Card>
-                <!-- </div>
-                <div v-else>Private Post</div> -->
+                </div>
+                <div v-else>Private Post</div>
             </div>
         </div>
-    </div>
+    </div> -->
 </template>
 
 <script>
-import { AxiosInstance } from '../plugins/axios'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
-    name: 'Organisations',
-    onIdle () {
-      this.$store.dispatch('userLogout')
-        .then(() => {
-          this.$router.push({ name: 'login' })
-        })
-    },
+    // onIdle () {
+    //   this.$store.dispatch('userLogout')
+    //     .then(() => {
+    //       this.$router.push({ name: 'login' })
+    //     })
+    // },
     data () {
         return {
+            filters: {},
+            ispublicbool: ['true', 'false'],
+            methodDialog: false,
+            submitted: false
         }
     },
-    components: {
+    computed: {
+        ...mapState('method', ['methods', 'method'])
     },
-    computed: mapState(['APIData']),
     created () {
-        AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-          .then(response => {
-            this.$store.state.APIData = response.data
-          })
-          .catch(err => {
-            console.log(err)
-          })
+        this.initialize()
+    },
+    methods: {
+        ...mapActions('method', ['fetchMethods', 'setMethod', 'createMethod', 'updateMethodForm']),
+        async initialize () {
+            await this.fetchMethods({})
+        },
+        async openCreateMethodDialog () {
+            this.setMethod({})
+            this.methodDialog = true
+            this.submitted = true
+        },
+        saveMethod () {
+            this.submitted = true
+            if (this.method.name.trim()) {
+                this.createMethod({})
+                this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Method created', life: 3000 })
+            }
+            this.methodDialog = true
+        },
+        goToMethod (event) {
+            this.$router.push({ name: 'methoddetails', params: { id: this.method.id } })
+        }
     }
 }
-//         ('/posts/')
-//             .then(response => {
-//                 console.log('Post API has received data')
-//                 this.APIData = response.data
-//             })
-//             .catch(err => {
-//                 console.log(err)
-//             })
-//     }
-// }
 </script>

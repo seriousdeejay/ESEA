@@ -1,6 +1,6 @@
 <template>
     <div class="card p-mx-5">
-          <h1>{{ network.name }} - created by {{ network.created_by }}</h1>
+          <h1>{{ network.name }} - created by {{ network.created_by.username }}</h1>
         <div class="p-grid">
             <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
                 <div class="p-fluid">
@@ -12,8 +12,8 @@
                 </Divider>
             </div>
             <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
-                 <p>{{ network.created_by }}</p>
-                <Button label="Edit Network" icon="pi pi-user-plus" class="p-button-success p-mr-2"></Button>
+                 <p>{{ network.created_by.username }}</p>
+                <Button label="Edit Network" icon="pi pi-user-plus" class="p-button-success p-mr-2" @click="editNetworkDialog = true" />
                 <Button label="Delete Network" icon="pi pi-trash" class="p-button-danger" @click="confirmDeletion" />
             </div>
         </div>
@@ -27,7 +27,7 @@
             <h1>Members</h1>
             <Toolbar>
                 <template #left>
-                    <Button label="Invite" icon="pi pi-plus" class="p-button-success p-mr-2" @click="nothingyet" />
+                    <Button label="Invite" icon="pi pi-plus" class="p-button-success p-mr-2" @click="inviteOrganisation" />
                     <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="nothingyet" :disabled="!selectedProducts || !selectedProducts.length" />
                 </template>
 
@@ -86,6 +86,7 @@ import { mapState, mapActions } from 'vuex'
 export default {
     data () {
         return {
+            dataTable: this.networkorganisations,
             editNetworkDialog: false,
             deleteNetworkDialog: false,
             selectedOrganisations: null, // might be removable
@@ -94,7 +95,8 @@ export default {
         }
     },
     computed: {
-        ...mapState('network', ['network', 'networkorganisations'])
+        ...mapState('network', ['network', 'networkorganisations']),
+        ...mapState('organisation', ['organisations'])
     },
     created () {
         this.initialize()
@@ -106,7 +108,7 @@ export default {
             await this.fetchNetworkOrganisations(this.network?.id || 0)
         },
         async editNetwork () {
-            this.editNetworkDialog = true
+            this.editNetworkDialog = false
             await this.updateNetwork({})
             this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Network Updated', life: 3000 })
         },
@@ -118,6 +120,9 @@ export default {
             await this.deleteNetwork({ id: this.network?.id || 0 })
             this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
              this.$router.push({ name: 'networks' })
+        },
+        inviteOrganisation () {
+            this.datatable = this.organisations
         },
         hideDialogs () {
             this.editNetworkDialog = false

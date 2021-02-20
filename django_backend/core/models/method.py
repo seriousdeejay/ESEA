@@ -1,5 +1,5 @@
 from django.db import models
-
+from .customuser import CustomUser
 
 class Method(models.Model):
     ispublic = models.BooleanField(default=True)

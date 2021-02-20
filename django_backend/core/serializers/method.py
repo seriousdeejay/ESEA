@@ -3,5 +3,6 @@ from ..models import Method
 
 
 class MethodSerializer(serializers.ModelSerializer):
-    model = Method
-    fields = '__all__'
+    class Meta:
+        model = Method
+        fields = '__all__'

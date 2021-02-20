@@ -9,7 +9,7 @@
 
               <template #header>
                 <div class="table-header p-d-flex p-jc-between p-ai-center">
-                  <Button label="New" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreateNetworkDialog" />
+                  <Button label="Create Network" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreateNetworkDialog" />
                   <span class="p-input-icon-left">
                     <i class="pi pi-search" />
                     <InputText v-model="filters['global']" placeholder="Search..." />
@@ -21,7 +21,7 @@
               <Column field="name" header="Name" :sortable="true"></Column>
               <Column field="description" header="Description" :sortable="true"></Column>
               <Column field="organisations.length" header="Organisations" :sortable="true"></Column>
-              <Column field="created_by" header="Created by" :sortable="true"></Column>
+              <Column field="created_by.username" header="Created by" :sortable="true"></Column>
             </DataTable>
         </div>
     </div>
@@ -92,7 +92,7 @@
        },
        hideDialog () {
          this.networkDialog = false
-         this.submitted = true
+         // this.submitted = false
        },
        goToNetwork (event) {
          console.log({ ...event.data })
