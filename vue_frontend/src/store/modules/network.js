@@ -4,11 +4,6 @@ import axios from 'axios'
 // import { AxiosInstance } from '../../plugins/axios'
 // import { getRequestData } from '../../utils/helpers'
 
-// const baseNetwork = {
-// 	name: 'TestNetwork',
-// 	description: 'Network for testing purposes'
-// }
-
 //  var config = { headers: { 'Authorization': 'Bearer ' +this.accessToken }
 // axios({ method: 'get', url: 'http://localhost:8000/networks/', headers: { Authorization: 'Bearer ' + this.accessToken } })
 // axios.get('http://localhost:8000/networks/', config)
@@ -41,7 +36,6 @@ export default {
         },
         setNetwork (state, { data }) {
             state.network = data || {}
-            console.log(data)
         },
         addNetworkToList (state, { data }) {
             state.networks.push(data)
@@ -57,7 +51,6 @@ export default {
         },
         setNetworkOrganisations (state, { data }) {
             state.networkorganisations = data || {}
-            console.log(data)
         },
         setError (state, { error }) {
             state.error = error
@@ -76,7 +69,7 @@ export default {
     },
     actions: {
         async fetchNetworks ({ commit }, payload) {
-            const { response, error } = await NetworkService.get(payload) // How can i import id as payload?
+            const { response, error } = await NetworkService.get(payload)
             if (error) {
 				commit('setError', { error })
                 return
@@ -98,10 +91,6 @@ export default {
             console.log(response)
             commit('setNetworkOrganisations', response)
         },
-        // async createNetwork ({ state, commit }, network) {
-        //     console.log(network)
-        //     commit('setNetwork', network)
-        // },
         async createNetwork ({ state, commit }) {
             const data = state.form // getRequestData(state.form)
             const { response, error } = await NetworkService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } })
@@ -145,9 +134,6 @@ export default {
             // if (!data) {
             //     [data] = state.networks
             // }
-        },
-        addNetworkToList (state, { data }) {
-			state.organizations.push(data)
         },
         updateNetworkForm ({ commit }, payload) {
 			commit('updateNetworkForm', payload)

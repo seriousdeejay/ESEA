@@ -20,20 +20,15 @@
     </div>
 
     <div class="card p-m-5 p-shadow-2">
-    <!-- <Toolbar class="p-mb-4">
-        <template #left>
-            <Button label="New" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openNew" />
-            <Button label="Delete" icon="pi pi-trash" class="p-button-danger" @click="confirmDeleteSelected" :disabled="!selectedOrganisations || !selectedOrganisations.length" />
-        </template>
-        </Toolbar> -->
         <DataTable ref="dt" :value="networkorganisations" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id"
         :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
+
             <h1>Members</h1>
             <Toolbar>
                 <template #left>
-                    <Button label="Invite" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openNew" />
-                    <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="confirmDeleteSelected" :disabled="!selectedProducts || !selectedProducts.length" />
+                    <Button label="Invite" icon="pi pi-plus" class="p-button-success p-mr-2" @click="nothingyet" />
+                    <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="nothingyet" :disabled="!selectedProducts || !selectedProducts.length" />
                 </template>
 
                 <template #right>
@@ -43,6 +38,7 @@
                     </span>
                 </template>
             </Toolbar>
+
             <Column field="ispublic" header="Public" :sortable="true"></Column>
             <Column field="name" header="Name" :sortable="true"></Column>
             <Column field="description" header="Description" :sortable="true"></Column>
@@ -51,7 +47,7 @@
         </DataTable>
     </div>
 
-    <Dialog v-model:visible="networkEditDialog" :style="{width: '450px'}" header="Network Details" :modal="true" class="p-fluid">
+    <Dialog v-model:visible="editNetworkDialog" :style="{width: '450px'}" header="Network Details" :modal="true" class="p-fluid">
         <div class="p-field">
             <label for="name">Name</label>
             <InputText id="name" v-model.trim="network.name" required="true" autofocus :class="{'p-invalid': submitted && !network.name}" />
@@ -92,7 +88,7 @@ export default {
         return {
             editNetworkDialog: false,
             deleteNetworkDialog: false,
-            selectedOrganisations: null,
+            selectedOrganisations: null, // might be removable
             filters: {},
             submitted: false
         }
@@ -112,6 +108,10 @@ export default {
         async editNetwork () {
             this.editNetworkDialog = true
             await this.updateNetwork({})
+            this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Network Updated', life: 3000 })
+        },
+        confirmDeletion () {
+            this.deleteNetworkDialog = true
         },
         async removeNetwork () {
             this.deleteNetworkDialog = false
@@ -119,14 +119,10 @@ export default {
             this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
              this.$router.push({ name: 'networks' })
         },
-        confirmDeletion () {
-            this.deleteNetworkDialog = true
-        },
         hideDialogs () {
             this.editNetworkDialog = false
             this.deleteNetworkDialog = false
         }
-
     }
 }
 </script>

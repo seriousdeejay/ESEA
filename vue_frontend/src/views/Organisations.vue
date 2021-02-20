@@ -1,31 +1,27 @@
 <template>
     <div class="organisations">
-        <h1>Manage Organisations</h1>
+        <h1>Organisations Overview</h1>
         <Toast position="top-right"/>
         <div class="card p-m-5 p-shadow-2">
             <DataTable ref="dt" :value="organisations" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id" @row-select="goToOrganisation"
             :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
+
                 <template #header>
                     <div class="table-header p-d-flex p-jc-between p-ai-center">
-                        <Button label="New" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openNew" />
+                        <Button label="New" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreateOrganisationDialog" />
                         <span class="p-input-icon-left">
                             <i class="pi pi-search" />
                             <InputText v-model="filters['global']" placeholder="Search..." />
                         </span>
                     </div>
                 </template>
+
                 <Column field="ispublic" header="Public" :sortable="true"></Column>
                 <Column field="name" header="Name" :sortable="true"></Column>
                 <Column field="description" header="Description" :sortable="true"></Column>
                 <Column field="participants.length" header="Participants" :sortable="true"></Column>
-                <Column field="creator" header="Created by" :sortable="true"></Column>
-                <Column :exportable="false">
-                    <template #body="slotProps">
-                        <Button icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" @click="editOrganisation(slotProps.data)" />
-                        <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="confirmDeleteOrganisation(slotProps.data)" />
-                    </template>
-                </Column>
+                <Column field="creator" header="Created by" :sortable="true"></Column> <!-- creator instead of created_by attribute! -->
             </DataTable>
         </div>
     </div>
@@ -33,16 +29,19 @@
     <Dialog v-model:visible="organisationDialog" :style="{width: '450px'}" header="Organisation Details" :modal="true" class="p-fluid">
         <div class="p-field">
             <label for="name">Name</label>
-            <InputText id="name" v-model.trim="organisation.name" required="true" autofocus :class="{'p-invalid': submitted && !organisation.name}" />
+            <InputText id="name" v-model.trim="organisation.name" required="true" autofocus :class="{'p-invalid': submitted && !organisation.name}"
+            @blur="updateOrganisationForm({ name: $event.target.value })" />
             <small class="p-error" v-if="submitted && !organisation.name">Name is required.</small>
         </div>
         <div class="p-field">
             <label for="description">Description</label>
-            <Textarea id="description" v-model="organisation.description" required="true" rows="3" cols="20" />
+            <Textarea id="description" v-model="organisation.description" required="true" rows="3" cols="20"
+            @blur="updateOrganisationForm({ description: $event.target.value })" />
         </div>
         <div class="p-field">
             <label for="ispublic">Should this organisation be public? </label>
-            <SelectButton id="ispublic" v-model="organisation.ispublic" :options="ispublicbool" />
+            <SelectButton id="ispublic" v-model="organisation.ispublic" required="true" :options="ispublicbool"
+            @blur="updateOrganisationForm({ ispublic: $event.target.value })" />
         </div>
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
@@ -76,14 +75,14 @@
 <script>
 // import { AxiosInstance } from '../plugins/axios'
 import { mapState, mapActions } from 'vuex'
-import { useToast } from 'primevue/usetoast'
+// import { useToast } from 'primevue/usetoast'
 
 export default {
      setup () {
-         const toast = useToast()
+         // const toast = useToast()
 
          const succesmessage = () => {
-             toast.add(({ severity: 'success', summary: 'Successful', detail: 'Message Content', life: 3000 }))
+             this.$toast.add(({ severity: 'success', summary: 'Successful', detail: 'Message Content', life: 3000 }))
          }
          return {
              succesmessage
@@ -91,22 +90,93 @@ export default {
      },
     data () {
         return {
-            selectedOrganisations: null,
-            // organisation: {},
-            ispublicbool: ['true', 'false'
-            ],
-            organisationDialog: false,
-            deleteOrganisationDialog: false,
-             deleteOrganisationsDialog: false,
             filters: {},
+            ispublicbool: ['true', 'false'],
+            organisationDialog: false,
             submitted: false
         }
     },
     computed: {
-        ...mapState('organisation', ['organisations'])
+        ...mapState('organisation', ['organisations', 'organisation'])
     },
     created () {
         this.initialize()
+    },
+    methods: {
+        ...mapActions('organisation', ['fetchOrganisations', 'setOrganisation', 'createOrganisation', 'updateOrganisationForm']),
+        async initialize () {
+            await this.fetchOrganisations({})
+        },
+        async openCreateOrganisationDialog () {
+            this.setOrganisation({})
+            this.submitted = false
+            this.organisationDialog = true
+        },
+        saveOrganisation () {
+            this.submitted = true
+            if (this.organisation.name.trim()) {
+                this.createOrganisation({})
+                this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Created', life: 3000 })
+            this.organisationDialog = false
+            }
+        },
+        hideDialog () {
+            this.organisationDialog = false
+            this.submitted = true
+         },
+
+        goToOrganisation (event) {
+            this.setOrganisation({ ...event.data })
+            console.log({ ...event.data })
+            this.$toast.add({ severity: 'info', summary: 'Organisation Selected', detail: 'Name: ' + event.name, life: 3000 })
+            this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+        }
+    }
+}
+        //  findIndexById (id) {
+        //      let index = -1
+        //      for (let i = 0; i < this.$store.state.organisations.length; i++) {
+        //          if (this.$store.state.organisations[i].id === id) {
+        //              index = i
+        //              break
+        //          }
+        //      }
+        //      return index
+        // },
+
+        // async removeOrganisation (organisation) {
+        //     this.deleteOrganisationDialog = false
+        //     this.deleteOrganisation({ id: organisation.id })
+        //     // this.organisation = {}
+        //     this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Deleted', life: 3000 })
+        // },
+        //   confirmDeleteSelected () {
+        //       this.deleteOrganisationsDialog = true
+        //   },
+        //  confirmDeleteOrganisation (organisation) {
+        //      this.organisation = organisation
+        //      this.deleteOrganisationDialog = true
+        //  },
+        //  editOrganisation (organisation) {
+        //      this.organisation = { ...organisation }
+        //      this.organisationDialog = true
+        //  },
+        // deleteSelectedOrganisations () {
+        //     this.$store.state.organisations = this.$store.state.organisations.filter(val => !this.selectedOrganisations.includes(val))
+        //     this.deleteOrganisationsDialog = false
+        //     this.selectedOrganisations = null
+        //     this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisations removed', life: 3000 })
+        // },
+        //  deleteOrganisation () {
+        //      this.$store.state.organisations = this.$store.state.organisations.filter(val => val.id !== this.organisation.id)
+        //      this.organisation = {}
+        //      this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Deleted', life: 3000 })
+        //  },
+
+                // if (this.organisation.id) {
+                //      this.$store.state.organisations[this.findIndexById(this.organisation.id)] = this.organisation
+
+                //  } else {
         // AxiosInstance.get('/organisations/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
         //   .then(response => {
         //     this.$store.state.organisations = response.data
@@ -114,78 +184,4 @@ export default {
         //   .catch(err => {
         //     console.log(err)
         //   })
-    },
-    methods: {
-        ...mapActions('organisation', ['fetchOrganisations', 'deleteOrganisation']),
-        async initialize () {
-            await this.fetchOrganisations({})
-        },
-        async removeOrganisation (organisation) {
-            this.deleteOrganisationDialog = false
-            this.deleteOrganisation({ id: organisation.id })
-            // this.organisation = {}
-            this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Deleted', life: 3000 })
-        },
-         openNew () {
-             this.organisation = {}
-             this.submitted = false
-             this.organisationDialog = true
-         },
-          confirmDeleteSelected () {
-              this.deleteOrganisationsDialog = true
-          },
-         confirmDeleteOrganisation (organisation) {
-             this.organisation = organisation
-             this.deleteOrganisationDialog = true
-         },
-         editOrganisation (organisation) {
-             this.organisation = { ...organisation }
-             this.organisationDialog = true
-         },
-          deleteSelectedOrganisations () {
-              this.$store.state.organisations = this.$store.state.organisations.filter(val => !this.selectedOrganisations.includes(val))
-              this.deleteOrganisationsDialog = false
-              this.selectedOrganisations = null
-              this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisations removed', life: 3000 })
-          },
-        //  deleteOrganisation () {
-        //      this.$store.state.organisations = this.$store.state.organisations.filter(val => val.id !== this.organisation.id)
-        //      this.organisation = {}
-        //      this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Deleted', life: 3000 })
-        //  },
-         hideDialog () {
-             this.organisationDialog = false
-             this.submitted = true
-         },
-         saveOrganisation (organisation) {
-             this.submitted = true
-             if (this.organisation.name.trim()) {
-                 if (this.organisation.id) {
-                     this.$store.state.organisations[this.findIndexById(this.organisation.id)] = this.organisation
-                     this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Updated', life: 3000 })
-                 } else {
-                 this.$store.state.organisations.push(this.organisation)
-                 this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Created', life: 3000 })
-                 }
-             this.organisationDialog = false
-             this.organisation = {}
-             }
-         },
-         findIndexById (id) {
-             let index = -1
-             for (let i = 0; i < this.$store.state.organisations.length; i++) {
-                 if (this.$store.state.organisations[i].id === id) {
-                     index = i
-                     break
-                 }
-             }
-             return index
-        },
-        goToOrganisation (organisation) {
-            this.organisation = { ...organisation }
-            this.$toast.add({ severity: 'info', summary: 'Organisation Selected', detail: 'Name: ' + organisation.name, life: 3000 })
-            this.$router.push({ name: 'organisationdetails', params: { id: this.selectedOrganisations.id } })
-        }
-    }
-}
 </script>

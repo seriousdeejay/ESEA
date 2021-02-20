@@ -10,10 +10,8 @@ class Organisation(models.Model):
     description = models.TextField(max_length=1000)
     # image = models.ImageField(blank=True, upload_to="organisation/", default="organisation/default.png")
     creator = models.ForeignKey('CustomUser', null=True, blank=True, default= None, editable=False, related_name='organisation_creator', on_delete=models.SET_DEFAULT) # change to foreignkey
-    participants = models.ManyToManyField(to='CustomUser', through='UserOrganisation', related_name='accessible_organisations')
-    title = models.CharField(max_length=250)
-    content = models.TextField()
-    
+    participants = models.ManyToManyField(to='CustomUser', through='UserOrganisation', related_name='accessible_organisations', blank=True)
+
 
     class Meta:
         verbose_name = _('organisation')

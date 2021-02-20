@@ -3,6 +3,7 @@ from rest_framework.response import Response
 # from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 from ..models import Organisation, CustomUser
 from ..serializers import OrganisationSerializer, UserSerializer
@@ -13,12 +14,20 @@ class OrganisationViewSet(viewsets.ModelViewSet):
     serializer_class = OrganisationSerializer
    
     def get_queryset(self): # First query on localhost/organisations
+        print(self.request.user)
         if self.request.user.is_authenticated:
             user = self.request.user
             print(self.request.user)
             return Organisation.objects.filter(Q(creator=user) | Q(ispublic = True))
         # return Organisation.objects.all()
     
+    # Need to put perform_create on the userorganisation model
+    def perform_create(self, serializer):
+        creator = get_object_or_404(CustomUser, pk=self.request.user.id)
+        serializer = OrganisationSerializer(data=self.request.data)
+        if serializer.is_valid():
+            serializer.save(creator=creator, participants=creator)
+        return Response(serializer.data)
 
 # Get all the participants of an organisation
 class OrganisationParticipantsViewSet(viewsets.ModelViewSet):

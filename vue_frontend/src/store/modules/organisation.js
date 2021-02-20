@@ -1,20 +1,20 @@
-// const baseOrganisation = {
-//     ispublic: true,
-//     name: '',
-//     description: '',
-// }
-
-// import OrganisationService from "../../services/OrganisationService"
 // import { AxiosInstance } from '../../plugins/axios'
 // import TestService from '../../services/TestService'
 import OrganisationService from '../../services/OrganisationService'
-import { getRequestData } from '../../utils/helpers'
+// import { getRequestData } from '../../utils/helpers'
 
 export default {
     namespaced: true,
     state: {
         organisations: [], // { name: '1' }, { name: '2' }, { name: '3' }
         organisation: {},
+        form: {
+            name: 'Network N',
+            description: 'Description of Network N',
+            ispublic: true,
+            participants: [
+            ]
+        },
         error: []
     },
     mutations: {
@@ -24,6 +24,7 @@ export default {
         },
         setOrganisation (state, { data }) {
             state.organisation = data || {}
+            console.log(state.organisation)
         },
         addOrganisationToList (state, { data }) {
             state.organisations.push(data)
@@ -39,6 +40,9 @@ export default {
         },
         setError (state, { error }) {
             state.error = error
+        },
+        updateOrganisationForm (state, data) {
+            state.form = { ...state.form, ...data }
         }
     },
     actions: {
@@ -50,17 +54,33 @@ export default {
             }
             commit('setOrganisations', response)
         },
+        async fetchOrganisation ({ commit }, payload) {
+            const { response, error } = await OrganisationService.get(payload)
+            if (error) {
+                commit('setError', { error })
+                return
+            }
+            commit('setOrganisation', response)
+        },
         async createOrganisation ({ state, commit }) {
-            const data = getRequestData(state.form)
+            const data = state.form // getRequestData(state.form)
             const { response, error } = await OrganisationService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
-            commit('addOrganisationinToList', response)
+            commit('addOrganisationToList', response)
             commit('setOrganisation', response)
         },
         async updateOrganisation ({ state, commit }) {
+            const id = state.organisation.id
+            const data = state.organisation
+            const { response, error } = await OrganisationService.put({ id, data, headers: { 'Content-Type': 'multipart/form-data' } })
+            if (error) {
+                commit('setError', { error })
+                return
+            }
+            commit('updateOrganisation', { response })
         },
         async deleteOrganisation ({ commit, dispatch }, payload) {
             const { error } = await OrganisationService.delete(payload)
@@ -72,15 +92,20 @@ export default {
             dispatch('setOrganisation', {})
         },
         setOrganisation ({ state, commit }, { id }) {
-            let data = state.organisations.find(o => o.id === id)
-            if (!data) {
-                [data] = state.organisations
-            commit('setOrganisation', { data })
+            console.log(id)
+            if (id) {
+                const data = state.organisations.find(o => o.id === id)
+                commit('setOrganisation', { data })
+            } else {
+                commit('setOrganisation', {})
             }
         },
-        resetError ({ commit }) {
-            commit('setError', { error: undefined })
+        updateOrganisationForm ({ commit }, payload) {
+            commit('updateOrganisationForm', payload)
         }
+        // resetError ({ commit }) {
+        //     commit('setError', { error: undefined })
+        // }
         // }
         // async fetchOrganisations({ commit }, payload) {
         //     const { response, error } =  AxiosInstance.get(`http://127.0.0.1:8000/organisations/${this.$route.params.id}/`)

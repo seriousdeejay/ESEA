@@ -1,6 +1,6 @@
 <template>
     <div class="networks">
-        <h1>Manage Networks</h1>
+        <h1>Networks Overview</h1>
         <Toast position="top-right"/>
         <div class="card p-m-5 p-shadow-2">
             <DataTable ref="dt" :value="networks" v-model:selection="selectedNetworks" selectionMode="single" dataKey="id" @row-select="goToNetwork"
@@ -82,22 +82,13 @@
          this.submitted = false
          this.networkDialog = true
        },
-       editNetwork (network) {
-         this.network = { ...network }
-         this.networkDialog = true
-       },
-       confirmDeleteNetwork (network) {
-         this.network = network
-         this.deleteNetworkDialog = true
-       },
        saveNetwork () {
          this.submitted = true
          if (this.network.name.trim()) {
              this.createNetwork({})
              this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network created', life: 3000 })
-           }
          this.networkDialog = false
-         this.network = {}
+         }
        },
        hideDialog () {
          this.networkDialog = false
@@ -107,10 +98,19 @@
          console.log({ ...event.data })
          this.setNetwork({ ...event.data })
          this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
-         this.$router.push({ name: 'networkdetails', params: { id: this.selectedNetworks.id } })
+         this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })
        }
      }
  }
+       //  editNetwork (network) {
+      //    this.network = { ...network }
+      //    this.networkDialog = true
+      //  },
+      //  confirmDeleteNetwork (network) {
+      //    this.network = network
+      //    this.deleteNetworkDialog = true
+      //  },
+
       //  async removeNetwork (network) {
       //    this.deleteNetworkDialog = false
       //    this.deleteNetwork({ id: network.id })
