@@ -21,6 +21,11 @@ export default class BaseApiService {
         return apiCall({ method: 'put', url, data: payload.data })
     }
 
+    patch (payload) {
+        const url = this.createUrl(payload)
+        return apiCall({ method: 'patch', url, data: payload.data })
+    }
+
     delete (payload) {
         const url = this.createUrl(payload)
         return apiCall({ method: 'delete', url })

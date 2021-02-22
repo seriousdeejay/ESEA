@@ -1,6 +1,7 @@
 import NetworkService from '../../services/NetworkService'
 import { mapState } from 'vuex'
 import axios from 'axios'
+// import axios from 'axios'
 // import { AxiosInstance } from '../../plugins/axios'
 // import { getRequestData } from '../../utils/helpers'
 
@@ -21,6 +22,7 @@ export default {
         networks: [],
         network: {},
         networkorganisations: [],
+        networkparticipants: [],
         form: {
             name: 'Network N',
             description: 'Description of Network N',
@@ -50,7 +52,15 @@ export default {
             state.networks = state.networks.filter(n => n.id !== id)
         },
         setNetworkOrganisations (state, { data }) {
-            state.networkorganisations = data || {}
+            console.log(data)
+            state.networkorganisations = data.organisations || {}
+        },
+        setNetworkUsers (state, { data }) {
+            console.log(data)
+            state.networkparticipants = data || {}
+        },
+        deleteNetworkOrganisations (state, { id }) {
+            state.networkorganisations = state.networkorganisations.filter(o => o.id !== id)
         },
         setError (state, { error }) {
             state.error = error
@@ -74,6 +84,8 @@ export default {
 				commit('setError', { error })
                 return
             }
+            // response.data.forEach(item => console.log(item.organisations))
+            // console.log(response.data[all nested dicts].organisations)
             commit('setNetworks', response)
         },
         async fetchNetwork ({ commit }, payload) {
@@ -82,15 +94,21 @@ export default {
                 commit('setError', { error })
                 return
             }
+            console.log(response.data.organisations)
             commit('setNetwork', response)
-        },
-        async fetchNetworkOrganisations ({ commit, state, getters }, payload) {
-            console.log(getters.AuthenticationToken)
-            var config = { headers: { Authorization: 'Bearer ' + getters.AuthenticationToken } }
-            const response = await axios.get(`http://localhost:8000/networkorganisations/${payload}/`, config)
-            console.log(response)
             commit('setNetworkOrganisations', response)
         },
+        async fetchNetworkUsers ({ commit, getters }, payload) {
+            var config = { headers: { Authorization: 'Bearer ' + getters.AuthenticationToken } }
+            const response = await axios.get(`http://localhost:8000/users/?network=${payload.id}`, config)
+            commit('setNetworkUsers', response)
+        },
+        // async fetchNetworkOrganisations ({ commit, state, getters }, payload) {
+        //     console.log(getters.AuthenticationToken)
+        //     var config = { headers: { Authorization: 'Bearer ' + getters.AuthenticationToken } }
+        //     const response = await axios.get(`http://localhost:8000/networkorganisations/${payload}/`, config)
+        //     commit('setNetworkOrganisations', response)
+        // },
         async createNetwork ({ state, commit }) {
             const data = state.form // getRequestData(state.form)
             const { response, error } = await NetworkService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } })
@@ -123,6 +141,17 @@ export default {
             }
             commit('deleteNetwork', payload)
             dispatch('setNetwork', {})
+        },
+        async deleteNetworkOrganisations ({ state, commit }, payload) {
+            console.log(state.network.id, state.network, payload, payload.data)
+            const id = state.network.id
+            const data = payload.data
+            const { error } = await NetworkService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
+            if (error) {
+                commit('setError', { error })
+                return
+            }
+            commit('deleteNetworkOrganisations', data)
         },
         setNetwork ({ state, commit }, { id }) {
             if (id) {

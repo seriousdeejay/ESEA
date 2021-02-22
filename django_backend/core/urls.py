@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
@@ -6,7 +6,7 @@ from .views import (userview, networkview, organisationview, methodview, topicvi
 
 
 router = DefaultRouter()
-router.register(r'users', userview.UsersViewSet)
+router.register(r'users', userview.UsersViewSet, basename="Users")
 router.register(r'networks', networkview.NetworkViewSet, basename="Networks")
 router.register(r'organisations', organisationview.OrganisationViewSet, basename='Organisations')
 router.register(r'methods', methodview.MethodViewSet, basename='methods')

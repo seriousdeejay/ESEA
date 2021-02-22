@@ -11,9 +11,13 @@ class RegisterUserView(CreateAPIView):
 class UsersViewSet(viewsets.ReadOnlyModelViewSet):
     model = CustomUser
     serializer_class = UserSerializer
-    queryset = CustomUser.objects.all()
 
-
+    def get_queryset(self):
+        network = self.request.GET.get('network', None)
+        if network is not None:
+            return CustomUser.objects.filter(accessible_organisations__network=network).distinct() # Should pass organisation id(s) in order to serve the participants of said organisation(s)
+        return CustomUser.objects.all()
+        
 # May be removed if there are no errors
 # from django.shortcuts import render
 # from rest_framework.response import Response

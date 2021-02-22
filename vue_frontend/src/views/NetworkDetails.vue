@@ -1,10 +1,12 @@
 <template>
+
     <div class="card p-mx-5">
+
           <h1>{{ network.name }} - created by {{ network.created_by.username }}</h1>
         <div class="p-grid">
             <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
                 <div class="p-fluid">
-                   <p class="p-text-justify">{{ network.description }} - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis mi sit amet faucibus malesuada. Vestibulum fringilla sed dui bibendum laoreet. Donec suscipit sit amet leo et mattis. Aenean mattis tempus turpis a vulputate. Nunc bibendum pulvinar neque, nec mattis nisl tincidunt ut. Nam a quam id justo dictum pulvinar. Sed luctus dictum ligula, id sagittis tellus aliquam id. Vestibulum auctor vestibulum turpis.</p>
+                   <p class="p-text-justify">{{ network.description }} <br> Below you can find a tab with the organisations, methods, surveys, users and reports that are linked to this specific network. </p>
                     </div>
             </div>
             <div class="p-col-2">
@@ -18,17 +20,13 @@
             </div>
         </div>
     </div>
-
-    <div class="card p-m-5 p-shadow-2">
-        <DataTable ref="dt" :value="networkorganisations" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id"
-        :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
-
-            <h1>Members</h1>
+        <TabView>
+        <TabPanel header="Organisations">
             <Toolbar>
                 <template #left>
+                    <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" class="p-mr-2" />
                     <Button label="Invite" icon="pi pi-plus" class="p-button-success p-mr-2" @click="inviteOrganisation" />
-                    <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="nothingyet" :disabled="!selectedProducts || !selectedProducts.length" />
+                    <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="removeOrganisation" :disabled="!selectedOrganisations" />
                 </template>
 
                 <template #right>
@@ -38,14 +36,41 @@
                     </span>
                 </template>
             </Toolbar>
+        <personalised-datatable table-name="organisation" selectionToggle :columns="OrganisationsColumns" :filters="filters" :custom-data="networkorganisations" @item-redirect="goToSelected2"/>
+        </TabPanel>
+        <TabPanel header="Methods">
+            Content II
+        </TabPanel>
+        <TabPanel header="Surveys">
+            Content III
+        </TabPanel>
+        <TabPanel header="Users">
+            <personalised-datatable table-name="Members" selectionToggle :columns="ParticipantsColumns" :custom-data="networkparticipants" @item-redirect="goToSelected2"/>
+        </TabPanel>
+    </TabView>
+    <div class="card p-pt-3 p-shadow-2">
 
+        <!-- <DataTable ref="dt" :value="networkorganisations" v-model:selection="selectedOrganisations" :selectionMode="selectionMode" dataKey="id" @row-select="goToSelected"
+        :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
+
+            <Column selectionMode="multiple" headerStyle="width: 3em"></Column>
             <Column field="ispublic" header="Public" :sortable="true"></Column>
             <Column field="name" header="Name" :sortable="true"></Column>
             <Column field="description" header="Description" :sortable="true"></Column>
             <Column field="participants" header="Participants" :sortable="true"></Column>
             <Column field="creator" header="Created by" :sortable="true"></Column>
-        </DataTable>
+        </DataTable> -->
     </div>
+
+    <!-- <Button label="Long Content" icon="pi pi-external-link" @click="openBasic2" />
+    <Dialog header= "organisations" v-model:visible="listOfOrganisations" :style="{width: '70vw'}">
+        <personalised-datatable v-if="listOfOrganisations" table-name="organisation" :columns="columns" :custom-data="organisations" @item-redirect="goToSelected2"/>
+        <template #footer>
+            <Button label="No" icon="pi pi-times" @click="closeBasic2" class="p-button-text"/>
+            <Button label="Yes" icon="pi pi-check" @click="closeBasic2" autofocus />
+        </template>
+    </Dialog> -->
 
     <Dialog v-model:visible="editNetworkDialog" :style="{width: '450px'}" header="Network Details" :modal="true" class="p-fluid">
         <div class="p-field">
@@ -82,11 +107,30 @@
 <script>
 // import { AxiosInstance } from '../plugins/axios'
 import { mapState, mapActions } from 'vuex'
+// import OrganisationsVue from './Organisations.vue'
+import PersonalisedDatatable from '../components/PersonalisedDatatable'
 
 export default {
+    components: {
+        PersonalisedDatatable
+    },
     data () {
         return {
-            dataTable: this.networkorganisations,
+            OrganisationsColumns: [
+                 { field: 'ispublic', header: 'Public' },
+                 { field: 'name', header: 'Name' },
+                 { field: 'description', header: 'Description' },
+                 { field: 'participants', header: 'Participants' },
+                 { field: 'creator', header: 'Created by' }
+                 ],
+            ParticipantsColumns: [
+                 { field: 'username', header: 'Username' },
+                 { field: 'email', header: 'E-mail' },
+                 { field: 'first_name', header: 'First Name' },
+                 { field: 'last_name_prefix', header: 'Prefix' },
+                 { field: 'last_name', header: 'Last Name' }
+                 ],
+            selectionToggle: false,
             editNetworkDialog: false,
             deleteNetworkDialog: false,
             selectedOrganisations: null, // might be removable
@@ -95,17 +139,19 @@ export default {
         }
     },
     computed: {
-        ...mapState('network', ['network', 'networkorganisations']),
-        ...mapState('organisation', ['organisations'])
+        ...mapState('network', ['network', 'networkorganisations', 'networkparticipants']),
+        ...mapState('organisation', ['organisations', 'organisation'])
     },
     created () {
         this.initialize()
     },
     methods: {
-        ...mapActions('network', ['fetchNetwork', 'fetchNetworkOrganisations', 'updateNetwork', 'deleteNetwork']),
+        ...mapActions('network', ['fetchNetwork', 'fetchNetworkOrganisations', 'fetchNetworkUsers', 'updateNetwork', 'deleteNetwork', 'deleteNetworkOrganisations']),
+        ...mapActions('organisation', ['setOrganisation']),
         async initialize () {
             await this.fetchNetwork({ id: this.network?.id || 0 })
             await this.fetchNetworkOrganisations(this.network?.id || 0)
+            await this.fetchNetworkUsers({ id: this.network?.id || 0 })
         },
         async editNetwork () {
             this.editNetworkDialog = false
@@ -121,13 +167,33 @@ export default {
             this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
              this.$router.push({ name: 'networks' })
         },
+        async removeOrganisation () {
+            await this.deleteNetworkOrganisations({ data: this.selectedOrganisations })
+            this.initialize()
+        },
         inviteOrganisation () {
-            this.datatable = this.organisations
         },
         hideDialogs () {
             this.editNetworkDialog = false
             this.deleteNetworkDialog = false
-        }
+        },
+         goToSelected (event) {
+            console.log({ ...event.data })
+            this.setOrganisation({ ...event.data })
+            this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
+            this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+       },
+        goToSelected2 (selectedRows) {
+            this.setOrganisation({ ...selectedRows })
+            console.log(this.organisation)
+            console.log(this.selectionToggle)
+            // this.$toast.add({ severity: 'info', summary: 'Item Selected', detail: 'Name:', life: 3000 })
+            if (!this.selectionToggle) {
+                this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+            } else {
+                this.selectedOrganisations = selectedRows
+            }
+       }
     }
 }
 </script>
