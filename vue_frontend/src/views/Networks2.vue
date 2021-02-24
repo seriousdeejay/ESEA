@@ -1,6 +1,7 @@
-        <template>
+    <template>
     <h1>Networks Overview</h1>
-    <div class="networks">
+    <!-- <div class="networks">
+        
         <Toast position="top-right"/>
         <div class="card p-m-5 p-shadow-2">
           <Toolbar>
@@ -17,9 +18,31 @@
             </Toolbar>
             <personalised-datatable table-name="networks" selectionToggle :columns="NetworkColumns" :filters="filters"
             :custom-data="networks" @item-redirect="goToNetwork"/>
-        </div>
-    </div>
+            
 
+            <DataTable ref="dt" :value="networks" v-model:selection="selectedNetworks" selectionMode="single" dataKey="id" @row-select="goToNetwork"
+            :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
+
+              <template #header>
+                <div class="table-header p-d-flex p-jc-between p-ai-center">
+                  <Button label="Create Network" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreateNetworkDialog" />
+                  <span class="p-input-icon-left">
+                    <i class="pi pi-search" />
+                    <InputText v-model="filters['global']" placeholder="Search..." />
+                  </span>
+                </div>
+              </template>
+
+              <Column field="ispublic" header="Public" :sortable="true"></Column>
+              <Column field="name" header="Name" :sortable="true"></Column>
+              <Column field="description" header="Description" :sortable="true"></Column>
+              <Column field="organisations.length" header="Organisations" :sortable="true"></Column>
+              <Column field="created_by.username" header="Created by" :sortable="true"></Column>
+            </DataTable>
+        </div>
+    </div> -->
+  
     <Dialog v-model:visible="networkDialog" :style="{width: '450px'}" header="Network Details" :modal="true" class="p-fluid">
         <div class="p-field">
             <label for="name">Name</label>
@@ -34,8 +57,8 @@
         </div>
         <div class="p-field">
             <label for="ispublic">Should this network be public? </label>
-            <SelectButton id="ispublic" v-model="boolChoice" required="true" :options="ispublicbool"
-            @blur="updateNetworkForm({ ispublic: boolChoice })" />
+            <SelectButton id="ispublic" v-model="network.ispublic" required="true" :options="ispublicbool"
+            @blur="updateNetworkForm({ ispublic: false })" />
         </div>
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
@@ -45,15 +68,16 @@
 
 </template>
 
-<script>
-import { mapState, mapActions } from 'vuex'
-import PersonalisedDatatable from '../components/PersonalisedDatatable'
+ <script>
+// Potentially remove @blur if it won't be used
+ import { mapState, mapActions } from 'vuex'
+ import PersonalisedDatatable from '../components/PersonalisedDatatable'
 
-export default {
-        components: {
-        PersonalisedDatatable
-    },
-    data () {
+ export default {
+     components: {
+         PersonalisedDatatable
+     },
+     data () {
         return {
             NetworkColumns: [
                 { field: 'ispublic', header: 'Public' },
@@ -63,57 +87,47 @@ export default {
                 { field: 'created_by.username', header: 'Created by' }
             ],
             selectionToggle: false,
-            selectedNetworks: null,
             filters: {},
             ispublicbool: [true, false],
-            boolChoice: null,
             networkDialog: false,
             submitted: false
         }
-    },
-    computed: {
+     },
+     computed: {
         ...mapState('network', ['networks', 'network'])
-    },
-    created () {
-        this.initialize()
-    },
-    methods: {
-        ...mapActions('network', ['fetchNetworks', 'setNetwork', 'createNetwork', 'updateNetworkForm']),
-        async initialize () {
-            await this.fetchNetworks({})
-        },
-        async openCreateNetworkDialog () {
-            this.setNetwork({})
-            this.submitted = false
-            this.networkDialog = true
-        },
-        saveNetwork () {
-            this.submitted = true
-            if (this.network.name.trim()) {
-                this.createNetwork({})
-                this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network created', life: 3000 })
-            this.networkDialog = false
-            this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })
-            }
-        },
-        hideDialog () {
-            this.networkDialog = false
-            // this.submitted = false
-        },
-        goToNetwork (selectedRows) {
-            if (!this.selectionToggle) {
-                console.log(selectedRows[0])
-                this.setNetwork({ ...selectedRows[0] })
-                this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })
-            } else {
-                this.selectedNetworks = selectedRows
-            }
-        // this.setNetwork({ ...selectedRow })
-        // this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
-        // this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })
-        }
-    }
-}
+      },
+     created () {
+       this.initialize()
+     },
+     methods: {
+       ...mapActions('network', ['fetchNetworks', 'setNetwork', 'createNetwork', 'updateNetworkForm']),
+       async initialize () {
+         await this.fetchNetworks({})
+       },
+       async openCreateNetworkDialog () {
+         this.setNetwork({})
+         this.submitted = false
+         this.networkDialog = true
+       },
+       saveNetwork () {
+         this.submitted = true
+         if (this.network.name.trim()) {
+             this.createNetwork({})
+             this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network created', life: 3000 })
+         this.networkDialog = false
+         }
+       },
+       hideDialog () {
+         this.networkDialog = false
+         // this.submitted = false
+       },
+       goToNetwork (event) {
+         this.setNetwork({ ...event.data })
+         this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
+         this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })
+       }
+     }
+ }
        //  editNetwork (network) {
       //    this.network = { ...network }
       //    this.networkDialog = true

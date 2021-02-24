@@ -1,4 +1,5 @@
 import NetworkService from '../../services/NetworkService'
+import { mapMutations } from 'vuex'
 // import { mapState } from 'vuex'
 // import axios from 'axios'
 // import axios from 'axios'
@@ -79,12 +80,14 @@ export default {
     //      }
     // },
     actions: {
+        ...mapMutations('organisation', ['setOrganisations']),
         async fetchNetworks ({ commit }, payload) {
             const { response, error } = await NetworkService.get(payload)
             if (error) {
 				commit('setError', { error })
                 return
             }
+            console.log(response.data)
             commit('setNetworks', response)
         },
         async fetchNetwork ({ commit, dispatch }, payload) {
@@ -94,6 +97,7 @@ export default {
                 return
             }
             commit('setNetwork', response)
+            console.log(response.data.organisations)
             commit('setNetworkOrganisations', response)
         },
         // async fetchNetworkUsers ({ commit }, payload) {
@@ -105,15 +109,17 @@ export default {
         //     }
         //     commit('setNetworkUsers', response)
         // },
-        async createNetwork ({ state, commit }) {
+        async createNetwork ({ state, commit, dispatch }) {
             const data = state.form // getRequestData(state.form)
             const { response, error } = await NetworkService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
-            commit('addNetworkToList', response)
-            commit('setNetwork', response)
+            console.log(response.data)
+            await dispatch('fetchNetworks', {})
+            // commit('addNetworkToList', response)
+            dispatch('setNetwork', response.data)
             // commit('resetOrganisationForm')
         },
         async updateNetwork ({ state, commit }) {
@@ -147,6 +153,7 @@ export default {
             commit('deleteNetworkOrganisations', data)
         },
         setNetwork ({ state, commit }, { id }) {
+            console.log(id)
             if (id) {
                 const data = state.networks.find(n => n.id === id)
                 commit('setNetwork', { data })
@@ -158,6 +165,7 @@ export default {
             // }
         },
         updateNetworkForm ({ commit }, payload) {
+            console.log(payload)
 			commit('updateNetworkForm', payload)
 		}
     }

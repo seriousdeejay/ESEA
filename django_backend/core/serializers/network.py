@@ -5,5 +5,5 @@ from ..models import Network
 class NetworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Network
-        fields = '__all__'
+        fields = ['id', 'ispublic', 'name', 'description', 'created_by', 'organisations']
         depth = 1

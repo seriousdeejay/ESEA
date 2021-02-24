@@ -8,7 +8,6 @@
 <script>
 // import { AxiosInstance } from '../plugins/axios'
 import { mapState, mapActions } from 'vuex'
-import TestService from '../services/TestService'
 
 export default {
     data () {
@@ -25,23 +24,16 @@ export default {
     ...mapState('organisation', ['organisations'])
     },
     created () {
-        this.initialize2()
         this.initialize()
     },
     methods: {
+        ...mapActions('network', ['fetchNetworks']),
         ...mapActions('organisation', ['fetchOrganisations']),
+        ...mapActions('user', ['fetchUsers']),
         async initialize () {
-            await TestService.get()
-            .then(response => {
-                this.org = response.data
-            })
-            .catch(err => {
-            console.log(err)
-          })
-//             // await this.fetchOrganisations({})
-       },
-       async initialize2 () {
-           await this.fetchOrganisations({})
+            await this.fetchNetworks({})
+            await this.fetchOrganisations({})
+            await this.fetchUsers({})
        }
     }
 }

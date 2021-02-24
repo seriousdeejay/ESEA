@@ -20,12 +20,13 @@ class NetworkViewSet(viewsets.ModelViewSet):
             return Network.objects.filter(Q(created_by=user) | Q(ispublic = True))
         # return Network.objects.all()
     
-    def perform_create(self, serializer):
+    def create(self, serializer):
         creator = get_object_or_404(CustomUser, pk=self.request.user.id)
+        print(creator)
         serializer = NetworkSerializer(data=self.request.data)
         if serializer.is_valid():
-            serializer.save(created_by=creator)
-        return Response(serializer.data)
+            n = serializer.save(created_by=creator)
+            return Response(serializer.data)
 
     def partial_update(self, request, *args, **kwargs):
         network_object = get_object_or_404(Network, pk=self.get_object().id)
@@ -44,9 +45,9 @@ class NetworkViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 # Get all the organisations of a network
-class NetworkOrganisationsViewSet(viewsets.ModelViewSet):
-    serializer_class = OrganisationSerializer
+# class NetworkOrganisationsViewSet(viewsets.ModelViewSet):
+#     serializer_class = OrganisationSerializer
 
-    def get_queryset(self):
-        network_id = int(self.kwargs['pk'])
-        return Organisation.objects.filter(network=network_id)
+#     def get_queryset(self):
+#         network_id = int(self.kwargs['pk'])
+#         return Organisation.objects.filter(network=network_id)

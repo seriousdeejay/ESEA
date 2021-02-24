@@ -3,17 +3,38 @@
         <h1>Organisations Overview</h1>
         <Toast position="top-right"/>
         <div class="card p-m-5 p-shadow-2">
+            <Toolbar>
+                <template #left>
+                        <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" />
+                        <Button label="Create Organisation" icon="pi pi-plus" class="p-button-success p-mx-2" @click="openCreateOrganisationDialog" />
+                        <Button label="Invite Organisation(s)" icon="pi pi-plus" class="p-button-success" @click="something" disabled="disabled" />
+                </template>
+                <template #right>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <InputText v-model="filters['global']" placeholder="Search..." />
+                    </span>
+                </template>
+            </Toolbar>
+            <personalised-datatable table-name="organisations" selectionToggle :columns="OrganisationsColumns" :filters="filters"
+            :custom-data="organisations" @item-redirect="goToOrganisation"/>
+<!--
             <DataTable ref="dt" :value="organisations" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id" @row-select="goToOrganisation"
             :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
 
                 <template #header>
                     <div class="table-header p-d-flex p-jc-between p-ai-center">
+                        <div>
                         <Button label="Create Organisation" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreateOrganisationDialog" />
+                        <Button label="Invite Organisation(s)" icon="pi pi-plus" class="p-button-success p-mr-2" @click="something" disabled="disabled" />
+                        </div>
+                        <div>
                         <span class="p-input-icon-left">
                             <i class="pi pi-search" />
                             <InputText v-model="filters['global']" placeholder="Search..." />
                         </span>
+                        </div>
                     </div>
                 </template>
 
@@ -21,8 +42,8 @@
                 <Column field="name" header="Name" :sortable="true"></Column>
                 <Column field="description" header="Description" :sortable="true"></Column>
                 <Column field="participants.length" header="Participants" :sortable="true"></Column>
-                <Column field="creator.username" header="Created by" :sortable="true"></Column> <!-- creator instead of created_by attribute! -->
-            </DataTable>
+                <Column field="creator.username" header="Created by" :sortable="true"></Column> creator instead of created_by attribute!
+            </DataTable> -->
         </div>
     </div>
 
@@ -75,9 +96,13 @@
 <script>
 // import { AxiosInstance } from '../plugins/axios'
 import { mapState, mapActions } from 'vuex'
+import PersonalisedDatatable from '../components/PersonalisedDatatable'
 // import { useToast } from 'primevue/usetoast'
 
 export default {
+    components: {
+        PersonalisedDatatable
+    },
      setup () {
          // const toast = useToast()
 
@@ -90,14 +115,23 @@ export default {
      },
     data () {
         return {
+            OrganisationsColumns: [
+                { field: 'ispublic', header: 'Public' },
+                { field: 'name', header: 'Name' },
+                { field: 'description', header: 'Description' },
+                { field: 'participants.length', header: 'Participants' },
+                { field: 'creator.username', header: 'Created by' }
+            ],
             filters: {},
             ispublicbool: ['true', 'false'],
             organisationDialog: false,
-            submitted: false
+            submitted: false,
+            selectionToggle: false
         }
     },
     computed: {
-        ...mapState('organisation', ['organisations', 'organisation'])
+        ...mapState('organisation', ['organisations', 'organisation']),
+        ...mapState('network', ['network'])
     },
     created () {
         this.initialize()

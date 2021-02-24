@@ -22,6 +22,6 @@ urlpatterns = [
     path('api-token/', TokenObtainPairView.as_view()),
     path('ap-refresh/', TokenRefreshView.as_view()),
     path('', include(router.urls)),
-    path('organisationparticipants/<int:pk>/', organisationview.OrganisationParticipantsViewSet.as_view({'get': 'list'})),
-    path('networkorganisations/<int:pk>/', networkview.NetworkOrganisationsViewSet.as_view({'get': 'list'}))
+    # path('organisationparticipants/<int:pk>/', organisationview.OrganisationParticipantsViewSet.as_view({'get': 'list'})),
+    # path('networkorganisations/<int:pk>/', networkview.NetworkOrganisationsViewSet.as_view({'get': 'list'}))
 ]

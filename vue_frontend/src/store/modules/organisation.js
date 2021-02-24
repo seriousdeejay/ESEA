@@ -21,6 +21,7 @@ export default {
     },
     mutations: {
         setOrganisations (state, { data }) {
+            console.log(data)
             state.organisations = data
             // console.log(state.organisations)
         },
@@ -69,7 +70,6 @@ export default {
             commit('setOrganisation', response)
         },
         async fetchOrganisationUsers ({ commit }, payload) {
-            console.log(payload.id)
             const query = `organisation=${payload.id}`
             const { response, error } = await UserService.get({ query: query })
             if (error) {
