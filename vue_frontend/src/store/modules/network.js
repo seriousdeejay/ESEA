@@ -1,6 +1,6 @@
 import NetworkService from '../../services/NetworkService'
-import { mapState } from 'vuex'
-import axios from 'axios'
+// import { mapState } from 'vuex'
+// import axios from 'axios'
 // import axios from 'axios'
 // import { AxiosInstance } from '../../plugins/axios'
 // import { getRequestData } from '../../utils/helpers'
@@ -15,6 +15,9 @@ import axios from 'axios'
 // 	commit('setError', { error })
 //     return
 // }
+//
+// response.data.forEach(item => console.log(item.organisations))
+// console.log(response.data[all nested dicts].organisations)
 
 export default {
     namespaced: true,
@@ -22,7 +25,7 @@ export default {
         networks: [],
         network: {},
         networkorganisations: [],
-        networkparticipants: [],
+        // networkparticipants: [],
         form: {
             name: 'Network N',
             description: 'Description of Network N',
@@ -52,11 +55,9 @@ export default {
             state.networks = state.networks.filter(n => n.id !== id)
         },
         setNetworkOrganisations (state, { data }) {
-            console.log(data)
             state.networkorganisations = data.organisations || {}
         },
         setNetworkUsers (state, { data }) {
-            console.log(data)
             state.networkparticipants = data || {}
         },
         deleteNetworkOrganisations (state, { id }) {
@@ -69,14 +70,14 @@ export default {
 			state.form = { ...state.form, ...data }
 		}
     },
-    computed: {
-        ...mapState('authentication', ['accesToken'])
-    },
-    getters: {
-        AuthenticationToken (state, getters, rootState, rootGetters) { // Apparently state, getters & rootState are needed here
-           return rootGetters['authentication/AuthenticationToken']
-         }
-    },
+    // computed: {
+    //     ...mapState('authentication', ['accesToken'])
+    // },
+    // getters: {
+    //     AuthenticationToken (state, getters, rootState, rootGetters) { // Apparently state, getters & rootState are needed here
+    //        return rootGetters['authentication/AuthenticationToken']
+    //      }
+    // },
     actions: {
         async fetchNetworks ({ commit }, payload) {
             const { response, error } = await NetworkService.get(payload)
@@ -84,30 +85,25 @@ export default {
 				commit('setError', { error })
                 return
             }
-            // response.data.forEach(item => console.log(item.organisations))
-            // console.log(response.data[all nested dicts].organisations)
             commit('setNetworks', response)
         },
-        async fetchNetwork ({ commit }, payload) {
+        async fetchNetwork ({ commit, dispatch }, payload) {
             const { response, error } = await NetworkService.get(payload)
             if (error) {
                 commit('setError', { error })
                 return
             }
-            console.log(response.data.organisations)
             commit('setNetwork', response)
             commit('setNetworkOrganisations', response)
         },
-        async fetchNetworkUsers ({ commit, getters }, payload) {
-            var config = { headers: { Authorization: 'Bearer ' + getters.AuthenticationToken } }
-            const response = await axios.get(`http://localhost:8000/users/?network=${payload.id}`, config)
-            commit('setNetworkUsers', response)
-        },
-        // async fetchNetworkOrganisations ({ commit, state, getters }, payload) {
-        //     console.log(getters.AuthenticationToken)
-        //     var config = { headers: { Authorization: 'Bearer ' + getters.AuthenticationToken } }
-        //     const response = await axios.get(`http://localhost:8000/networkorganisations/${payload}/`, config)
-        //     commit('setNetworkOrganisations', response)
+        // async fetchNetworkUsers ({ commit }, payload) {
+        //     const query = `network=${payload.id}`
+        //     const { response, error } = await UserService.get({ query: query })
+        //     if (error) {
+		// 		commit('setError', { error })
+        //         return
+        //     }
+        //     commit('setNetworkUsers', response)
         // },
         async createNetwork ({ state, commit }) {
             const data = state.form // getRequestData(state.form)
@@ -116,13 +112,11 @@ export default {
                 commit('setError', { error })
                 return
             }
-            console.log(response)
             commit('addNetworkToList', response)
             commit('setNetwork', response)
             // commit('resetOrganisationForm')
         },
         async updateNetwork ({ state, commit }) {
-            console.log(state.network)
             const id = state.network.id
             const data = state.network
             const { response, error } = await NetworkService.put({ id, data, headers: { 'Content-Type': 'multipart/form-data' } })
@@ -143,7 +137,6 @@ export default {
             dispatch('setNetwork', {})
         },
         async deleteNetworkOrganisations ({ state, commit }, payload) {
-            console.log(state.network.id, state.network, payload, payload.data)
             const id = state.network.id
             const data = payload.data
             const { error } = await NetworkService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })

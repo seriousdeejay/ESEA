@@ -1,7 +1,7 @@
 <template>
 <h1>Test</h1>
-<div v-for="organisation in org" :key="organisation.id">{{ organisation.name }} - 1</div>
-{{ organisations }}
+<!-- <div v-for="organisation in org" :key="organisation.id">{{ organisation.name }} - 1</div>
+{{ organisations.name }} -->
 <div v-for="organisation in organisations" :key="organisation.name">{{organisation.name}}</div>
 </template>
 

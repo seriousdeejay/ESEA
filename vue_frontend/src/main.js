@@ -31,6 +31,7 @@ import Divider from 'primevue/divider'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import ToggleButton from 'primevue/togglebutton'
+import DataView from 'primevue/dataview'
 // const eventsHub = createApp
 
 router.beforeEach((to, from, next) => {
@@ -66,5 +67,6 @@ app.component('Divider', Divider)
 app.component('TabView', TabView)
 app.component('TabPanel', TabPanel)
 app.component('ToggleButton', ToggleButton)
+app.component('DataView', DataView)
 
 app.mount('#app')

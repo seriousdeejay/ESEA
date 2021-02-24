@@ -21,7 +21,7 @@
                 <Column field="name" header="Name" :sortable="true"></Column>
                 <Column field="description" header="Description" :sortable="true"></Column>
                 <Column field="participants.length" header="Participants" :sortable="true"></Column>
-                <Column field="creator" header="Created by" :sortable="true"></Column> <!-- creator instead of created_by attribute! -->
+                <Column field="creator.username" header="Created by" :sortable="true"></Column> <!-- creator instead of created_by attribute! -->
             </DataTable>
         </div>
     </div>

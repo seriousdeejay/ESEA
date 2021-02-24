@@ -1,6 +1,6 @@
 <template>
     <div class="card p-mx-5">
-        <h1>{{ organisation.name }} - created by {{ organisation.creator }}</h1>
+        <h1>{{ organisation.name }} - created by {{ organisation.creator.username }}</h1>
         <div class="p-grid">
             <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
                 <div class="p-fluid">
@@ -12,7 +12,7 @@
                 </Divider>
             </div>
             <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
-                 <p>{{ organisation.creator }}</p>
+                 <p>{{ organisation.creator.username }}</p>
                 <Button label="Edit Organisation" icon="pi pi-user-plus" class="p-button-success p-mr-2" @click="editOrganisationDialog = true"/>
                 <Button label="Delete Organisation" icon="pi pi-trash" class="p-button-danger" @click="confirmDeletion" />
             </div>
@@ -20,7 +20,7 @@
     </div>
 
     <div class="card p-m-5 p-shadow-2">
-        <DataTable ref="dt" :value="organisationparticipants" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id"
+        <DataTable ref="dt" :value="organisationParticipants" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id"
         :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
 
@@ -92,7 +92,7 @@ export default {
         }
     },
     computed: {
-        ...mapState('organisation', ['organisation']) // organisationparticipants
+        ...mapState('organisation', ['organisation', 'organisationParticipants']) // organisationparticipants
     },
     created () {
         this.initialize()
@@ -104,11 +104,11 @@ export default {
     //     .catch(err => { console.log(err) })
     },
     methods: {
-        ...mapActions('organisation', ['fetchOrganisation', 'updateOrganisation', 'deleteOrganisation']),
+        ...mapActions('organisation', ['fetchOrganisation', 'fetchOrganisationUsers', 'updateOrganisation', 'deleteOrganisation']),
         async initialize () {
             console.log(this.organisation)
             await this.fetchOrganisation({ id: this.organisation?.id || 0 })
-            console.log(this.organisation)
+            await this.fetchOrganisationUsers({ id: this.organisation?.id || 0 })
             // await this.fetchOrganisationParticipants(this.organisation?.id || 0)
         },
         async editOrganisation () {

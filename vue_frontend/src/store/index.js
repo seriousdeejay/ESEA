@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 
 import authentication from './modules/authentication'
 import general from './modules/general'
+import user from './modules/user'
 import network from './modules/network'
 import organisation from './modules/organisation'
 import method from './modules/method/method'
@@ -14,6 +15,7 @@ export default createStore({
   modules: {
     authentication,
     general,
+    user,
     network,
     organisation,
     method

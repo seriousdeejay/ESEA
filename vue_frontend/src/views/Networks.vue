@@ -67,8 +67,8 @@
      components: {
      },
      computed: {
-       ...mapState('network', ['networks', 'network'])
-       },
+        ...mapState('network', ['networks', 'network'])
+      },
      created () {
        this.initialize()
      },
@@ -95,7 +95,6 @@
          // this.submitted = false
        },
        goToNetwork (event) {
-         console.log({ ...event.data })
          this.setNetwork({ ...event.data })
          this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
          this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })

@@ -1,4 +1,28 @@
 <template>
+    <!--
+    <div class="card p-pt-3 p-shadow-2">
+
+        <DataTable ref="dt" :value="networkorganisations" v-model:selection="selectedOrganisations" :selectionMode="selectionMode" dataKey="id" @row-select="goToSelected"
+        :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
+
+            <Column selectionMode="multiple" headerStyle="width: 3em"></Column>
+            <Column field="ispublic" header="Public" :sortable="true"></Column>
+            <Column field="name" header="Name" :sortable="true"></Column>
+            <Column field="description" header="Description" :sortable="true"></Column>
+            <Column field="participants" header="Participants" :sortable="true"></Column>
+            <Column field="creator" header="Created by" :sortable="true"></Column>
+        </DataTable>
+    </div>
+
+    <Button label="Long Content" icon="pi pi-external-link" @click="openBasic2" />
+    <Dialog header= "organisations" v-model:visible="listOfOrganisations" :style="{width: '70vw'}">
+        <personalised-datatable v-if="listOfOrganisations" table-name="organisation" :columns="columns" :custom-data="organisations" @item-redirect="goToSelected2"/>
+        <template #footer>
+            <Button label="No" icon="pi pi-times" @click="closeBasic2" class="p-button-text"/>
+            <Button label="Yes" icon="pi pi-check" @click="closeBasic2" autofocus />
+        </template>
+    </Dialog> -->
 
     <div class="card p-mx-5">
 
@@ -25,7 +49,7 @@
             <Toolbar>
                 <template #left>
                     <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" class="p-mr-2" />
-                    <Button label="Invite" icon="pi pi-plus" class="p-button-success p-mr-2" @click="inviteOrganisation" />
+                    <Button label="Invite" icon="pi pi-plus" class="p-button-success p-mr-2" @click="dataBool = !dataBool" />
                     <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="removeOrganisation" :disabled="!selectedOrganisations" />
                 </template>
 
@@ -36,7 +60,18 @@
                     </span>
                 </template>
             </Toolbar>
-        <personalised-datatable table-name="organisation" selectionToggle :columns="OrganisationsColumns" :filters="filters" :custom-data="networkorganisations" @item-redirect="goToSelected2"/>
+
+        <personalised-datatable v-if="false" table-name="organisation" selectionToggle :columns="OrganisationsColumns" :filters="filters" :custom-data="dataBool? networkorganisations : organisations " @item-redirect="goToSelected2"/>
+        <div class="p-grid p-m-3">
+        <div class="p-col-3" v-for="organisation in networkorganisations" :key="organisation.id">
+            <div class="p-shadow-1 p-p-4" @click="testclick(organisation)">
+                <h3>{{ organisation.name }}</h3>
+                <h6>Founded by {{ organisation.creator.username }}</h6>
+                <p>{{ organisation.description }}</p>
+                <Button icon="pi pi-times" label="Remove" class="p-button-warning" />
+            </div>
+</div>
+        </div>
         </TabPanel>
         <TabPanel header="Methods">
             Content II
@@ -45,32 +80,9 @@
             Content III
         </TabPanel>
         <TabPanel header="Users">
-            <personalised-datatable table-name="Members" selectionToggle :columns="ParticipantsColumns" :custom-data="networkparticipants" @item-redirect="goToSelected2"/>
+            <personalised-datatable table-name="Members" selectionToggle :columns="ParticipantsColumns" :custom-data="users" @item-redirect="goToSelected2"/>
         </TabPanel>
     </TabView>
-    <div class="card p-pt-3 p-shadow-2">
-
-        <!-- <DataTable ref="dt" :value="networkorganisations" v-model:selection="selectedOrganisations" :selectionMode="selectionMode" dataKey="id" @row-select="goToSelected"
-        :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
-
-            <Column selectionMode="multiple" headerStyle="width: 3em"></Column>
-            <Column field="ispublic" header="Public" :sortable="true"></Column>
-            <Column field="name" header="Name" :sortable="true"></Column>
-            <Column field="description" header="Description" :sortable="true"></Column>
-            <Column field="participants" header="Participants" :sortable="true"></Column>
-            <Column field="creator" header="Created by" :sortable="true"></Column>
-        </DataTable> -->
-    </div>
-
-    <!-- <Button label="Long Content" icon="pi pi-external-link" @click="openBasic2" />
-    <Dialog header= "organisations" v-model:visible="listOfOrganisations" :style="{width: '70vw'}">
-        <personalised-datatable v-if="listOfOrganisations" table-name="organisation" :columns="columns" :custom-data="organisations" @item-redirect="goToSelected2"/>
-        <template #footer>
-            <Button label="No" icon="pi pi-times" @click="closeBasic2" class="p-button-text"/>
-            <Button label="Yes" icon="pi pi-check" @click="closeBasic2" autofocus />
-        </template>
-    </Dialog> -->
 
     <Dialog v-model:visible="editNetworkDialog" :style="{width: '450px'}" header="Network Details" :modal="true" class="p-fluid">
         <div class="p-field">
@@ -120,8 +132,8 @@ export default {
                  { field: 'ispublic', header: 'Public' },
                  { field: 'name', header: 'Name' },
                  { field: 'description', header: 'Description' },
-                 { field: 'participants', header: 'Participants' },
-                 { field: 'creator', header: 'Created by' }
+                 { field: 'participants.length', header: 'Participants' },
+                 { field: 'creator.username', header: 'Created by' }
                  ],
             ParticipantsColumns: [
                  { field: 'username', header: 'Username' },
@@ -130,6 +142,7 @@ export default {
                  { field: 'last_name_prefix', header: 'Prefix' },
                  { field: 'last_name', header: 'Last Name' }
                  ],
+            dataBool: false,
             selectionToggle: false,
             editNetworkDialog: false,
             deleteNetworkDialog: false,
@@ -140,18 +153,20 @@ export default {
     },
     computed: {
         ...mapState('network', ['network', 'networkorganisations', 'networkparticipants']),
-        ...mapState('organisation', ['organisations', 'organisation'])
+        ...mapState('organisation', ['organisations', 'organisation']),
+        ...mapState('user', ['users'])
     },
     created () {
         this.initialize()
     },
     methods: {
-        ...mapActions('network', ['fetchNetwork', 'fetchNetworkOrganisations', 'fetchNetworkUsers', 'updateNetwork', 'deleteNetwork', 'deleteNetworkOrganisations']),
+        ...mapActions('network', ['fetchNetwork', 'fetchNetworkOrganisations', 'updateNetwork', 'deleteNetwork', 'deleteNetworkOrganisations']),
         ...mapActions('organisation', ['setOrganisation']),
+        ...mapActions('user', ['fetchUsers', 'setUser']),
         async initialize () {
             await this.fetchNetwork({ id: this.network?.id || 0 })
-            await this.fetchNetworkOrganisations(this.network?.id || 0)
-            await this.fetchNetworkUsers({ id: this.network?.id || 0 })
+            console.log(this.network.id)
+            await this.fetchUsers({ query: `network=${this.network?.id || 0}` })
         },
         async editNetwork () {
             this.editNetworkDialog = false
@@ -171,8 +186,6 @@ export default {
             await this.deleteNetworkOrganisations({ data: this.selectedOrganisations })
             this.initialize()
         },
-        inviteOrganisation () {
-        },
         hideDialogs () {
             this.editNetworkDialog = false
             this.deleteNetworkDialog = false
@@ -184,15 +197,24 @@ export default {
             this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
        },
         goToSelected2 (selectedRows) {
-            this.setOrganisation({ ...selectedRows })
-            console.log(this.organisation)
-            console.log(this.selectionToggle)
             // this.$toast.add({ severity: 'info', summary: 'Item Selected', detail: 'Name:', life: 3000 })
             if (!this.selectionToggle) {
+                this.setOrganisation({ ...selectedRows[0] })
                 this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
             } else {
                 this.selectedOrganisations = selectedRows
             }
+       },
+       goToSelected3 (selectedRows) {
+            if (!this.selectionToggle) {
+                this.setUser({ ...selectedRows[0] })
+                this.$router.push({ name: 'userdetails', params: { id: this.user.id } })
+            } else {
+                this.selectedOrganisations = selectedRows
+            }
+       },
+       testclick (organisation) {
+           console.log(organisation.id)
        }
     }
 }
