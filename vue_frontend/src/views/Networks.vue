@@ -87,10 +87,10 @@ export default {
             this.submitted = false
             this.networkDialog = true
         },
-        saveNetwork () {
+        async saveNetwork () {
             this.submitted = true
             if (this.network.name.trim()) {
-                this.createNetwork({})
+                await this.createNetwork({})
                 this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network created', life: 3000 })
             this.networkDialog = false
             this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })
@@ -98,19 +98,17 @@ export default {
         },
         hideDialog () {
             this.networkDialog = false
-            // this.submitted = false
+            this.submitted = true
         },
         goToNetwork (selectedRows) {
             if (!this.selectionToggle) {
                 console.log(selectedRows[0])
                 this.setNetwork({ ...selectedRows[0] })
+                // this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
                 this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })
             } else {
                 this.selectedNetworks = selectedRows
             }
-        // this.setNetwork({ ...selectedRow })
-        // this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
-        // this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })
         }
     }
 }

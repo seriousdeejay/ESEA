@@ -1,18 +1,25 @@
 <template>
-    <div class="userprofile">
-        <h1 class="title">
-            User Profile - {{ currentuser }}
-        </h1>
-    </div>
+<div></div>
 </template>
 
 <script>
-import store from '../store'
+import { mapActions, mapState } from 'vuex'
 
 export default {
+    created () {
+        this.initialize()
+    },
     computed: {
-        currentuser () {
-            return store.state.currentuser
+        ...mapState('authentication', ['authenticatedUser']),
+        ...mapState('user', ['user'])
+    },
+    methods: {
+        ...mapActions('user', ['setUser']),
+        async initialize () {
+            console.log(this.authenticatedUser)
+            await this.setUser({ ...this.authenticatedUser })
+            console.log(this.user)
+            this.$router.push({ name: 'userdetails', params: { id: this.user.id } })
         }
     }
 }

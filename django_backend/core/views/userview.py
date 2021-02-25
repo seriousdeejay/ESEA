@@ -13,8 +13,11 @@ class UsersViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
 
     def get_queryset(self):
+        currentuser = self.request.GET.get('currentuser', None)
         network = self.request.GET.get('network', None)
         organisation = self.request.GET.get('organisation', None)
+        if currentuser is not None:
+            return CustomUser.objects.filter(id=self.request.user.id)
         if network is not None:
             return CustomUser.objects.filter(accessible_organisations__network=network).distinct() # Should pass organisation id(s) in order to serve the participants of said organisation(s)
         if organisation is not None:

@@ -1,23 +1,4 @@
 <template>
-    <div class="organisations">
-        <h1>Organisations Overview</h1>
-        <Toast position="top-right"/>
-        <div class="card p-m-5 p-shadow-2">
-            <Toolbar>
-                <template #left>
-                        <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" />
-                        <Button label="Create Organisation" icon="pi pi-plus" class="p-button-success p-mx-2" @click="openCreateOrganisationDialog" />
-                        <Button label="Invite Organisation(s)" icon="pi pi-plus" class="p-button-success" @click="something" disabled="disabled" />
-                </template>
-                <template #right>
-                    <span class="p-input-icon-left">
-                        <i class="pi pi-search" />
-                        <InputText v-model="filters['global']" placeholder="Search..." />
-                    </span>
-                </template>
-            </Toolbar>
-            <personalised-datatable table-name="organisations" selectionToggle :columns="OrganisationsColumns" :filters="filters"
-            :custom-data="organisations" @item-redirect="goToOrganisation"/>
 <!--
             <DataTable ref="dt" :value="organisations" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id" @row-select="goToOrganisation"
             :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -44,6 +25,25 @@
                 <Column field="participants.length" header="Participants" :sortable="true"></Column>
                 <Column field="creator.username" header="Created by" :sortable="true"></Column> creator instead of created_by attribute!
             </DataTable> -->
+    <div class="organisations">
+        <h1>Organisations Overview</h1>
+        <Toast position="top-right"/>
+        <div class="card p-m-5 p-shadow-2">
+            <Toolbar>
+                <template #left>
+                        <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" />
+                        <Button label="Create Organisation" icon="pi pi-plus" class="p-button-success p-mx-2" @click="openCreateOrganisationDialog" />
+                        <Button label="Invite Organisation(s)" icon="pi pi-plus" class="p-button-success" @click="something" disabled="disabled" />
+                </template>
+                <template #right>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <InputText v-model="filters['global']" placeholder="Search..." />
+                    </span>
+                </template>
+            </Toolbar>
+            <personalised-datatable table-name="organisations" selectionToggle :columns="OrganisationsColumns" :filters="filters"
+            :custom-data="organisations" @item-redirect="goToOrganisation"/>
         </div>
     </div>
 
@@ -61,8 +61,8 @@
         </div>
         <div class="p-field">
             <label for="ispublic">Should this organisation be public? </label>
-            <SelectButton id="ispublic" v-model="organisation.ispublic" required="true" :options="ispublicbool"
-            @blur="updateOrganisationForm({ ispublic: $event.target.value })" />
+            <SelectButton id="ispublic" v-model="boolChoice" required="true" :options="ispublicbool"
+            @blur="updateOrganisationForm({ ispublic: boolChoice })" />
         </div>
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
@@ -94,7 +94,6 @@
 </template>
 
 <script>
-// import { AxiosInstance } from '../plugins/axios'
 import { mapState, mapActions } from 'vuex'
 import PersonalisedDatatable from '../components/PersonalisedDatatable'
 // import { useToast } from 'primevue/usetoast'
@@ -105,8 +104,7 @@ export default {
     },
      setup () {
          // const toast = useToast()
-
-         const succesmessage = () => {
+        const succesmessage = () => {
              this.$toast.add(({ severity: 'success', summary: 'Successful', detail: 'Message Content', life: 3000 }))
          }
          return {
@@ -122,16 +120,17 @@ export default {
                 { field: 'participants.length', header: 'Participants' },
                 { field: 'creator.username', header: 'Created by' }
             ],
+            selectionToggle: false,
+            selectedOrganisations: null,
             filters: {},
-            ispublicbool: ['true', 'false'],
+            ispublicbool: [true, false],
+            boolChoice: null,
             organisationDialog: false,
-            submitted: false,
-            selectionToggle: false
+            submitted: false
         }
     },
     computed: {
-        ...mapState('organisation', ['organisations', 'organisation']),
-        ...mapState('network', ['network'])
+        ...mapState('organisation', ['organisations', 'organisation'])
     },
     created () {
         this.initialize()
@@ -152,6 +151,7 @@ export default {
                 this.createOrganisation({})
                 this.$toast.add({ severity: 'success', summary: 'Successful', detail: 'Organisation Created', life: 3000 })
             this.organisationDialog = false
+            this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
             }
         },
         hideDialog () {
@@ -159,11 +159,14 @@ export default {
             this.submitted = true
          },
 
-        goToOrganisation (event) {
-            this.setOrganisation({ ...event.data })
-            console.log({ ...event.data })
-            this.$toast.add({ severity: 'info', summary: 'Organisation Selected', detail: 'Name: ' + event.name, life: 3000 })
-            this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+        goToOrganisation (selectedRows) {
+            if (!this.selectionToggle) {
+                this.setOrganisation({ ...selectedRows[0] })
+                // this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
+                this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+            } else {
+                this.selectedOrganisations = selectedRows
+            }
         }
     }
 }

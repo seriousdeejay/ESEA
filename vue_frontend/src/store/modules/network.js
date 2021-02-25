@@ -1,5 +1,5 @@
 import NetworkService from '../../services/NetworkService'
-import { mapMutations } from 'vuex'
+// import { mapMutations } from 'vuex'
 // import { mapState } from 'vuex'
 // import axios from 'axios'
 // import axios from 'axios'
@@ -71,44 +71,24 @@ export default {
 			state.form = { ...state.form, ...data }
 		}
     },
-    // computed: {
-    //     ...mapState('authentication', ['accesToken'])
-    // },
-    // getters: {
-    //     AuthenticationToken (state, getters, rootState, rootGetters) { // Apparently state, getters & rootState are needed here
-    //        return rootGetters['authentication/AuthenticationToken']
-    //      }
-    // },
     actions: {
-        ...mapMutations('organisation', ['setOrganisations']),
         async fetchNetworks ({ commit }, payload) {
             const { response, error } = await NetworkService.get(payload)
             if (error) {
 				commit('setError', { error })
                 return
             }
-            console.log(response.data)
             commit('setNetworks', response)
         },
-        async fetchNetwork ({ commit, dispatch }, payload) {
+        async fetchNetwork ({ commit }, payload) {
             const { response, error } = await NetworkService.get(payload)
             if (error) {
                 commit('setError', { error })
                 return
             }
             commit('setNetwork', response)
-            console.log(response.data.organisations)
             commit('setNetworkOrganisations', response)
         },
-        // async fetchNetworkUsers ({ commit }, payload) {
-        //     const query = `network=${payload.id}`
-        //     const { response, error } = await UserService.get({ query: query })
-        //     if (error) {
-		// 		commit('setError', { error })
-        //         return
-        //     }
-        //     commit('setNetworkUsers', response)
-        // },
         async createNetwork ({ state, commit, dispatch }) {
             const data = state.form // getRequestData(state.form)
             const { response, error } = await NetworkService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } })
@@ -116,7 +96,6 @@ export default {
                 commit('setError', { error })
                 return
             }
-            console.log(response.data)
             await dispatch('fetchNetworks', {})
             // commit('addNetworkToList', response)
             dispatch('setNetwork', response.data)
@@ -131,7 +110,7 @@ export default {
                 return
             }
             commit('updateNetwork', { ...response, id })
-            commit('setNetwork', response)
+            commit('setNetwork', response.data)
         },
         async deleteNetwork ({ commit, dispatch }, payload) {
             const { error } = await NetworkService.delete(payload)
@@ -153,20 +132,35 @@ export default {
             commit('deleteNetworkOrganisations', data)
         },
         setNetwork ({ state, commit }, { id }) {
-            console.log(id)
             if (id) {
                 const data = state.networks.find(n => n.id === id)
-                commit('setNetwork', { data })
+                commit('setNetwork', { data: data })
             } else {
                 commit('setNetwork', {})
             }
-            // if (!data) {
-            //     [data] = state.networks
-            // }
         },
         updateNetworkForm ({ commit }, payload) {
-            console.log(payload)
 			commit('updateNetworkForm', payload)
 		}
     }
 }
+        // if (!data) {
+        //     [data] = state.networks
+        // }
+        // async fetchNetworkUsers ({ commit }, payload) {
+        //     const query = `network=${payload.id}`
+        //     const { response, error } = await UserService.get({ query: query })
+        //     if (error) {
+		// 		commit('setError', { error })
+        //         return
+        //     }
+        //     commit('setNetworkUsers', response)
+        // },
+    // computed: {
+    //     ...mapState('authentication', ['accesToken'])
+    // },
+    // getters: {
+    //     AuthenticationToken (state, getters, rootState, rootGetters) { // Apparently state, getters & rootState are needed here
+    //        return rootGetters['authentication/AuthenticationToken']
+    //      }
+    // },

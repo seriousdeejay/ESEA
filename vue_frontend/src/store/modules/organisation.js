@@ -1,7 +1,7 @@
 // import { AxiosInstance } from '../../plugins/axios'
 // import TestService from '../../services/TestService'
 import OrganisationService from '../../services/OrganisationService'
-import UserService from '../../services/UserService'
+// import UserService from '../../services/UserService'
 // import { getRequestData } from '../../utils/helpers'
 
 export default {
@@ -11,8 +11,8 @@ export default {
         organisation: {},
         organisationParticipants: [],
         form: {
-            name: 'Network N',
-            description: 'Description of Network N',
+            name: 'Organisation N',
+            description: 'Description of Organisation N',
             ispublic: true,
             participants: [
             ]
@@ -23,11 +23,9 @@ export default {
         setOrganisations (state, { data }) {
             console.log(data)
             state.organisations = data
-            // console.log(state.organisations)
         },
         setOrganisation (state, { data }) {
             state.organisation = data || {}
-            console.log(state.organisation)
         },
         addOrganisationToList (state, { data }) {
             state.organisations.push(data)
@@ -41,9 +39,8 @@ export default {
         deleteOrganisation (state, { id }) {
             state.organisations = state.organisations.filter(o => o.id !== id)
         },
-        setNetworkUsers (state, { data }) {
-            console.log(data)
-            state.organisationParticipants = data || {}
+        setOrganisationParticipants (state, { data }) {
+            state.organisationParticipants = data.participants || {}
         },
         setError (state, { error }) {
             state.error = error
@@ -68,28 +65,18 @@ export default {
                 return
             }
             commit('setOrganisation', response)
+            commit('setOrganisationParticipants', response)
         },
-        async fetchOrganisationUsers ({ commit }, payload) {
-            const query = `organisation=${payload.id}`
-            const { response, error } = await UserService.get({ query: query })
-            if (error) {
-				commit('setError', { error })
-                return
-            }
-            console.log(response)
-            // var config = { headers: { Authorization: 'Bearer ' + getters.AuthenticationToken } }
-            // const response = await axios.get(`http://localhost:8000/users/?network=${payload.id}`, config)
-            commit('setNetworkUsers', response)
-        },
-        async createOrganisation ({ state, commit }) {
+        async createOrganisation ({ state, commit, dispatch }) {
             const data = state.form // getRequestData(state.form)
             const { response, error } = await OrganisationService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
-            commit('addOrganisationToList', response)
-            commit('setOrganisation', response)
+            await dispatch('fetchOrganisations', {})
+            // commit('addOrganisationToList', response)
+            dispatch('setOrganisation', response.data)
         },
         async updateOrganisation ({ state, commit }) {
             const id = state.organisation.id
@@ -99,7 +86,8 @@ export default {
                 commit('setError', { error })
                 return
             }
-            commit('updateOrganisation', { response })
+            console.log(response)
+            commit('updateOrganisation', response)
         },
         async deleteOrganisation ({ commit, dispatch }, payload) {
             const { error } = await OrganisationService.delete(payload)
@@ -111,10 +99,9 @@ export default {
             dispatch('setOrganisation', {})
         },
         setOrganisation ({ state, commit }, { id }) {
-            console.log(id)
             if (id) {
                 const data = state.organisations.find(o => o.id === id)
-                commit('setOrganisation', { data })
+                commit('setOrganisation', { data: data })
             } else {
                 commit('setOrganisation', {})
             }
@@ -122,6 +109,9 @@ export default {
         updateOrganisationForm ({ commit }, payload) {
             commit('updateOrganisationForm', payload)
         }
+
+    }
+}
         // resetError ({ commit }) {
         //     commit('setError', { error: undefined })
         // }
@@ -155,5 +145,15 @@ export default {
             // .catch(err => {
             //   console.log(err)
           //  })
-    }
-}
+        // async fetchOrganisationUsers ({ commit }, payload) {
+        //     const query = `organisation=${payload.id}`
+        //     const { response, error } = await UserService.get({ query: query })
+        //     if (error) {
+		// 		commit('setError', { error })
+        //         return
+        //     }
+        //     console.log(response)
+            // var config = { headers: { Authorization: 'Bearer ' + getters.AuthenticationToken } }
+            // const response = await axios.get(`http://localhost:8000/users/?network=${payload.id}`, config)
+        //     commit('setNetworkUsers', response)
+        // },

@@ -49,7 +49,7 @@ export default {
     },
     computed: {
         ...mapState('user', ['user']),
-        ...mapState('authentication', ['currentuser'])
+        ...mapState('authentication', ['currentuser', 'authenticatedUser'])
     },
     methods: {
         editProfile () {

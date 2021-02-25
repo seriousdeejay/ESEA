@@ -84,6 +84,10 @@ import { mapState, mapActions } from 'vuex'
 export default {
     data () {
         return {
+            organisationPart: [{
+                username: 'Henk',
+                first_name: 'Harry'
+            }],
             editOrganisationDialog: false,
             deleteOrganisationDialog: false,
             selectedOrganisations: null,
@@ -104,11 +108,10 @@ export default {
     //     .catch(err => { console.log(err) })
     },
     methods: {
-        ...mapActions('organisation', ['fetchOrganisation', 'fetchOrganisationUsers', 'updateOrganisation', 'deleteOrganisation']),
+        ...mapActions('organisation', ['fetchOrganisation', 'updateOrganisation', 'deleteOrganisation']),
         async initialize () {
             console.log(this.organisation)
             await this.fetchOrganisation({ id: this.organisation?.id || 0 })
-            await this.fetchOrganisationUsers({ id: this.organisation?.id || 0 })
             // await this.fetchOrganisationParticipants(this.organisation?.id || 0)
         },
         async editOrganisation () {

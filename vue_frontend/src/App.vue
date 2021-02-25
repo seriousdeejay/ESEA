@@ -78,7 +78,7 @@ export default {
             {
               label: 'Personal Details',
               icon: 'pi pi-id-card',
-              to: 'userprofile'
+              to: '/userprofile'
             },
             {
               label: 'Log out',

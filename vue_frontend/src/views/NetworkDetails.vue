@@ -1,51 +1,5 @@
 <template>
-    <div class="card p-mx-5">
-        <h1>{{ network.name }} - created by {{ network.created_by.username }}</h1>
-        <div class="p-grid">
-            <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
-                <div class="p-fluid">
-                   <p class="p-text-justify">{{ network.description }} <br> Below you can find a tab with the organisations, methods, surveys, users and reports that are linked to this specific network. </p>
-                </div>
-            </div>
-            <div class="p-col-2">
-                <Divider layout="vertical" />
-            </div>
-            <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
-                 <p>{{ network.created_by.username }}</p>
-                <Button label="Edit Network" icon="pi pi-user-plus" class="p-button-success p-m-2" @click="editNetworkDialog = true" />
-                <Button label="Delete Network" icon="pi pi-trash" class="p-button-danger" @click="confirmDeletion" />
-            </div>
-        </div>
-    </div>
-    <TabView>
-        <TabPanel header="Organisations">
-            <!-- <div v-if="inviteOrganisationsWindow" class="p-shadow-1 p-p-2">
-                <h3>Organisations of {{network.name}}</h3>
-            </div>
-            <div v-else>
-                <h3>Organisations that can be invited</h3>
-            </div> -->
-                <Toolbar>
-                    <template #left>
-                        <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" />
-                        <div v-if="!inviteOrganisationsWindow">
-                            <Button label="Invite Organisations" icon="pi pi-plus" class="p-button-success p-mx-2" @click="openInviteOrganisationsWindow" />
-                            <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="removeOrganisation" :disabled="!selectedOrganisations" />
-                        </div>
-                        <div v-else>
-                            <Button label="Show Network's organisations" class="p-button-primary p-mx-2" @click="inviteOrganisationsWindow = false"/>
-                            <Button label="Send invitation to selected organisations" icon="pi pi-plus" class="p-button-success" @click="sendInvitationToOrganisations" />
-                        </div>
-                    </template>
-                    <template #right>
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText v-model="filters['global']" placeholder="Search..." />
-                        </span>
-                    </template>
-                </Toolbar>
-                <personalised-datatable table-name="organisation" selectionToggle :columns="OrganisationsColumns" :filters="filters" :custom-data="inviteOrganisationsWindow? organisations : networkorganisations" @item-redirect="goToSelectedOrganisations"/>
-                <!-- <div class="p-grid p-m-3">
+               <!-- <div class="p-grid p-m-3">
                     <div class="p-col-3" v-for="organisation in networkorganisations" :key="organisation.id">
                         <div class="p-shadow-1 p-p-4" @click="testclick(organisation)">
                             <h3>{{ organisation.name }}</h3>
@@ -73,7 +27,46 @@
                 <Button label="Cancel invitation" icon="pi pi-times" class="p-button-primary p-m-2" @click="inviteOrganisationsWindow = false"/>
                 <Button label="Send invitation to selected organisations" icon="pi pi-plus" class="p-button-success p-m-2" @click="sendInvitationToOrganisations" />
             </div> -->
-
+    <div class="card p-mx-5">
+        <h1>{{ network.name }} - created by {{ network.created_by.username }}</h1>
+        <div class="p-grid">
+            <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
+                <div class="p-fluid">
+                   <p class="p-text-justify">{{ network.description }} <br> Below you can find a tab with the organisations, methods, surveys, users and reports that are linked to this specific network. </p>
+                </div>
+            </div>
+            <div class="p-col-2">
+                <Divider layout="vertical" />
+            </div>
+            <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
+                 <p>{{ network.created_by.username }}</p>
+                <Button label="Edit Network" icon="pi pi-user-plus" class="p-button-success p-m-2" @click="editNetworkDialog = true" />
+                <Button label="Delete Network" icon="pi pi-trash" class="p-button-danger" @click="confirmDeletion" />
+            </div>
+        </div>
+    </div>
+    <TabView>
+        <TabPanel header="Organisations">
+                <Toolbar>
+                    <template #left>
+                        <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" />
+                        <div v-if="!inviteOrganisationsWindow">
+                            <Button label="Invite Organisations" icon="pi pi-plus" class="p-button-success p-mx-2" @click="openInviteOrganisationsWindow" />
+                            <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="removeOrganisation" :disabled="!selectedOrganisations" />
+                        </div>
+                        <div v-else>
+                            <Button label="Show Network's organisations" class="p-button-primary p-mx-2" @click="inviteOrganisationsWindow = false"/>
+                            <Button label="Send invitation to selected organisations" icon="pi pi-plus" class="p-button-success" @click="sendInvitationToOrganisations" />
+                        </div>
+                    </template>
+                    <template #right>
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search" />
+                            <InputText v-model="filters['global']" placeholder="Search..." />
+                        </span>
+                    </template>
+                </Toolbar>
+                <personalised-datatable table-name="organisation" selectionToggle :columns="OrganisationsColumns" :filters="filters" :custom-data="inviteOrganisationsWindow? organisations : networkorganisations" @item-redirect="goToSelectedOrganisations"/>
         </TabPanel>
         <TabPanel header="Methods">
             Content II
@@ -164,12 +157,12 @@ export default {
     },
     methods: {
         ...mapActions('network', ['fetchNetwork', 'updateNetwork', 'deleteNetwork', 'deleteNetworkOrganisations']),
-        ...mapActions('organisation', ['setOrganisation', 'fetchOrganisations']),
+        ...mapActions('organisation', ['fetchOrganisations', 'setOrganisation']),
         ...mapActions('user', ['fetchUsers', 'setUser']),
         async initialize () {
             this.inviteOrganisationsWindow = false
+            console.log(this.network)
             await this.fetchNetwork({ id: this.network?.id || 0 })
-            console.log(this.networkorganisations)
             await this.fetchUsers({ query: `network=${this.network?.id || 0}` })
         },
         async editNetwork () {
@@ -184,7 +177,7 @@ export default {
             this.deleteNetworkDialog = false
             await this.deleteNetwork({ id: this.network?.id || 0 })
             this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
-             this.$router.push({ name: 'networks' })
+            this.$router.push({ name: 'networks' })
         },
         async removeOrganisation () {
             await this.deleteNetworkOrganisations({ data: this.selectedOrganisations })
@@ -203,12 +196,6 @@ export default {
             this.editNetworkDialog = false
             this.deleteNetworkDialog = false
         },
-    //      goToSelected (event) {
-    //         console.log({ ...event.data })
-    //         this.setOrganisation({ ...event.data })
-    //         this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
-    //         this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
-    //    },
         goToSelectedOrganisations (selectedRows) {
             // this.$toast.add({ severity: 'info', summary: 'Item Selected', detail: 'Name:', life: 3000 })
             if (!this.selectionToggle) {
@@ -225,4 +212,10 @@ export default {
        }
     }
 }
+    //      goToSelected (event) {
+    //         console.log({ ...event.data })
+    //         this.setOrganisation({ ...event.data })
+    //         this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
+    //         this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+    //    },
 </script>
