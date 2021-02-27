@@ -12,14 +12,46 @@
                 </Divider>
             </div>
             <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
-                 <p>{{ organisation.creator.username }}</p>
                 <Button label="Edit Organisation" icon="pi pi-user-plus" class="p-button-success p-mr-2" @click="editOrganisationDialog = true"/>
                 <Button label="Delete Organisation" icon="pi pi-trash" class="p-button-danger" @click="confirmDeletion" />
             </div>
         </div>
     </div>
 
-    <div class="card p-m-5 p-shadow-2">
+    <TabView>
+         <TabPanel header="Methods">
+            Content II
+        </TabPanel>
+        <TabPanel header="Surveys">
+            Content III
+        </TabPanel>
+        <TabPanel header="Members">
+            <Toolbar>
+                <template #left>
+                    <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" />
+                    <div v-if="!inviteUsersWindow">
+                        <Button label="Invite Users" icon="pi pi-plus" class="p-button-success p-mx-2" @click="openInviteUsersWindow" />
+                        <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="removeMember" :disabled="!selectedUsers" />
+                    </div>
+                    <div v-else>
+                        <Button label="Show Organisation's members" class="p-button-primary p-mx-2" @click="inviteUsersWindow = false"/>
+                        <Button label="Send invitation to selected users" icon="pi pi-plus" class="p-button-success" @click="sendInvitationToUsers" />
+                    </div>
+                </template>
+                <template #right>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <InputText v-model="filters['global']" placeholder="Search..." />
+                    </span>
+                </template>
+            </Toolbar>
+            <personalised-datatable v-if="true" table-name="Members" selectionToggle :columns="ParticipantsColumns"
+            :custom-data="inviteUsersWindow? users : organisationParticipants" @item-redirect="goToSelectedUsers"/>
+            <h4 v-else>This Organisation does not have any members yet</h4>
+        </TabPanel>
+    </TabView>
+
+    <!-- <div class="card p-m-5 p-shadow-2">
         <DataTable ref="dt" :value="organisationParticipants" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id"
         :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
@@ -40,9 +72,9 @@
             </Toolbar>
 
             <Column field="username" header="Username" :sortable="true"></Column>
-            <Column field="first_name" header="First name" :sortable="true"></Column> <!-- Should insert full name here! -->
+            <Column field="first_name" header="First name" :sortable="true"></Column> Should insert full name here!
         </DataTable>
-    </div>
+    </div> -->
 
     <Dialog v-model:visible="editOrganisationDialog" :style="{width: '450px'}" header="Network Details" :modal="true" class="p-fluid">
         <div class="p-field">
@@ -78,25 +110,39 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import PersonalisedDatatable from '../components/PersonalisedDatatable'
 // import { AxiosInstance } from '../plugins/axios'
 // import { required, minLength } from 'vuelidate/lib/validators'
 
 export default {
+    components: {
+        PersonalisedDatatable
+    },
     data () {
         return {
-            organisationPart: [{
-                username: 'Henk',
-                first_name: 'Harry'
-            }],
+            ParticipantsColumns: [
+                { field: 'username', header: 'Username' },
+                { field: 'first_name', header: 'First Name' },
+                { field: 'last_name_prefix', header: 'Prefix' },
+                { field: 'last_name', header: 'Last Name' }
+            ],
+            // organisationPart: [{
+            //     username: 'Henk',
+            //     first_name: 'Harry'
+            // }],
             editOrganisationDialog: false,
+            ispublicbool: ['true', 'false'],
             deleteOrganisationDialog: false,
-            selectedOrganisations: null,
+            inviteUsersWindow: false,
             filters: {},
+            selectedUsers: null,
+            selectionToggle: false,
             submitted: false
         }
     },
     computed: {
-        ...mapState('organisation', ['organisation', 'organisationParticipants']) // organisationparticipants
+        ...mapState('organisation', ['organisation', 'organisationParticipants']), // organisationparticipants
+        ...mapState('user', ['users', 'user'])
     },
     created () {
         this.initialize()
@@ -108,10 +154,11 @@ export default {
     //     .catch(err => { console.log(err) })
     },
     methods: {
-        ...mapActions('organisation', ['fetchOrganisation', 'updateOrganisation', 'deleteOrganisation']),
+        ...mapActions('organisation', ['fetchOrganisation', 'updateOrganisation', 'deleteOrganisation', 'deleteOrganisationUsers']),
+        ...mapActions('user', ['fetchUsers', 'setUser']),
         async initialize () {
-            console.log(this.organisation)
             await this.fetchOrganisation({ id: this.organisation?.id || 0 })
+            await this.fetchUsers({ query: `organisation=${this.organisation?.id || 0}` })
             // await this.fetchOrganisationParticipants(this.organisation?.id || 0)
         },
         async editOrganisation () {
@@ -128,10 +175,26 @@ export default {
             this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Organisation Deleted', life: 3000 })
             this.$router.push({ name: 'organisations' })
         },
+        async openInviteUsersWindow () {
+            await this.fetchUsers({ query: `excludeorganisation=${this.organisation?.id || 0}` })
+            this.inviteUsersWindow = true
+        },
+        async sendInvitationToUsers () {
+            await this.deleteOrganisationUsers({ data: this.selectedUsers })
+            this.initialize()
+        },
         hideDialogs () {
             this.editOrganisation = false
             this.deleteOrganisation = false
-        }
+        },
+        goToSelectedUsers (selectedRows) {
+            if (!this.selectionToggle) {
+                this.setUser({ ...selectedRows[0] }) // SelectedRows instead of selectedRows[0], might be because there is only one item in the datatable
+                this.$router.push({ name: 'userdetails', params: { id: this.user.id } })
+            } else {
+                this.selectedUsers = selectedRows
+            }
+       }
     }
 }
 </script>

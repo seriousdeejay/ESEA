@@ -3,7 +3,6 @@ import BaseApiService from './BaseApiService'
 
 const createUrl = ({ id, query }) => {
     const base = `${API_URL}/networks/`
-    console.log(id)
     if (id) {
         return `${base}${id}/`
     } else if (query) {

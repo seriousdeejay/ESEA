@@ -21,7 +21,6 @@ export default {
     },
     mutations: {
         setOrganisations (state, { data }) {
-            console.log(data)
             state.organisations = data
         },
         setOrganisation (state, { data }) {
@@ -41,6 +40,9 @@ export default {
         },
         setOrganisationParticipants (state, { data }) {
             state.organisationParticipants = data.participants || {}
+        },
+        deleteOrganisationUsers (state, { id }) {
+            state.organisationParticipants = state.organisationParticipants.filter(o => o.id !== id)
         },
         setError (state, { error }) {
             state.error = error
@@ -86,7 +88,6 @@ export default {
                 commit('setError', { error })
                 return
             }
-            console.log(response)
             commit('updateOrganisation', response)
         },
         async deleteOrganisation ({ commit, dispatch }, payload) {
@@ -97,6 +98,16 @@ export default {
             }
             commit('deleteOrganisation', payload)
             dispatch('setOrganisation', {})
+        },
+        async deleteOrganisationUsers ({ state, commit }, payload) {
+            const id = state.organisation.id
+            const data = payload.data
+            const { error } = await OrganisationService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
+            if (error) {
+                commit('setError', { error })
+                return
+            }
+            commit('deleteOrganisationUsers', data)
         },
         setOrganisation ({ state, commit }, { id }) {
             if (id) {

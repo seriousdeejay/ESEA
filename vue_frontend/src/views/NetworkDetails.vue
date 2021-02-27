@@ -55,7 +55,7 @@
                             <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="removeOrganisation" :disabled="!selectedOrganisations" />
                         </div>
                         <div v-else>
-                            <Button label="Show Network's organisations" class="p-button-primary p-mx-2" @click="inviteOrganisationsWindow = false"/>
+                            <Button label="Show Network's organisations" class="p-button-primary p-mx-2" @click="inviteOrganisationsWindow = true"/>
                             <Button label="Send invitation to selected organisations" icon="pi pi-plus" class="p-button-success" @click="sendInvitationToOrganisations" />
                         </div>
                     </template>
@@ -66,7 +66,9 @@
                         </span>
                     </template>
                 </Toolbar>
-                <personalised-datatable table-name="organisation" selectionToggle :columns="OrganisationsColumns" :filters="filters" :custom-data="inviteOrganisationsWindow? organisations : networkorganisations" @item-redirect="goToSelectedOrganisations"/>
+                <personalised-datatable v-if="((networkorganisations.length !== 0 && inviteOrganisationsWindow === false ) || ( inviteOrganisationsWindow === true))"
+                table-name="organisation" selectionToggle :columns="OrganisationsColumns" :filters="filters" :custom-data="inviteOrganisationsWindow? organisations : networkorganisations" @item-redirect="goToSelectedOrganisations"/>
+                <h4 v-else>This network does not have any organisations yet</h4>
         </TabPanel>
         <TabPanel header="Methods">
             Content II
@@ -137,13 +139,13 @@ export default {
                  { field: 'last_name_prefix', header: 'Prefix' },
                  { field: 'last_name', header: 'Last Name' }
                  ],
-            selectionToggle: false,
             editNetworkDialog: false,
+            ispublicbool: ['true', 'false'],
             deleteNetworkDialog: false,
-            selectedOrganisations: null, // might be removable,
             inviteOrganisationsWindow: false,
             filters: {},
-            ispublicbool: ['true', 'false'],
+            selectedOrganisations: null, // might be removable,
+            selectionToggle: false,
             submitted: false
         }
     },
@@ -161,7 +163,6 @@ export default {
         ...mapActions('user', ['fetchUsers', 'setUser']),
         async initialize () {
             this.inviteOrganisationsWindow = false
-            console.log(this.network)
             await this.fetchNetwork({ id: this.network?.id || 0 })
             await this.fetchUsers({ query: `network=${this.network?.id || 0}` })
         },
@@ -206,7 +207,6 @@ export default {
             }
        },
        goToSelectedUsers (selectedRows) {
-           console.log(selectedRows[0], selectedRows)
         this.setUser({ ...selectedRows[0] })
         this.$router.push({ name: 'userdetails', params: { id: this.user.id } })
        }

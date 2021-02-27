@@ -24,11 +24,28 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         # return Organisation.objects.all()
     
     # Need to put perform_create on the userorganisation model
-    def perform_create(self, serializer):
+    def create(self, serializer):
         creator = get_object_or_404(CustomUser, pk=self.request.user.id)
         serializer = OrganisationSerializer(data=self.request.data)
         if serializer.is_valid():
-            serializer.save(creator=creator, participants=creator)
+            serializer.save(creator=creator, participants=[creator])
+            return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        organisation_object = get_object_or_404(Organisation, pk=self.get_object().id)
+        data = request.data
+        print(data)
+        try:
+            for user in data:
+                user = CustomUser.objects.get(id = user['id'])
+                if organisation_object.participants.filter(pk=user.pk).exists():                    
+                    organisation_object.participants.remove(user)
+                else:
+                    organisation_object.participants.add(user)
+        except KeyError:
+            pass
+        organisation_object.save()
+        serializer = OrganisationSerializer(organisation_object)
         return Response(serializer.data)
 
 # Get all the participants of an organisation

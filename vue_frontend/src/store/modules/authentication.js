@@ -35,7 +35,6 @@ export default {
         },
         saveAuthenticatedUserDetails (state, { data }) {
           state.authenticatedUser = data[0]
-          console.log({ ...state.authenticatedUser })
         },
         error (state) {
             state.status = STATUS.ERROR
@@ -65,7 +64,6 @@ export default {
               })
                 .then(response => {
                   context.commit('updateStorage', { access: response.data.access, refresh: response.data.refresh })
-                  console.log(response)
                   resolve(context.dispatch('saveAuthenticatedUserDetails'))
                 })
                 .catch(err => {
@@ -74,7 +72,6 @@ export default {
             })
           },
           async saveAuthenticatedUserDetails (context) {
-            console.log('check')
             const { response, error } = await UserService.get({ query: 'currentuser=1' })
             if (error) {
               console.log(error)
