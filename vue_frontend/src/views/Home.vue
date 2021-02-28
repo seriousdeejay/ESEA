@@ -1,4 +1,10 @@
 <template>
+<h3>Advanced</h3>
+<FileUpload name="myfile" url="http://localhost:8000/import-yaml/" @upload="onUpload" :multiple="true" accept="" :maxFileSize="1000000">
+    <template #empty>
+        <p>Drag and drop files to here to upload.</p>
+    </template>
+</FileUpload>
 <h1>Test</h1>
 <!-- <div v-for="organisation in org" :key="organisation.id">{{ organisation.name }} - 1</div>
 {{ organisations.name }} -->

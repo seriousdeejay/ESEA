@@ -32,6 +32,7 @@ import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import ToggleButton from 'primevue/togglebutton'
 import DataView from 'primevue/dataview'
+import FileUpload from 'primevue/fileupload'
 // const eventsHub = createApp
 
 router.beforeEach((to, from, next) => {
@@ -68,5 +69,6 @@ app.component('TabView', TabView)
 app.component('TabPanel', TabPanel)
 app.component('ToggleButton', ToggleButton)
 app.component('DataView', DataView)
+app.component('FileUpload', FileUpload)
 
 app.mount('#app')
