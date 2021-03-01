@@ -1,39 +1,24 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as  _
+from .question import Question
 
 
 class directIndicatorManager(models.Manager):
     def create(
         self,
+        isMandatory,
         key,
         topic,
         name,
-        type,
-        options,
+        answertype,
         description=None,
-        prefix=None,
-        suffix=None,
-        default=None,
+        instruction=None,
         max_number=None,
         min_number=None,
-    ):
-        question = Question.objects.get_or_create(
-            name=name,
-            type=type,
-            options=options,
-            description=description,
-            prefix=prefix,
-            suffix=suffix,
-            default=default,
-        )
-
-        direct_indicator = DirectIndicator(
-            key=key,
-            max_number=max_number,
-            min_number=min_number,
-            question=question,
-            topic=topic,
-        )
+        options=None
+        ):
+        question = Question.objects.create(name=name, isMandatory=isMandatory, answertype=answertype, description=description, instruction=instruction, options=options)
+        direct_indicator = DirectIndicator(key=key, max_number=max_number, min_number=min_number, question=question, topic=topic)
         direct_indicator.save()
         return direct_indicator
 
@@ -41,12 +26,10 @@ class directIndicatorManager(models.Manager):
 class DirectIndicator(models.Model):
     objects = directIndicatorManager()
     key = models.CharField(max_length=45, blank=False)
-    max_number = models.IntegerField(null=True)
     min_number = models.IntegerField(null=True)
+    max_number = models.IntegerField(null=True)
     question = models.ForeignKey("Question", on_delete=models.CASCADE)
-    topic = models.ForeignKey(
-        "Topic", related_name="direct_indicators", on_delete=models.PROTECT
-    )
+    topic = models.ForeignKey("Topic", related_name="direct_indicators", on_delete=models.PROTECT)
     responses = []
     value = None
     calculation_keys = None
@@ -63,35 +46,34 @@ class DirectIndicator(models.Model):
     def __str__(self):
         return self.question.name
 
-    def update(
-        self,
-        key,
-        topic,
-        name,
-        type,
-        options,
-        description=None,
-        prefix=None,
-        suffix=None,
-        default=None,
-        max_number=None,
-        min_number=None,
-    ):
-        self.key = key
-        self.max_number = max_number
-        self.min_number = min_number
-        self.topic = topic
-        self.question = self.question.update(
-            name=name,
-            type=type,
-            options=options,
-            description=description,
-            prefix=prefix,
-            suffix=suffix,
-            default=default,
-        )
-        self.save()
-        return self
+    # def update(
+    #     self,
+    #     isMandatory,
+    #     key,
+    #     topic,
+    #     name,
+    #     answertype,
+    #     options=None,
+    #     description=None,
+    #     instruction=None,
+    #     max_number=None,
+    #     min_number=None,
+    # ):
+    #     self.key = key
+    #     self.max_number = max_number
+    #     self.min_number = min_number
+    #     self.topic = topic
+    #     self.question = self.question.update(
+    #         name=name,
+    #         type=type,
+    #         options=options,
+    #         description=description,
+    #         prefix=prefix,
+    #         suffix=suffix,
+    #         default=default,
+    #     )
+    #     self.save()
+    #     return self
 
     def filter_responses(self, responses):
         self.responses = [

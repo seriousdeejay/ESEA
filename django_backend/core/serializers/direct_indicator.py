@@ -7,20 +7,20 @@ from .question_option import QuestionOptionSerializer
 
 class DirectIndicatorSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
+    isMandatory = serializers.BooleanField()
     name = serializers.CharField(max_length=255, required=True)
-    type = serializers.ChoiceField(
-        required=True, choices=Question.QUESTION_TYPES,
-    )
+    answertype = serializers.ChoiceField(required=True, choices=Question.QUESTION_TYPES)
     key = serializers.CharField(max_length=45, required=True)
     description = serializers.CharField(required=False, allow_blank=True)
-    prefix = serializers.CharField(
-        max_length=10, required=False, allow_blank=True,
-    )
-    suffix = serializers.CharField(
-        max_length=10, required=False, allow_blank=True,
-    )
-    default = serializers.CharField(required=False, allow_blank=True)
-    options = QuestionOptionSerializer(many=True, read_only=False)
+    instruction = serializers.CharField(required=False, allow_blank=True)
+    # prefix = serializers.CharField(
+    #     max_length=10, required=False, allow_blank=True,
+    # )
+    # suffix = serializers.CharField(
+    #     max_length=10, required=False, allow_blank=True,
+    # )
+    # default = serializers.CharField(required=False, allow_blank=True)
+    options = QuestionOptionSerializer(many=True, read_only=False, required=False)
     max_number = serializers.IntegerField(required=False)
     min_number = serializers.IntegerField(required=False)
     topic = serializers.PrimaryKeyRelatedField(queryset=Topic.objects.all())
@@ -28,9 +28,9 @@ class DirectIndicatorSerializer(serializers.Serializer):
     def validate(self, data):
         type_with_options = Question.QUESTION_TYPES_WITH_OPTIONS
 
-        if data["type"] in type_with_options and not len(data["options"]):
+        if data["answertype"] in type_with_options and not len(data["options"]):
             raise serializers.ValidationError(
-                f"{data['type']} requires options"
+                f"{data['answertype']} requires options"
             )
 
         return data
@@ -88,12 +88,14 @@ class DirectIndicatorSerializer(serializers.Serializer):
                 "max_number": instance.max_number,
                 "min_number": instance.min_number,
                 "topic": instance.topic,
+                "isMandatory": instance.question.isMandatory,
                 "name": instance.question.name,
-                "type": instance.question.type,
+                "answertype": instance.question.answertype,
                 "description": instance.question.description,
-                "prefix": instance.question.prefix,
-                "suffix": instance.question.suffix,
-                "default": instance.question.default,
+                "instruction": instance.question.instruction,
+                # "prefix": instance.question.prefix,
+                # "suffix": instance.question.suffix,
+                # "default": instance.question.default,
                 "options": instance.question.options,
             }
         else:

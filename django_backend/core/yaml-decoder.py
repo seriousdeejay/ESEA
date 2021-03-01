@@ -26,6 +26,7 @@ def process_yaml_file(method_yaml):
     # Get the parent topic
     topics = method_yaml['topics']
     for topic in topics:
+        #Topic.create(name=topics[topic]['name'], description=topics[topic]['description'], topic=topics[topic]['topic'] || null)
         # print(dict, loaded_yaml['topics'][dict])
         if 'topic' in topics[topic].keys():
             parent_topic = topics[topic]['topic']
@@ -36,15 +37,26 @@ def process_yaml_file(method_yaml):
         #print(topic, topics[topic]) ### Hosts name, description, parenttopic and method
     
     surveys = method_yaml['surveys']
+    indicators = method_yaml['indicators']
     for survey in surveys:
         survey = surveys[survey]
         print(survey['name'])
         print(survey['responserate'])
         for question in (survey['questions']):
+            print(f"{question} - {survey['questions'][question]}")
+            try:
+                print(survey['questions'][question]['indicator'])
+            except: continue
             question = survey['questions'][question]
-            print(question)
+            for indicator in indicators:
+                if question['indicator'] == indicator:
+                    print(f"{indicator} - {indicators[indicator]}")
+            # DirectIndicator.objects.create(isMandatory=survey['questions'][question]['ismandatory'], key=indicator, 
+            # topic=topic instance, name=survey['questions'][question]['name'], description=survey['questions'][question]['description'],
+            # instruction=survey['questions'][question]['instruction'], answertype=survey['questions'][question]['answertype'],
+            # options=survey['questions'][question]['options'] )
 
-    indicators = method_yaml['indicators']
+    
     for indicator in indicators:
         pass
         
