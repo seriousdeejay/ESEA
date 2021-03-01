@@ -1,4 +1,5 @@
-from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
 
 from ..models import Topic, Method
@@ -8,16 +9,20 @@ from ..serializers import TopicSerializer
 class TopicViewSet(viewsets.ModelViewSet):
     serializer_class = TopicSerializer
 
-    # Made a try/excepp to show Topic.objects.all() for now
+    # Made a try/except to show Topic.objects.all() for now
     def get_queryset(self):
-        try:
-            return Topic.objects.filter(
-                method__organisation=1,
-                method__organisation__user=1,
-                method=self.kwargs['method_pk']) 
-        except:
-            return Topic.objects.all()
-    def perform_create(self, serializer):
-        method = get_object_or_404(Method, pk=self.kwargs['organisation_pk']
-        )
-        serializer.save(method=method)
+        return Topic.objects.filter(method=self.kwargs['method_pk']) 
+
+    def create(self, serializer, **kwargs):
+        method = get_object_or_404(Method, pk=self.kwargs['method_pk'])
+        serializer = TopicSerializer(data=self.request.data)
+        if serializer.is_valid():
+            serializer.save(method=method)
+            return Response(serializer.data)
+        return Response(status)
+
+    # {
+    #     "name": "Topic 9",
+    #     "description": "",
+    #     "parent_topic": null   == Optional
+    # }

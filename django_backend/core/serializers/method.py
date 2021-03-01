@@ -5,4 +5,4 @@ from ..models import Method
 class MethodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Method
-        fields = '__all__'
+        fields = ('ispublic', 'name', 'description', 'organisations')

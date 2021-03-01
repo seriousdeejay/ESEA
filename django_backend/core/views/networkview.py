@@ -25,7 +25,7 @@ class NetworkViewSet(viewsets.ModelViewSet):
         print(creator)
         serializer = NetworkSerializer(data=self.request.data)
         if serializer.is_valid():
-            n = serializer.save(created_by=creator)
+            n = serializer.save(created_by=creator) # does created_by=request.user not work?
             return Response(serializer.data)
 
     def partial_update(self, request, *args, **kwargs):
