@@ -1,15 +1,18 @@
 import { createStore } from 'vuex'
-
+import VuexPersistance from 'vuex-persist'
 import authentication from './modules/authentication'
 import general from './modules/general'
 import user from './modules/user'
 import network from './modules/network'
 import organisation from './modules/organisation'
 import method from './modules/method/method'
+import topic from './modules/method/topic'
+import question from './modules/method/question'
 
-// const vuexLocalStorage = new VuexPersist({
+const vuexLocalStorage = new VuexPersistance({
+  storage: window.localStorage
 //  ... can be used to use local storage
-// })
+})
 
 export default createStore({
   modules: {
@@ -18,20 +21,9 @@ export default createStore({
     user,
     network,
     organisation,
-    method
-  }
-//   state: {
-//     accessToken: null,
-//     refreshToken: null,
-//     currentuser: '',
-//     APIData: '',
-//     networks: '',
-//     network: '',
-//     networkorganisations: '',
-//     organisations: '',
-//     organisation: '',
-//     organisationparticipants: '',
-//     users: '',
-//     status: ''
-//  },
+    method,
+    topic,
+    question
+  },
+  plugins: [vuexLocalStorage.plugin]
 })

@@ -22,8 +22,8 @@ class DirectIndicatorViewSet(viewsets.ViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def retrieve(self, request, organisation_pk, method_pk, pk):
-        direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method=method_pk, topic__method__organisations=organisation_pk)
+    def retrieve(self, request, method_pk, pk):
+        direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method=method_pk)
         serializer = DirectIndicatorSerializer(direct_indicator)
 
         return Response(serializer.data)

@@ -24,10 +24,15 @@
               <Column field="ispublic" header="Public" :sortable="true"></Column>
               <Column field="name" header="Name" :sortable="true"></Column>
               <Column field="description" header="Description" :sortable="true"></Column>
-              <Column field="organisations.length" header="Organisations" :sortable="true"></Column>
-              <Column field="" header="Created by" :sortable="true"></Column> <!-- Created_by attribute needs to be added to the Method model -->
+              <!--<Column field="organisations.length" header="Organisations" :sortable="true"></Column>
+              <Column field="" header="Created by" :sortable="true"></Column> Created_by attribute needs to be added to the Method model -->
             </DataTable>
         </div>
+        <FileUpload name="myfile" url="http://localhost:8000/import-yaml/" @upload="onUpload" :multiple="true" accept="" :maxFileSize="1000000">
+            <template #empty>
+                <p>Drag and drop files to here to upload.</p>
+            </template>
+        </FileUpload>
     </div>
 
     <Dialog v-model:visible="methodDialog" :style="{width: '450px'}" header="Method Details" :modal="true" class="p-fluid">
@@ -102,7 +107,8 @@ export default {
             filters: {},
             ispublicbool: ['true', 'false'],
             methodDialog: false,
-            submitted: false
+            submitted: false,
+            selectedMethods: null
         }
     },
     computed: {
@@ -130,6 +136,9 @@ export default {
             this.methodDialog = true
         },
         goToMethod (event) {
+            console.log(this.selectedMethods)
+            this.setMethod(this.selectedMethods)
+            console.log(this.method)
             this.$router.push({ name: 'methoddetails', params: { id: this.method.id } })
         }
     }

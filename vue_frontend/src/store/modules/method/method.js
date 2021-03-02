@@ -42,10 +42,14 @@ export default {
             }
             commit('setMethods', response)
         },
-    // Redundant! ID can already be passed to fetchMethods!
-    //     async fetchMethod ({ commit }, payload) {
-    //         const { response, error } = await MethodService.get(payload)
-    //     }
+        async fetchMethod ({ commit }, payload) {
+            const { response, error } = await MethodService.get(payload)
+            if (error) {
+                commit('setError', { error })
+                return
+            }
+            commit('setMethod', response)
+        },
         async updateMethod ({ state, commit }) {
             const id = state.method.id
             const data = state.method
