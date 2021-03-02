@@ -280,7 +280,7 @@ surveys:
         indicator: employee_pay_structure
         topic: W1
         ismandatory: Y
-        answertype: dropdown
+        answertype: RADIO
         options: 
           - Fixed Salary
           - Daily or hourly wage
@@ -334,7 +334,7 @@ surveys:
         indicator: employee_FTE
         topic: W3
         ismandatory: Y
-        answertype: dropdown
+        answertype: RADIO
         options: 
           - <75%
           - 75-89%
@@ -373,7 +373,7 @@ surveys:
         indicator: employee_pay
         topic: W4
         ismandatory: Y
-        answertype: dropdown
+        answertype: RADIO
         options: 
           - 20x
           - 16-20x
@@ -449,7 +449,7 @@ surveys:
         indicator: days_off_payed
         topic: W6
         ismandatory: Y
-        answertype: dropdown
+        answertype: RADIO
         options: 
           - 0-15 work days
           - 16-22 work days
@@ -474,7 +474,7 @@ surveys:
         indicator: parental_leave
         topic: W7
         ismandatory: Y
-        answertype: dropdown
+        answertype: RADIO
         options: 
           - Primary caregivers receive 4-12 weeks of time off for parental leave (including unpaid and paid leave)
           - Primary caregivers receive 12 weeks to 6 months of time off for parental leave (including unpaid and paid leave)

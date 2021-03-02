@@ -8,15 +8,17 @@ from .question_option import QuestionOption
 
 class questionManager(models.Manager):
     def create(self, isMandatory, answertype, name, description=None, instruction=None, options=None):
-        print("sssssss", options, 'dd')
+        # print("sssssss", options, 'dd')
         question = self.model(isMandatory=isMandatory, name=name, description=description, instruction=instruction, answertype=answertype)
         question.save()
-        print(question.answertype)
-        print(question.QUESTION_TYPES_WITH_OPTIONS)
+        #print(question.answertype)
+        #print(question.QUESTION_TYPES_WITH_OPTIONS)
         if question.answertype in (question.QUESTION_TYPES_WITH_OPTIONS):
             for option in options:
                 print(option)
+                # print(question)
                 questionoption = QuestionOption.objects.create(text=option, value=1, question=question)
+                print(questionoption)
                 question.options.add(questionoption)
                 #QuestionOption.create(question=question, text=option, value=1)
             question.save()
@@ -31,7 +33,7 @@ class Question(models.Model):
     instruction = models.TextField(blank=True, null=True)
     topics = models.ManyToManyField("Topic", through="DirectIndicator")
     options = models.ManyToManyField(QuestionOption, blank=True, related_name="ooo") 
-    #options: QuestionOption
+    # options: QuestionOption
 
     TEXT = "TEXT"
     NUMBER = "NUMBER"

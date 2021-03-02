@@ -14,7 +14,7 @@ class QuestionOption(models.Model):
         return self.text == data['text'] and self.value == data['value']
     
     def __str__(self):
-        return f"{self.question} - {self.text}"
+        return f"{self.text}"
 
     def __repr__(self):
         return (f"<QuestionOption id='{self.id}', text='{self.text} '"

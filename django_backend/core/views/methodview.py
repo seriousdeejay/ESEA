@@ -1,12 +1,13 @@
 from rest_framework.response import Response 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 from django.core.files.storage import FileSystemStorage
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 import yaml
 
-from ..models import Method, CustomUser
+from ..models import Method, CustomUser, Topic, DirectIndicator
 
 from ..models import Method
 from ..serializers import MethodSerializer
@@ -30,19 +31,55 @@ class MethodViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)        
 
-@method_decorator(csrf_exempt, name='dispatch')
+# @method_decorator(csrf_exempt, name='dispatch')
+@api_view(['GET', 'POST'])
 def upload_yaml(request):
     if request.method == 'POST' and request.FILES['myfile']:
         myfile = request.FILES['myfile']
         # print(myfile.read())
         try:
-            yamldict = yaml.safe_load(myfile)
-            print(yamldict['topics']['C1'])
-            for key in yamldict['topics']:
-                print(key, {'name': yamldict['topics'][key]['name']})
-                # try:
-                #     # print({'description': dict['topics'][key]['description']})
-                # except:
-                #     # print('No Description Found')
+            YAML_dict = yaml.safe_load(myfile)
+            m = Method.objects.create(name="Method name", description="Method description")
+            print(m)
+            topic_dict = {}
+            for topic_key in YAML_dict['topics']:
+                topic=YAML_dict['topics'][topic_key]
+                description = None
+                name=topic['name']
+                if 'description' in topic.keys():
+                    description = topic['description']
+                if not 'topic' in topic.keys():
+                    supertopic = Topic.objects.create(name=name, description=description, parent_topic=None, method=m)
+                    topic_dict[topic_key] = supertopic
+                    print(topic_key, supertopic)
+                else:            
+                    subtopic = Topic.objects.create(name=name, description=description, parent_topic=topic_dict[topic['topic']], method=m)
+                    topic_dict[topic_key] = subtopic
+                    print(topic_key, subtopic)
+            for survey in YAML_dict['surveys']:
+                #print(YAML_dict['surveys'][survey]['name'])
+                #print(YAML_dict['surveys'][survey]['responserate'])
+                for question in YAML_dict['surveys'][survey]['questions']:
+                    question = YAML_dict['surveys'][survey]['questions'][question]
+                    isMandatory, description, instruction, options = True, None, None, None
+                    try:
+                        key = question['indicator']
+                        topic = topic_dict[question['topic']]
+                        answertype = question['answertype']
+                        name = question['name']
+                        if question['ismandatory'] == "N":
+                            isMandatory = False
+                        if 'description' in question.keys():
+                            description = question['description']
+                        if 'options' in question.keys(): 
+                            options = question['options']
+                        q = DirectIndicator.objects.create(key=key, topic=topic, answertype=answertype, name=name, isMandatory=isMandatory, description=description, instruction=instruction, options=options)
+                        print('>>', q, 'TOPIC:', q.topic, q.question.options.all())
+                    except:
+                        continue
+                return Response({"message": "Hello, world!"})
         except yaml.YAMLError as exc:
             print(exc)
+            return Response({"message": "Hello, world!"})
+        return Response({"message": "Hello, world!"})
+    return Response({"message": "Hello, world!"})

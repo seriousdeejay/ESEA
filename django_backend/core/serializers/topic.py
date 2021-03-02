@@ -10,4 +10,5 @@ class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
         fields = ('id', 'name', 'description', 'parent_topic', 'parent_topic_name', 'method', 'questions')
+        depth = 2
         # read_only_fields = ['Method']
