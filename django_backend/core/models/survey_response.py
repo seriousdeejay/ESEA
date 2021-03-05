@@ -4,13 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 class SurveyResponse(models.Model):
     survey = models.ForeignKey('Survey', on_delete=models.CASCADE)
-    user_organisation = models.ForeignKey(
-        'UserOrganisation',
-        related_name="survey_responses",
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-    )
+    user_organisation = models.ForeignKey('UserOrganisation', related_name="survey_responses", on_delete=models.CASCADE, blank=True, null=True)
     token = models.CharField(max_length=128, blank=True, null=True)
     finished = models.BooleanField(default=False)
 
@@ -44,9 +38,7 @@ class SurveyResponse(models.Model):
         for id, data in data_mapping.items():
             question_response = question_response_mapping.get(id, None)
             if question_response is None:
-                question_response_list.append(
-                    self.question_responses.create(**data)
-                )
+                question_response_list.append(self.question_responses.create(**data))
             elif question_response.value is not data['value']:
                 question_response.value = data['value']
                 question_response.save()
