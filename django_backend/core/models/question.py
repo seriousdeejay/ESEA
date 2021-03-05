@@ -7,9 +7,9 @@ from .question_option import QuestionOption
 
 
 class questionManager(models.Manager):
-    def create(self, isMandatory, answertype, name, description=None, instruction=None, options=None):
+    def create(self, isMandatory, answertype, name, topic, description=None, instruction=None, options=None):
         # print("sssssss", options, 'dd')
-        question = self.model(isMandatory=isMandatory, name=name, description=description, instruction=instruction, answertype=answertype)
+        question = self.model(isMandatory=isMandatory, name=name, topic=topic, description=description, instruction=instruction, answertype=answertype)
         question.save()
         #print(question.answertype)
         #print(question.QUESTION_TYPES_WITH_OPTIONS)
@@ -27,7 +27,7 @@ class questionManager(models.Manager):
 class Question(models.Model):
     objects = questionManager()
     isMandatory = models.BooleanField(default=True)
-    # topic = models.ForeignKey('Topic', related_name="topic_questions", on_delete=models.CASCADE)
+    topic = models.ForeignKey('Topic', related_name="questions_of_topic", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False)
     description = models.TextField(blank=True, null=True)
     instruction = models.TextField(blank=True, null=True)

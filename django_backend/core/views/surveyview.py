@@ -11,11 +11,9 @@ class SurveyViewSet(viewsets.ModelViewSet):
     serializer_class = SurveyOverviewSerializer
     queryset = Survey.objects.all()
 
-    # def get_queryset(self):
-    #     return Survey.objects.filter(
-    #         method__organisations=self.kwargs['organisation_pk'], 
-    #         method__organisations_CustomUser=self.request.user,
-    #         method=self.kwargs['method_pk'])
+    def get_queryset(self):
+        return Survey.objects.filter(
+            method=self.kwargs['method_pk'])
 
     def perform__create(self, serializer):
         method = get_object_or_404(Method, pk=self.kwargs['method_pk'],
@@ -23,7 +21,7 @@ class SurveyViewSet(viewsets.ModelViewSet):
 
         serializer.save(method=method)
     
-    def retrieve(self, request, organisation_pk, method_pk, pk):
+    def retrieve(self, request, method_pk, pk):
         survey = get_object_or_404(self.get_queryset(), pk=pk)
         serializer = SurveyDetailSerializer(survey)
 

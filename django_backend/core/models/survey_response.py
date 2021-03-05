@@ -4,8 +4,8 @@ from django.utils.translation import gettext_lazy as _
 
 class SurveyResponse(models.Model):
     survey = models.ForeignKey('Survey', on_delete=models.CASCADE)
-    user_organization = models.ForeignKey(
-        'UserOrganization',
+    user_organisation = models.ForeignKey(
+        'UserOrganisation',
         related_name="survey_responses",
         on_delete=models.CASCADE,
         blank=True,

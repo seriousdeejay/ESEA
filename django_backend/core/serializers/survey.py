@@ -30,7 +30,7 @@ class SurveyOverviewSerializer(serializers.ModelSerializer):
             'method': instance.method,
             'stakeholder': instance.stakeholder_group,
         }
-        return super().to_representation(interal)
+        return super().to_representation(internal)
 
     def update_stakeholder(self, stakeholder_group, name, method):
         if len(stakeholder_group.surveys.all()) > 1:

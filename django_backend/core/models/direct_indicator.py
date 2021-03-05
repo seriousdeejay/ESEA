@@ -17,7 +17,7 @@ class directIndicatorManager(models.Manager):
         min_number=None,
         options=None
         ):
-        question = Question.objects.create(name=name, isMandatory=isMandatory, answertype=answertype, description=description, instruction=instruction, options=options)
+        question = Question.objects.create(name=name, isMandatory=isMandatory, answertype=answertype, topic=topic, description=description, instruction=instruction, options=options)
         direct_indicator = DirectIndicator(key=key, max_number=max_number, min_number=min_number, question=question, topic=topic)
         direct_indicator.save()
         return direct_indicator
@@ -29,7 +29,7 @@ class DirectIndicator(models.Model):
     min_number = models.IntegerField(null=True)
     max_number = models.IntegerField(null=True)
     question = models.ForeignKey("Question", on_delete=models.CASCADE)
-    topic = models.ForeignKey("Topic", related_name="direct_indicators", on_delete=models.PROTECT)
+    topic = models.ForeignKey("Topic", related_name="direct_indicators", on_delete=models.CASCADE)
     responses = []
     value = None
     calculation_keys = None

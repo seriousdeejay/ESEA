@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 import yaml
 
-from ..models import Method, CustomUser, Topic, DirectIndicator
+from ..models import Method, CustomUser, Topic, DirectIndicator, Survey
 
 from ..models import Method
 from ..serializers import MethodSerializer
@@ -36,12 +36,13 @@ class MethodViewSet(viewsets.ModelViewSet):
 def upload_yaml(request):
     if request.method == 'POST' and request.FILES['myfile']:
         myfile = request.FILES['myfile']
-        # print(myfile.read())
+        ### Try/Except to catch YAML related errors
         try:
             YAML_dict = yaml.safe_load(myfile)
-            m = Method.objects.create(name="Method name", description="Method description")
+            m = Method.objects.create(name="BIA", description="A Method description")
             print(m)
             topic_dict = {}
+            ### Saving Topics
             for topic_key in YAML_dict['topics']:
                 topic=YAML_dict['topics'][topic_key]
                 description = None
@@ -56,9 +57,21 @@ def upload_yaml(request):
                     subtopic = Topic.objects.create(name=name, description=description, parent_topic=topic_dict[topic['topic']], method=m)
                     topic_dict[topic_key] = subtopic
                     print(topic_key, subtopic)
+            ### Saving Surveys
             for survey in YAML_dict['surveys']:
-                #print(YAML_dict['surveys'][survey]['name'])
-                #print(YAML_dict['surveys'][survey]['responserate'])
+                YAML_dict['surveys'][survey]
+                descriptiom, welcomeText, closingText = None, None, None
+                name = YAML_dict['surveys'][survey]['name']
+                responserate = YAML_dict['surveys'][survey]['responserate']
+                if 'description' in YAML_dict['surveys'][survey].keys():
+                    description = YAML_dict['surveys'][survey]['description']
+                # if 'welcometext' in YAML_dict['surveys'][survey].keys():
+                #     welcomeText = YAML_dict['surveys'][survey]['welcometext']
+                # if 'closingtext' in YAML_dict['surveys'][survey].keys():
+                #     closingText = YAML_dict['surveys'][survey]['closingtext']
+                s = Survey.objects.create(name=name, description=description, anonymous=False, stakeholder=None, method=m)
+                print(s)
+                ### Saving Questions
                 for question in YAML_dict['surveys'][survey]['questions']:
                     question = YAML_dict['surveys'][survey]['questions'][question]
                     isMandatory, description, instruction, options = True, None, None, None
@@ -77,9 +90,8 @@ def upload_yaml(request):
                         print('>>', q, 'TOPIC:', q.topic, q.question.options.all())
                     except:
                         continue
-                return Response({"message": "Hello, world!"})
+                return Response({"Method Saved!"})
         except yaml.YAMLError as exc:
             print(exc)
-            return Response({"message": "Hello, world!"})
-        return Response({"message": "Hello, world!"})
-    return Response({"message": "Hello, world!"})
+            return Response({exc})
+    return Response({"Nothing uploaded"})
