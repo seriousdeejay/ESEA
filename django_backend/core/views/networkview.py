@@ -1,7 +1,6 @@
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
@@ -31,7 +30,6 @@ class NetworkViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         network_object = get_object_or_404(Network, pk=self.get_object().id)
         data = request.data
-        print(data)
         try:
             for organisation in data: 
                 organisation = Organisation.objects.get(id=organisation['id'])

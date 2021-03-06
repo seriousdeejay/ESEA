@@ -30,7 +30,7 @@ class DirectIndicatorViewSet(viewsets.ViewSet):
 
     def update(self, request, organisation_pk, method_pk, pk):
         request.data['method'] = int(method_pk)
-        direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method=method_pk, topic__method__organisations=organisation_pk)
+        direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method=method_pk)
         serializer = DirectIndicatorSerializer(direct_indicator, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -38,7 +38,7 @@ class DirectIndicatorViewSet(viewsets.ViewSet):
         return Response(serializer.data)
     
     def destroy(self, request, organisation_pk, method_pk, pk):
-        direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method = method_pk, topic__method__organisations=organisation_pk)
+        direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method = method_pk)
         direct_indicator.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)

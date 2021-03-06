@@ -10,5 +10,5 @@ from .direct_indicator import DirectIndicatorSerializer
 from .question_option import QuestionOptionSerializer
 
 from .survey import (SurveyOverviewSerializer, SurveyDetailSerializer)
-#from .survey_response import (SurveyResponseSerializer, SurveyResponseCalculationSerializer)
-#from .question_response import QuestionResponseSerializer
+from .survey_response import (SurveyResponseSerializer, SurveyResponseCalculationSerializer)
+from .question_response import QuestionResponseSerializer

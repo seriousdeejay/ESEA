@@ -19,7 +19,7 @@ class SurveyResponseSerializer(serializers.ModelSerializer):
         return survey_response
 
     def update(self, survey_response, validated_data):
-        survey_response.finished = validated_data.get('finished', survey_response.finished))
+        survey_response.finished = validated_data.get('finished', survey_response.finished)
         survey_response.save()
         question_responses = validated_data.get('question_responses', [])
         survey_response.save_question_responses(question_responses)

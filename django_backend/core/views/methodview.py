@@ -1,5 +1,5 @@
 from rest_framework.response import Response 
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 from django.core.files.storage import FileSystemStorage
@@ -8,9 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 import yaml
 
 from ..models import Method, CustomUser, Topic, DirectIndicator, Survey
-
-from ..models import Method
 from ..serializers import MethodSerializer
+
 
 class MethodViewSet(viewsets.ModelViewSet):
     serializer_class = MethodSerializer
@@ -20,12 +19,11 @@ class MethodViewSet(viewsets.ModelViewSet):
         #    pass
             # user = self.request.user
             # return Method.objects.filter(Q(organisation that are accessible for user) | Q(ispublic = True)) ??
-            # return Organisation.objects.filter(Q(creator=user) | Q(ispublic = True))
+        # return Method.objects.filter(ispublic=True)
         return Method.objects.all()
 
     def create(self, serializer):
         # creator = get_object_or_404(CustomUser, pk=self.request.user.id)
-        # print(creator)
         serializer = MethodSerializer(data=self.request.data)
         if serializer.is_valid():
             serializer.save()

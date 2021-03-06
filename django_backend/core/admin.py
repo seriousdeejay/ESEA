@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import (CustomUser, StakeholderGroup, UserOrganisation, Network, Organisation, Method, Survey, Topic, DirectIndicator, Question, QuestionOption, SurveyResponse, QuestionResponse)
+from .models import (CustomUser, StakeholderGroup, UserOrganisation, Network, Organisation, Method, Survey, 
+                     Topic, DirectIndicator, Question, QuestionOption, SurveyResponse, QuestionResponse)
 
 
 class NetworkAdmin(admin.ModelAdmin):

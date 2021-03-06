@@ -6,10 +6,9 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from ..models import Organisation, CustomUser
-from ..serializers import OrganisationSerializer, UserSerializer
+from ..serializers import OrganisationSerializer
 
 
-# Get all the available organisations of a user
 class OrganisationViewSet(viewsets.ModelViewSet):
     serializer_class = OrganisationSerializer
    
@@ -23,7 +22,7 @@ class OrganisationViewSet(viewsets.ModelViewSet):
             return Organisation.objects.filter(Q(creator=user) | Q(ispublic = True))
         # return Organisation.objects.all()
     
-    # Need to put perform_create on the userorganisation model
+    # Need to put perform_create on the userorganisation model (?)
     def create(self, serializer):
         creator = get_object_or_404(CustomUser, pk=self.request.user.id)
         serializer = OrganisationSerializer(data=self.request.data)
@@ -34,7 +33,6 @@ class OrganisationViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         organisation_object = get_object_or_404(Organisation, pk=self.get_object().id)
         data = request.data
-        print(data)
         try:
             for user in data:
                 user = CustomUser.objects.get(id = user['id'])
@@ -48,13 +46,17 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         serializer = OrganisationSerializer(organisation_object)
         return Response(serializer.data)
 
-# Get all the participants of an organisation
-class OrganisationParticipantsViewSet(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
+    # Add user():
 
-    def get_queryset(self):
-        organisation_id = int(self.kwargs['pk'])
-        return CustomUser.objects.filter(accessible_organisations=organisation_id)
+    # Remove user():
+
+# Get all the participants of an organisation
+# class OrganisationParticipantsViewSet(viewsets.ModelViewSet):
+#     serializer_class = UserSerializer
+
+#     def get_queryset(self):
+#         organisation_id = int(self.kwargs['pk'])
+#         return CustomUser.objects.filter(accessible_organisations=organisation_id)
 
 
 # class OrganisationView(generics.ListCreateAPIView): # RetrieveAPIView):

@@ -9,7 +9,6 @@ from ..serializers import TopicSerializer
 class TopicViewSet(viewsets.ModelViewSet):
     serializer_class = TopicSerializer
 
-    # Made a try/except to show Topic.objects.all() for now
     def get_queryset(self):
         return Topic.objects.filter(method=self.kwargs['method_pk']) 
 
@@ -19,7 +18,7 @@ class TopicViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save(method=method)
             return Response(serializer.data)
-        return Response(status)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     # {
     #     "name": "Topic 9",
