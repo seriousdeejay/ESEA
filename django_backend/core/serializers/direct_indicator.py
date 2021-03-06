@@ -1,6 +1,7 @@
 from typing import Union
 from collections import OrderedDict
 from rest_framework import serializers
+
 from ..models import Question, DirectIndicator, Topic
 from .question_option import QuestionOptionSerializer
 
@@ -13,16 +14,9 @@ class DirectIndicatorSerializer(serializers.Serializer):
     key = serializers.CharField(max_length=45, required=True)
     description = serializers.CharField(required=False, allow_blank=True)
     instruction = serializers.CharField(required=False, allow_blank=True)
-    # prefix = serializers.CharField(
-    #     max_length=10, required=False, allow_blank=True,
-    # )
-    # suffix = serializers.CharField(
-    #     max_length=10, required=False, allow_blank=True,
-    # )
-    # default = serializers.CharField(required=False, allow_blank=True)
-    options = QuestionOptionSerializer(many=True, read_only=False, required=False)
-    max_number = serializers.IntegerField(required=False)
+    options = QuestionOptionSerializer(many=True, read_only=False)
     min_number = serializers.IntegerField(required=False)
+    max_number = serializers.IntegerField(required=False)
     topic = serializers.PrimaryKeyRelatedField(queryset=Topic.objects.all())
 
     def validate(self, data):
@@ -32,7 +26,6 @@ class DirectIndicatorSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 f"{data['answertype']} requires options"
             )
-
         return data
 
     def validate_key(self, value):

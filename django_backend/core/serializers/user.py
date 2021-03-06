@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from ..models import CustomUser
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+
+from ..models import CustomUser
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -16,7 +17,6 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
-
         return attrs
 
     def create(self, validated_data):
@@ -27,10 +27,8 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             last_name_prefix=validated_data['last_name_prefix'],
             last_name=validated_data['last_name']
         )
-
         user.set_password(validated_data['password'])
         user.save()
-
         return user
 
     def update(self, instance, validated_data):
