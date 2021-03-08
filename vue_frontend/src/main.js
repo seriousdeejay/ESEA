@@ -16,7 +16,7 @@ import Menubar from 'primevue/menubar'
 import Menu from 'primevue/menu'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
+
 import Password from 'primevue/password'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -33,6 +33,10 @@ import TabPanel from 'primevue/tabpanel'
 import ToggleButton from 'primevue/togglebutton'
 import DataView from 'primevue/dataview'
 import FileUpload from 'primevue/fileupload'
+import InputNumber from 'primevue/inputnumber'
+import InputText from 'primevue/inputtext'
+import RadioButton from 'primevue/radiobutton'
+import Checkbox from 'primevue/checkbox'
 // const eventsHub = createApp
 
 router.beforeEach((to, from, next) => {
@@ -53,7 +57,6 @@ app.component('Menubar', Menubar)
 app.component('Menu', Menu)
 app.component('Card', Card)
 app.component('Button', Button)
-app.component('InputText', InputText)
 app.component('Password', Password)
 app.component('DataTable', DataTable)
 app.component('Column', Column)
@@ -70,5 +73,9 @@ app.component('TabPanel', TabPanel)
 app.component('ToggleButton', ToggleButton)
 app.component('DataView', DataView)
 app.component('FileUpload', FileUpload)
+app.component('InputNumber', InputNumber)
+app.component('InputText', InputText)
+app.component('RadioButton', RadioButton)
+app.component('Checkbox', Checkbox)
 
 app.mount('#app')

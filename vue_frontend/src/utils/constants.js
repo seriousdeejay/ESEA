@@ -6,5 +6,11 @@ const STATUS = {
     ERROR: 'Error',
     SUCCESS: 'Succes'
 }
+const QUESTION_TYPES = {
+    TEXT: 'TEXT',
+	NUMBER: 'NUMBER',
+	RADIO: 'RADIO',
+	CHECKBOX: 'CHECKBOX'
+}
 
-export { STATUS, API_URL }
+export { STATUS, API_URL, QUESTION_TYPES }

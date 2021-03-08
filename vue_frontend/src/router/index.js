@@ -111,6 +111,22 @@ const routes = [
     meta: {
       requiresLogin: true
     }
+  },
+  {
+    path: '/methods/:id/surveys/:surveyId/result',
+    name: 'method-survey-result',
+    component: () => import('../views/SurveyUserResult.vue'),
+    meta: {
+      requiresLogin: true
+    }
+  },
+  {
+    path: '/methods/:id/surveys/:surveyId/results',
+    name: 'method-survey-results',
+    // component: () => import('../views/SurveyResults'),
+    meta: {
+      requiresLogin: true
+    }
   }
 ]
 

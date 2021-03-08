@@ -1,8 +1,7 @@
 <template>
 <div class="p-d-flex p-jc-center">
-    <div><h1>{{method.name}}</h1></div>
-    <div>eeee</div>
     <div>
+        <h1>{{method.name}}</h1>
         {{method}}
         <Divider />
         <div class="p-grid nested-grid" style="width: 1000px">
