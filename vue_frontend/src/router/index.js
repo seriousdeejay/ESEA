@@ -89,9 +89,25 @@ const routes = [
     }
   },
   {
-    path: '/methods/edit/:id',
+    path: '/methods/:id',
     name: 'methoddetails',
     component: () => import('../views/MethodDetails.vue'),
+    meta: {
+      requiresLogin: true
+    }
+  },
+  {
+    path: '/methods/:id/surveys',
+    name: 'methodsurveys',
+    component: () => import('../views/MethodSurveys.vue'),
+    meta: {
+      requiresLogin: true
+    }
+  },
+  {
+    path: '/methods/:id/surveys/:surveyId',
+    name: 'survey-fill',
+    component: () => import('../views/SurveyResponse.vue'),
     meta: {
       requiresLogin: true
     }

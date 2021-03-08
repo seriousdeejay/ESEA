@@ -139,7 +139,7 @@ export default {
             console.log(this.selectedMethods)
             this.setMethod(this.selectedMethods)
             console.log(this.method)
-            this.$router.push({ name: 'methoddetails', params: { id: this.method.id } })
+            this.$router.push({ name: 'methodsurveys', params: { id: this.method.id } })
         }
     }
 }

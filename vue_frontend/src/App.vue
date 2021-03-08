@@ -72,6 +72,10 @@ export default {
           label: 'Users',
           icon: 'pi pi-users',
           to: '/users'
+        },
+        {
+          label: 'surveys',
+          to: '/surveys'
         }
       ],
       profile: [

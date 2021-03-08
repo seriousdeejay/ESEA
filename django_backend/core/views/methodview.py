@@ -20,6 +20,12 @@ class MethodViewSet(viewsets.ModelViewSet):
             # user = self.request.user
             # return Method.objects.filter(Q(organisation that are accessible for user) | Q(ispublic = True)) ??
         # return Method.objects.filter(ispublic=True)
+        network = self.request.GET.get('network', None)
+        organisation = self.request.GET.get('organisation', None)
+        if network is not None:
+            return Method.objects.filter(organisations__network=network).distinct()
+        if organisation is not None:
+            return Method.objects.filter(organisations=organisation)
         return Method.objects.all()
 
     def create(self, serializer):

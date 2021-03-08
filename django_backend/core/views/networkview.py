@@ -20,11 +20,10 @@ class NetworkViewSet(viewsets.ModelViewSet):
         # return Network.objects.all()
     
     def create(self, serializer):
-        creator = get_object_or_404(CustomUser, pk=self.request.user.id)
-        print(creator)
+        #creator = get_object_or_404(CustomUser, pk=self.request.user.id)
         serializer = NetworkSerializer(data=self.request.data)
         if serializer.is_valid():
-            n = serializer.save(created_by=creator) # does created_by=request.user not work?
+            n = serializer.save(created_by=self.request.user) # does created_by=request.user not work?
             return Response(serializer.data)
 
     def partial_update(self, request, *args, **kwargs):

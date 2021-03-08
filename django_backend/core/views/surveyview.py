@@ -21,8 +21,7 @@ class SurveyViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, method_pk, pk):
         survey = get_object_or_404(self.get_queryset(), pk=pk)
         serializer = SurveyDetailSerializer(survey)
-
-        return Response(serializer.data)
+        return Response(serializer.data) 
 
 # Not really implemented!
 class PublicSurveyViewSet(viewsets.ReadOnlyModelViewSet):

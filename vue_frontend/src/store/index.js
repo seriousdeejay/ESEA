@@ -6,6 +6,7 @@ import user from './modules/user'
 import network from './modules/network'
 import organisation from './modules/organisation'
 import method from './modules/method/method'
+import survey from './modules/method/survey'
 import topic from './modules/method/topic'
 import question from './modules/method/question'
 
@@ -22,6 +23,7 @@ export default createStore({
     network,
     organisation,
     method,
+    survey,
     topic,
     question
   },
