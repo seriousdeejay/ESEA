@@ -6,17 +6,24 @@
         </div>
 
         <div class="p-grid p-col-6 p-p-3">
-            <div v-for="topic in survey.topics[0].sub_topics" :key="topic.id" class="p-grid p-col-12 p-m-3" style="background-color: white; border-radius: 10px;">
-            <div class="p-col-6 p-text-left">...</div>
-            <div class="p-col-6 p-text-right">Progress bar here</div>
-            <div class="p-col-12 p-text-left"><h3>Topic: '{{topic.name}}</h3></div>
-            <survey-question
-            v-for="question in topic.questions"
-            :key="question.id"
-            :question="question"
-            :answer="answers[question.id]"
-            @input="updateAnswer(question.id, $event)"
-            />
+            <div v-for="topic in survey.topics" :key="topic.id" class="p-grid p-col-12 p-m-3" style="background-color: lightgrey; border-radius: 10px;">
+                <div class="p-col-12 p-text-left"><h3>Topic: '{{topic.name}}</h3></div>
+                <survey-question
+                v-for="question in topic.questions"
+                :key="question.id"
+                :question="question"
+                :answer="answers[question.id]"
+                />
+
+                <div v-for="subtopic in topic.sub_topics" :key="subtopic.id" class="p-m-3" style="background-color: white; border-radius: 10px;">
+                    <div class="p-col-12 p-text-left"><h3>Topic: '{{subtopic.name}}</h3></div>
+                     <survey-question
+                    v-for="question in subtopic.questions"
+                    :key="question.id"
+                    :question="question"
+                    :answer="answers[question.id]"
+                />
+                </div>
             </div>
         </div>
     </div>

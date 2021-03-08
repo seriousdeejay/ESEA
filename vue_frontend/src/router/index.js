@@ -123,7 +123,7 @@ const routes = [
   {
     path: '/methods/:id/surveys/:surveyId/results',
     name: 'method-survey-results',
-    // component: () => import('../views/SurveyResults'),
+    component: () => import('../views/SurveyResults'),
     meta: {
       requiresLogin: true
     }

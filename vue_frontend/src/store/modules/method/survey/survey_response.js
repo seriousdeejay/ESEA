@@ -61,9 +61,9 @@ export default {
 		},
 		setDebouncer (state, { id, commit }) {
 			state.debouncers[id] = debounce(
-				async ({ oId, mId, sId, surveyResponse }) => {
+				async ({ mId, sId, surveyResponse }) => {
 					const { response, error } = await SurveyResponseService.put(
-						{ oId, mId, sId, id, data: surveyResponse }
+						{ mId, sId, id, data: surveyResponse }
 					)
 					if (error) {
 						commit('setError', { error, id: surveyResponse.id })
@@ -106,9 +106,10 @@ export default {
 			}
 			commit('deleteSurveyResponse', payload)
 		},
-		async createSurveyResponse ({ commit }, { oId, mId, sId }) {
+		async createSurveyResponse ({ commit }, { mId, sId }) {
+			console.log(mId, sId)
 			const { response, error } = await SurveyResponseService.post({
-				oId, mId, sId, data: baseSurveyResponse
+				mId, sId, data: baseSurveyResponse
 			})
 			if (error) {
 				commit('setError', { error })
@@ -118,14 +119,15 @@ export default {
 			commit('setSurveyResponse', response)
 			return { response }
 		},
-		updateSurveyResponse ({ state, commit }, { oId, mId, sId, surveyResponse }) {
-			if (!surveyResponse || !oId || !mId || !sId) return
+		updateSurveyResponse ({ state, commit }, { mId, sId, surveyResponse }) {
+			console.log(surveyResponse)
+			if (!surveyResponse || !mId || !sId) return
 			if (!state.debouncers[surveyResponse.id]) {
 				commit('setDebouncer', { id: surveyResponse.id, commit })
 			}
 			commit('updateList', { id: surveyResponse.id, data: surveyResponse })
 			commit('setIsSaved', { id: surveyResponse.id })
-			state.debouncers[surveyResponse.id]({ oId, mId, sId, surveyResponse })
+			state.debouncers[surveyResponse.id]({ mId, sId, surveyResponse })
 		},
 		setSurveyResponse ({ state, commit }, { id } = {}) {
 			const data = state.surveyResponses.find(

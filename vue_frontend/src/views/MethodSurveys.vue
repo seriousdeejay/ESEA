@@ -5,7 +5,6 @@
         <personalised-datatable table-name="surveys" :columns="SurveysColumns" :filters="filters"
         :custom-data="surveys" @item-redirect="goToSurvey" />
         </div>
-    {{ surveys }}
     </div>
 </template>
 <script>
@@ -22,7 +21,8 @@ export default {
                 { field: 'name', header: 'Name' },
                 { field: 'description', header: 'Description' },
                 { field: 'questions.length', header: 'Questions' },
-                { field: 'rate', header: 'Rate' }
+                { field: 'rate', header: 'Rate' },
+                { field: 'respondents', header: 'Respondents' }
             ],
             filters: {}
 

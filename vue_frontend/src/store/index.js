@@ -10,6 +10,7 @@ import survey from './modules/method/survey'
 import topic from './modules/method/topic'
 import question from './modules/method/question'
 import surveyResponse from './modules/method/survey/survey_response'
+import surveyResult from './modules/method/survey/survey_results'
 const vuexLocalStorage = new VuexPersistance({
   storage: window.localStorage
 //  ... can be used to use local storage
@@ -26,7 +27,8 @@ export default createStore({
     survey,
     topic,
     question,
-    surveyResponse
+    surveyResponse,
+    surveyResult
   },
   plugins: [vuexLocalStorage.plugin]
 })

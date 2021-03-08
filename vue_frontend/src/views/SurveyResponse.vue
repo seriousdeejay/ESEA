@@ -107,6 +107,12 @@ export default {
         ...mapActions('surveyResponse', ['fetchSurveyResponses', 'setSurveyResponse', 'updateSurveyResponse', 'createSurveyResponse']),
         async initialize () {
             await this.fetchSurvey({ mId: this.method.id, id: this.survey.id })
+            await this.fetchSurveyResponses({ mId: this.method.id, sId: this.survey.id })
+            if (this.surveyResponses.length) {
+				this.setSurveyResponse(this.surveyResponses[0])
+				return
+            }
+            this.createSurveyResponse({ mId: this.method.id, sId: this.survey.id })
         },
         previousTopic () {
             if (this.topicNumber > 0) {
