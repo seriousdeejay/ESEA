@@ -1,4 +1,5 @@
 <template>
+<Button label="Related Surveys" icon="" class="p-button-success p-m-5" @click="goToSurveys" />
 <div class="p-d-flex p-jc-center">
     <div>
         <h1>{{method.name}}</h1>
@@ -45,6 +46,9 @@ export default {
         async initialize () {
             await this.fetchMethod({ id: this.method?.id || 0 })
             await this.fetchTopics({ mId: this.method.id })
+        },
+        goToSurveys () {
+            this.$router.push({ name: 'methodsurveys', params: { id: this.method.id } })
         }
     }
 

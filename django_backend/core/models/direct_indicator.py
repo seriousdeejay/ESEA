@@ -59,8 +59,8 @@ class DirectIndicator(models.Model):
             return "0"
 
         if (
-            self.question.type == self.question.RADIO
-            or self.question.type == self.question.CHECKBOX
+            self.question.answertype == self.question.RADIO
+            or self.question.answertype == self.question.CHECKBOX
         ):
             response_values = self.checkbox_values(responses)
 

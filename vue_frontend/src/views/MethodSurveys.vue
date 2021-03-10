@@ -30,7 +30,8 @@ export default {
     },
     computed: {
         ...mapState('method', ['method']),
-        ...mapState('survey', ['surveys'])
+        ...mapState('survey', ['surveys']),
+        ...mapState('survey_response', ['surveyResponses'])
     },
     created () {
         this.initialize()
@@ -41,7 +42,7 @@ export default {
             this.fetchSurveys({ mId: this.method.id })
         },
         goToSurvey (survey) {
-            console.log(survey.id)
+            // this.$router.push({ name: 'method-survey-result', params: { id: this.method.id, surveyId: survey.id } })
             this.setSurvey(survey)
             this.$router.push({ name: 'survey-fill', params: { id: this.method.id, surveyId: survey.id } })
         }

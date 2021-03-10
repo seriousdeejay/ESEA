@@ -57,7 +57,7 @@ const routes = [
     }
   },
   {
-    path: '/networks/edit/:id',
+    path: '/networks/:id',
     name: 'networkdetails',
     component: () => import('../views/NetworkDetails.vue'),
     meta: {
@@ -73,7 +73,7 @@ const routes = [
     }
   },
   {
-    path: '/organisations/edit/:id',
+    path: '/organisations/:id',
     name: 'organisationdetails',
     component: () => import('../views/OrganisationDetails.vue'),
     meta: {

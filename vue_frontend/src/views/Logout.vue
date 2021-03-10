@@ -1,15 +1,18 @@
 <template>
   <div class="log">
+    Log out
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
   export default {
     created () {
-      this.$store.dispatch('userLogout')
-        .then(() => {
-          this.$router.push({ name: 'login' })
-        })
+      this.userLogout()
+      this.$router.push({ name: 'login' })
+    },
+    methods: {
+      ...mapActions('authentication', ['userLogout'])
     }
   }
 </script>

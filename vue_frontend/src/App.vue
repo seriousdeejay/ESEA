@@ -74,8 +74,8 @@ export default {
           to: '/users'
         },
         {
-          label: 'surveys',
-          to: '/surveys'
+          label: 'Log out',
+          to: '/logout'
         }
       ],
       profile: [

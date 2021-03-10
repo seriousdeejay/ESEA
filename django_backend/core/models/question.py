@@ -14,9 +14,7 @@ class questionManager(models.Manager):
 
         if question.answertype in (question.QUESTION_TYPES_WITH_OPTIONS):
             for option in options:
-                print(option)
                 questionoption = QuestionOption.objects.create(text=option, value=1, question=question)
-                print(questionoption)
                 question.options.add(questionoption)
             question.save()
         return question

@@ -6,7 +6,6 @@ class Method(models.Model):
     name = models.CharField(max_length=255, unique=False, blank=False)
     description = models.TextField(max_length=1000, blank=True)
     # creator = models.ForeignKey('CustomUser', null=True, blank=True, default= None, editable=False, related_name='method_creator', on_delete=models.SET_DEFAULT) # change to foreignkey
-    organisations = models.ManyToManyField('Organisation', related_name="methods", blank=True)
 
     def __repr__(self):
          return (

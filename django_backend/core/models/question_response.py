@@ -10,3 +10,6 @@ class QuestionResponse(models.Model):
     class Meta:
         verbose_name = _('question_response')
         verbose_name_plural = _('question_responses')
+
+    def __str__(self):
+        return f"{self.survey_response.id}, {self.direct_indicator_id}, value: {self.value}"

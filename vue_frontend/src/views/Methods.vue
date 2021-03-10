@@ -10,7 +10,7 @@
             <Toolbar>
                 <template #left>
                     <Button label="Create Method" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreateMethodDialog" />
-                    <Button label="Import YAML" icon="pi pi-upload" class="p-button-success" disabled='true' />
+                    <Button label="Import YAML" icon="pi pi-upload" class="p-button-success" @click="importDialog=true" />
                 </template>
 
                 <template #right>
@@ -28,11 +28,6 @@
               <Column field="" header="Created by" :sortable="true"></Column> Created_by attribute needs to be added to the Method model -->
             </DataTable>
         </div>
-        <FileUpload name="myfile" url="http://localhost:8000/import-yaml/" @upload="onUpload" :multiple="true" accept="" :maxFileSize="1000000">
-            <template #empty>
-                <p>Drag and drop files to here to upload.</p>
-            </template>
-        </FileUpload>
     </div>
 
     <Dialog v-model:visible="methodDialog" :style="{width: '450px'}" header="Method Details" :modal="true" class="p-fluid">
@@ -55,6 +50,17 @@
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
             <Button label="Save" icon="pi pi-check" class="p-button-text" @click="saveMethod" :disabled="!method.name" />
+        </template>
+    </Dialog>
+
+    <Dialog v-model:visible="importDialog" :style="{width: '450px'}" header="Import a Method" :modal="true" class="p-fluid">
+        <FileUpload name="myfile" url="http://localhost:8000/import-yaml/" @upload="onUpload" :multiple="true" accept="" :maxFileSize="1000000">
+            <template #empty>
+                <p>Drag and drop files to here to upload.</p>
+            </template>
+        </FileUpload>
+        <template #footer>
+            <Button label="Remove window" icon="pi pi-times" class="p-button-text" @click="importDialog = false"/>
         </template>
     </Dialog>
 
@@ -107,6 +113,7 @@ export default {
             filters: {},
             ispublicbool: ['true', 'false'],
             methodDialog: false,
+            importDialog: false,
             submitted: false,
             selectedMethods: null
         }
@@ -127,6 +134,10 @@ export default {
             this.methodDialog = true
             this.submitted = true
         },
+        onUpload () {
+            this.initialize()
+            this.importDialog = false
+        },
         saveMethod () {
             this.submitted = true
             if (this.method.name.trim()) {
@@ -139,7 +150,7 @@ export default {
             console.log(this.selectedMethods)
             this.setMethod(this.selectedMethods)
             console.log(this.method)
-            this.$router.push({ name: 'methodsurveys', params: { id: this.method.id } })
+            this.$router.push({ name: 'methoddetails', params: { id: this.method.id } })
         }
     }
 }

@@ -11,6 +11,9 @@ class SurveyResponse(models.Model):
     class Meta:
         verbose_name = _('survey_response')
         verbose_name_plural = _('survey_responses')
+    
+    def __str__(self):
+        return f"'{self.survey} ({self.user_organisation})'"
 
     def filter_question_responses(self, question_responses):
         indicator_ids = self.survey.questions.values_list('id', flat=True,)

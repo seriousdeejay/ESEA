@@ -2,11 +2,11 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-# from secrets import token_urlsafe
+from secrets import token_urlsafe
 
 from ..models import (Survey, SurveyResponse, QuestionResponse, UserOrganisation, DirectIndicator)
-from ..serializers import (SurveyResponseSerializer) #, SurveyResponseCalculationSerializer
-# from ..utils import calculate_indicators, map_responses_by_indicator
+from ..serializers import (SurveyResponseSerializer, QuestionResponseSerializer) #, SurveyResponseCalculationSerializer
+from ..utils import map_responses_by_indicator # calculate_indicators,
 
 
 class SurveyResponseViewSet(viewsets.ModelViewSet):
@@ -23,21 +23,27 @@ class SurveyResponseViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def all(self, request, method_pk, survey_pk):
+        
         all_respondents = SurveyResponse.objects.filter(survey__method=method_pk, survey=survey_pk)
 
         question_responses = QuestionResponse.objects.filter(survey_response__survey__method=method_pk, survey_response__survey=survey_pk, survey_response__finished=True)
         # indirect_indicators = IndirectIndicator.objects.filter(topic__method=method_pk)
         direct_indicators = DirectIndicator.objects.filter(survey=survey_pk)
+        print(direct_indicators)
+        for item in question_responses:
+            s = QuestionResponseSerializer(item)
+            print(s.data)
         map_responses_by_indicator(direct_indicators, question_responses)
-        indicators = calculate_indicators(indirect_indicators, direct_indicators)
-        serializer = SurveyResponseCalculationSerializer(indicators.values(), many=True)
+        #indicators = calculate_indicators(indirect_indicators, direct_indicators)
+        #serializer = SurveyResponseCalculationSerializer(indicators.values(), many=True)
         return Response(
             {
                 "all_respondents": len(all_respondents),
                 "respondents": len(all_respondents.filter(finished=True)),
-                "indicators": serializer.data,
+                #"indicators": serializer.data,
             }
         )
+        
 
 #     @action(detail=True, methods=["get"])
 #     def calculations(self, request, organization_pk, method_pk, survey_pk, pk):

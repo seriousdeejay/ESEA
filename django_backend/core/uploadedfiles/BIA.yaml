@@ -521,7 +521,7 @@ surveys:
         topic: W8
         ismandatory: Y
         answertype: multipleChoice
-        aggregatedqs: 
+        aggregatedqs:
           - Company has formal onboarding process for new employees
           - Company provided ongoing training to employees in the last year
           - Company has a policy to encourage internal promotions and hiring for advanced positions (posting job openings internally first, etc.)

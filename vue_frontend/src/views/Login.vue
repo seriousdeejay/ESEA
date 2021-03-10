@@ -42,7 +42,7 @@ export default {
     name: 'login',
     data () {
         return {
-            username: 'admin', // Filled in for easy login, should remove it before deployment!
+            username: 'admin', // Filled in for easy login, should be removed before deployment!
             password: 'admin',
             incorrectAuth: false
         }
@@ -57,8 +57,6 @@ export default {
                 username: this.username,
                 password: this.password
             })
-            // this.$store.dispatch(['authorisation/userLogin'], {
-            // })
             .then(() => {
                 this.$router.push({ name: 'home' })
             })

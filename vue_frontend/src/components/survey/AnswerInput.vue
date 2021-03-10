@@ -6,7 +6,7 @@
         <div v-if="type === questionTypes.CHECKBOX">
             <div v-for="(option, index) in options" :key="`${index}-option`" class="p-field-checkbox">
                 <Checkbox :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" />
-                <label :for="`${index}-option`">{{option[optionTextKey]}}</label>
+                <label :for="`${index}-option`" class="p-text-left">{{option[optionTextKey]}}</label>
             </div>
         </div>
 

@@ -88,10 +88,14 @@ def upload_yaml(request):
                             isMandatory = False
                         if 'description' in question.keys():
                             description = question['description']
-                        if 'options' in question.keys(): 
+                        if question['answertype'] == "RADIO":
                             options = question['options']
+                        if question['answertype'] == "multipleChoice":
+                            answertype = "CHECKBOX"
+                            options = question['aggregatedqs']
                         q = DirectIndicator.objects.create(key=key, topic=topic, answertype=answertype, name=name, isMandatory=isMandatory, description=description, instruction=instruction, options=options)
-                        print('>>', q, 'TOPIC:', q.topic, q.question.options.all())
+                        s.questions.add(q)
+                        # print('>>', q, 'TOPIC:', q.topic, q.question.options.all())
                     except:
                         continue
                 return Response({"Method Saved!"})
