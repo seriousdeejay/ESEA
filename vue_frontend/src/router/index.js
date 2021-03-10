@@ -53,7 +53,8 @@ const routes = [
     name: 'networks',
     component: () => import('../views/Networks.vue'),
     meta: {
-      requiresLogin: true
+      requiresLogin: true,
+      breadcrumb: [{ label: 'networks', to: '/networks' }]
     }
   },
   {
@@ -61,7 +62,8 @@ const routes = [
     name: 'networkdetails',
     component: () => import('../views/NetworkDetails.vue'),
     meta: {
-      requiresLogin: true
+      requiresLogin: true,
+      breadcrumb: [{ label: 'networks', to: '/networks' }, { label: '', to: { name: 'networkdetails', params: { id: '' } } }]
     }
   },
   {

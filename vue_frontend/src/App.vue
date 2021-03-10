@@ -9,6 +9,7 @@
           <Menu id="profile_menu" ref="menu" :model="profile" :popup="true" />
         </template>
     </Menubar>
+    <my-bread-crumb />
     <!-- <h1>Breadcrumb with Chosen Network>Chosen Organisation>Chosen Method</h1> -->
       <router-view/>
   </div>
@@ -18,8 +19,11 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-
+import MyBreadCrumb from './components/MyBreadCrumb'
 export default {
+  components: {
+    MyBreadCrumb
+  },
   data () {
     return {
       items: [

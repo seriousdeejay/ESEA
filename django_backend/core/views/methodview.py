@@ -23,9 +23,9 @@ class MethodViewSet(viewsets.ModelViewSet):
         network = self.request.GET.get('network', None)
         organisation = self.request.GET.get('organisation', None)
         if network is not None:
-            return Method.objects.filter(organisations__network=network).distinct()
+            return Method.objects.filter(networks=network)
         if organisation is not None:
-            return Method.objects.filter(organisations=organisation)
+            return Method.objects.filter(networks__organisations=organisation).distinct()
         return Method.objects.all()
 
     def create(self, serializer):

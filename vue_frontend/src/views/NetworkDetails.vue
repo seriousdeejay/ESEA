@@ -71,10 +71,12 @@
                 <h4 v-else>This network does not have any organisations yet</h4>
         </TabPanel>
         <TabPanel header="Methods">
-            Content II
+             <personalised-datatable v-if="(methods.length !== 0)"
+                table-name="methods" selectionToggle :columns="MethodsColumns" :filters="filters" :custom-data="methods" @item-redirect="goToSelectedMethods"/>
+                <h4 v-else>This network does not have any methods yet</h4>
         </TabPanel>
         <TabPanel header="Surveys">
-            Content III
+            <my-methods create-button add-button remove-button></my-methods>
         </TabPanel>
         <TabPanel header="Users">
             <personalised-datatable table-name="Members" selectionToggle :columns="ParticipantsColumns" :custom-data="users" @item-redirect="goToSelectedUsers"/>
@@ -118,10 +120,12 @@
 import { mapState, mapActions } from 'vuex'
 // import OrganisationsVue from './Organisations.vue'
 import PersonalisedDatatable from '../components/PersonalisedDatatable'
+import MyMethods from '../components/MyMethods'
 
 export default {
     components: {
-        PersonalisedDatatable
+        PersonalisedDatatable,
+        MyMethods
     },
     data () {
         return {
@@ -132,6 +136,10 @@ export default {
                  { field: 'participants.length', header: 'Participants' },
                  { field: 'creator.username', header: 'Created by' }
                  ],
+            MethodsColumns: [
+                { field: 'name', header: 'Name' },
+                { field: 'description', header: 'Description' }
+            ],
             ParticipantsColumns: [
                  { field: 'username', header: 'Username' },
                  { field: 'email', header: 'E-mail' },
@@ -152,6 +160,7 @@ export default {
     computed: {
         ...mapState('network', ['network', 'networkorganisations']),
         ...mapState('organisation', ['organisations', 'organisation']),
+        ...mapState('method', ['methods', 'method']),
         ...mapState('user', ['users', 'user'])
     },
     created () {
@@ -160,10 +169,12 @@ export default {
     methods: {
         ...mapActions('network', ['fetchNetwork', 'updateNetwork', 'deleteNetwork', 'deleteNetworkOrganisations']),
         ...mapActions('organisation', ['fetchOrganisations', 'setOrganisation']),
+        ...mapActions('method', ['fetchMethods', 'setMethod']),
         ...mapActions('user', ['fetchUsers', 'setUser']),
         async initialize () {
             this.inviteOrganisationsWindow = false
             await this.fetchNetwork({ id: this.network?.id || 0 })
+            // await this.fetchMethods({ query: `?network=${this.network?.id || 0}` })
             await this.fetchUsers({ query: `network=${this.network?.id || 0}` })
         },
         async editNetwork () {
@@ -205,6 +216,12 @@ export default {
             } else {
                 this.selectedOrganisations = selectedRows
             }
+       },
+       goToSelectedMethods (selectedRows) {
+           console.log(selectedRows[0])
+           this.setMethod({ ...selectedRows[0] })
+           console.log(this.method.id)
+           this.$router.push({ name: 'methoddetails', params: { id: this.method.id } })
        },
        goToSelectedUsers (selectedRows) {
         this.setUser({ ...selectedRows[0] })

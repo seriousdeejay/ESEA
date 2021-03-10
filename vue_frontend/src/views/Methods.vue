@@ -3,7 +3,11 @@
         <h1>Methods Overview</h1>
         <Toast position="top-right"/>
         <div class="card p-m-5 p-shadow-2">
-            <DataTable ref="dt" :value="methods" v-model:selection="selectedMethods" selectionMode="single" dataKey="id" @row-select="goToMethod"
+            <my-methods :columns="columns"></my-methods>
+        </div>
+    </div>
+
+            <!-- <DataTable ref="dt" :value="methods" v-model:selection="selectedMethods" selectionMode="single" dataKey="id" @row-select="goToMethod"
             :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
 
@@ -24,8 +28,8 @@
               <Column field="ispublic" header="Public" :sortable="true"></Column>
               <Column field="name" header="Name" :sortable="true"></Column>
               <Column field="description" header="Description" :sortable="true"></Column>
-              <!--<Column field="organisations.length" header="Organisations" :sortable="true"></Column>
-              <Column field="" header="Created by" :sortable="true"></Column> Created_by attribute needs to be added to the Method model -->
+              <Column field="organisations.length" header="Organisations" :sortable="true"></Column>
+              <Column field="" header="Created by" :sortable="true"></Column> Created_by attribute needs to be added to the Method model
             </DataTable>
         </div>
     </div>
@@ -64,7 +68,7 @@
         </template>
     </Dialog>
 
-    <!-- <div>
+    <div>
         <h1>
         to do:
         -List of Methods (just like Method and Organisations)
@@ -99,59 +103,64 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-
+import MyMethods from '../components/MyMethods'
 export default {
+    components: {
+        MyMethods
+    },
+
+    data () {
+        return {
+            columns: [
+                { field: 'ispublic', header: 'public' },
+                { field: 'name', header: 'Name' },
+                { field: 'description', header: 'Description' }
+                ]
+        }
+    }
+}
+</script>
     // onIdle () {
     //   this.$store.dispatch('userLogout')
     //     .then(() => {
     //       this.$router.push({ name: 'login' })
     //     })
     // },
-    data () {
-        return {
-            filters: {},
-            ispublicbool: ['true', 'false'],
-            methodDialog: false,
-            importDialog: false,
-            submitted: false,
-            selectedMethods: null
-        }
-    },
-    computed: {
-        ...mapState('method', ['methods', 'method'])
-    },
-    created () {
-        this.initialize()
-    },
-    methods: {
-        ...mapActions('method', ['fetchMethods', 'setMethod', 'createMethod', 'updateMethodForm']),
-        async initialize () {
-            await this.fetchMethods({})
-        },
-        async openCreateMethodDialog () {
-            this.setMethod({})
-            this.methodDialog = true
-            this.submitted = true
-        },
-        onUpload () {
-            this.initialize()
-            this.importDialog = false
-        },
-        saveMethod () {
-            this.submitted = true
-            if (this.method.name.trim()) {
-                this.createMethod({})
-                this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Method created', life: 3000 })
-            }
-            this.methodDialog = true
-        },
-        goToMethod (event) {
-            console.log(this.selectedMethods)
-            this.setMethod(this.selectedMethods)
-            console.log(this.method)
-            this.$router.push({ name: 'methoddetails', params: { id: this.method.id } })
-        }
-    }
-}
-</script>
+    // created () {
+    //     this.initialize()
+    // },
+            // filters: {},
+            // ispublicbool: ['true', 'false'],
+            // methodDialog: false,
+            // importDialog: false,
+            // submitted: false,
+            // selectedMethods: null
+    // methods: {
+    //     ...mapActions('method', ['fetchMethods', 'setMethod', 'createMethod', 'updateMethodForm']),
+    //     async initialize () {
+    //         await this.fetchMethods({})
+    //     // },
+    //     // async openCreateMethodDialog () {
+    //     //     this.setMethod({})
+    //     //     this.methodDialog = true
+    //     //     this.submitted = true
+    //     // },
+    //     // onUpload () {
+    //     //     this.initialize()
+    //     //     this.importDialog = false
+    //     // },
+    //     // saveMethod () {
+    //     //     this.submitted = true
+    //     //     if (this.method.name.trim()) {
+    //     //         this.createMethod({})
+    //     //         this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Method created', life: 3000 })
+    //     //     }
+    //     //     this.methodDialog = true
+    //     // },
+    //     // goToMethod (event) {
+    //     //     console.log(this.selectedMethods)
+    //     //     this.setMethod(this.selectedMethods)
+    //     //     console.log(this.method)
+    //     //     this.$router.push({ name: 'methoddetails', params: { id: this.method.id } })
+    //     // }
+    // }

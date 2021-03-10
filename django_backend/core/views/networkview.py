@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
-from ..models import Network, Organisation, CustomUser
+from ..models import Network, Organisation, Method, CustomUser
 from ..serializers import NetworkSerializer, OrganisationSerializer
 
 
@@ -30,12 +30,19 @@ class NetworkViewSet(viewsets.ModelViewSet):
         network_object = get_object_or_404(Network, pk=self.get_object().id)
         data = request.data
         try:
-            for organisation in data: 
-                organisation = Organisation.objects.get(id=organisation['id'])
-                if network_object.organisations.filter(pk=organisation.pk).exists():
-                    network_object.organisations.remove(organisation)
-                else:
-                    network_object.organisations.add(organisation)
+            for item in data: 
+                try:
+                    organisation = Organisation.objects.get(id=item['id'], name=item['name'])
+                    if network_object.organisations.filter(pk=organisation.pk).exists():
+                        network_object.organisations.remove(organisation)
+                    else:
+                        network_object.organisations.add(organisation)
+                except:
+                    method = Method.objects.get(id=item['id'], name=item['name'])
+                    if network_object.methods.filter(pk=method.pk).exists():
+                        network_object.methods.remove(method)
+                    else:
+                        network_object.methods.add(method)
         except KeyError:
             pass
         network_object.save()

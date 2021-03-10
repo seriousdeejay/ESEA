@@ -121,7 +121,7 @@ export default {
             commit('deleteNetwork', payload)
             dispatch('setNetwork', {})
         },
-        async deleteNetworkOrganisations ({ state, commit }, payload) {
+        async patchNetwork ({ state, commit }, payload) {
             const id = state.network.id
             const data = payload.data
             const { error } = await NetworkService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
