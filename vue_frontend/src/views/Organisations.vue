@@ -29,7 +29,8 @@
         <h1>Organisations Overview</h1>
         <Toast position="top-right"/>
         <div class="card p-m-5 p-shadow-2">
-            <Toolbar>
+            <my-organisations selection-enabled></my-organisations>
+            <!-- <Toolbar>
                 <template #left>
                         <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" />
                         <Button label="Create Organisation" icon="pi pi-plus" class="p-button-success p-mx-2" @click="openCreateOrganisationDialog" />
@@ -43,11 +44,11 @@
                 </template>
             </Toolbar>
             <personalised-datatable table-name="organisations" selectionToggle :columns="OrganisationsColumns" :filters="filters"
-            :custom-data="organisations" @item-redirect="goToOrganisation"/>
+            :custom-data="organisations" @item-redirect="goToOrganisation"/> -->
         </div>
     </div>
 
-    <Dialog v-model:visible="organisationDialog" :style="{width: '450px'}" header="Organisation Details" :modal="true" class="p-fluid">
+    <!-- <Dialog v-model:visible="organisationDialog" :style="{width: '450px'}" header="Organisation Details" :modal="true" class="p-fluid">
         <div class="p-field">
             <label for="name">Name</label>
             <InputText id="name" v-model.trim="organisation.name" required="true" autofocus :class="{'p-invalid': submitted && !organisation.name}"
@@ -68,9 +69,9 @@
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
             <Button label="Save" icon="pi pi-check" class="p-button-text" @click="saveOrganisation" :disabled="!organisation.name" />
         </template>
-    </Dialog>
+    </Dialog> -->
 
-    <Dialog v-model:visible="deleteOrganisationDialog" :style="{width: '450px'}" header="Confirm" :modal="true">
+    <!-- <Dialog v-model:visible="deleteOrganisationDialog" :style="{width: '450px'}" header="Confirm" :modal="true">
         <div class="confirmation-content">
             <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
             <span v-if="organisation">Are you sure you want to delete <b>{{organisation.name}}</b>?</span>
@@ -90,17 +91,19 @@
             <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteOrganisationsDialog = false"/>
             <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteSelectedOrganisations" />
         </template>
-    </Dialog>
+    </Dialog> -->
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import PersonalisedDatatable from '../components/PersonalisedDatatable'
+// import PersonalisedDatatable from '../components/PersonalisedDatatable'
+import MyOrganisations from '../components/MyOrganisations'
 // import { useToast } from 'primevue/usetoast'
 
 export default {
     components: {
-        PersonalisedDatatable
+        // PersonalisedDatatable,
+        MyOrganisations
     },
      setup () {
          // const toast = useToast()
@@ -113,20 +116,20 @@ export default {
      },
     data () {
         return {
-            OrganisationsColumns: [
-                { field: 'ispublic', header: 'Public' },
-                { field: 'name', header: 'Name' },
-                { field: 'description', header: 'Description' },
-                { field: 'participants.length', header: 'Participants' },
-                { field: 'creator.username', header: 'Created by' }
-            ],
-            selectionToggle: false,
-            selectedOrganisations: null,
-            filters: {},
-            ispublicbool: [true, false],
-            boolChoice: null,
-            organisationDialog: false,
-            submitted: false
+            // OrganisationsColumns: [
+            //     { field: 'ispublic', header: 'Public' },
+            //     { field: 'name', header: 'Name' },
+            //     { field: 'description', header: 'Description' },
+            //     { field: 'participants.length', header: 'Participants' },
+            //     { field: 'creator.username', header: 'Created by' }
+            // ],
+            // selectionToggle: false,
+            // selectedOrganisations: null,
+            // filters: {},
+            // ispublicbool: [true, false],
+            // boolChoice: null,
+            // organisationDialog: false,
+            // submitted: false
         }
     },
     computed: {

@@ -47,7 +47,8 @@
     </div>
     <TabView>
         <TabPanel header="Organisations">
-                <Toolbar>
+            <my-organisations network-organisations selection-enabled></my-organisations>
+                <!-- <Toolbar>
                     <template #left>
                         <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" />
                         <div v-if="!inviteOrganisationsWindow">
@@ -68,18 +69,18 @@
                 </Toolbar>
                 <personalised-datatable v-if="((networkorganisations.length !== 0 && inviteOrganisationsWindow === false ) || ( inviteOrganisationsWindow === true))"
                 table-name="organisation" selectionToggle :columns="OrganisationsColumns" :filters="filters" :custom-data="inviteOrganisationsWindow? organisations : networkorganisations" @item-redirect="goToSelectedOrganisations"/>
-                <h4 v-else>This network does not have any organisations yet</h4>
+                <h4 v-else>This network does not have any organisations yet</h4> -->
         </TabPanel>
         <TabPanel header="Methods">
-             <personalised-datatable v-if="(methods.length !== 0)"
+            <my-methods selection-toggle-button create-button add-button remove-button></my-methods>
+             <!-- <personalised-datatable v-if="(methods.length !== 0)"
                 table-name="methods" selectionToggle :columns="MethodsColumns" :filters="filters" :custom-data="methods" @item-redirect="goToSelectedMethods"/>
-                <h4 v-else>This network does not have any methods yet</h4>
+                <h4 v-else>This network does not have any methods yet</h4> -->
         </TabPanel>
         <TabPanel header="Surveys">
-            <my-methods create-button add-button remove-button></my-methods>
         </TabPanel>
         <TabPanel header="Users">
-            <personalised-datatable table-name="Members" selectionToggle :columns="ParticipantsColumns" :custom-data="users" @item-redirect="goToSelectedUsers"/>
+            <personalised-datatable table-name="Members" selection-toggle :columns="ParticipantsColumns" :custom-data="users" @item-redirect="goToSelectedUsers"/>
         </TabPanel>
     </TabView>
 
@@ -120,26 +121,28 @@
 import { mapState, mapActions } from 'vuex'
 // import OrganisationsVue from './Organisations.vue'
 import PersonalisedDatatable from '../components/PersonalisedDatatable'
+import MyOrganisations from '../components/MyOrganisations'
 import MyMethods from '../components/MyMethods'
 
 export default {
     components: {
         PersonalisedDatatable,
+        MyOrganisations,
         MyMethods
     },
     data () {
         return {
-            OrganisationsColumns: [
-                 { field: 'ispublic', header: 'Public' },
-                 { field: 'name', header: 'Name' },
-                 { field: 'description', header: 'Description' },
-                 { field: 'participants.length', header: 'Participants' },
-                 { field: 'creator.username', header: 'Created by' }
-                 ],
-            MethodsColumns: [
-                { field: 'name', header: 'Name' },
-                { field: 'description', header: 'Description' }
-            ],
+            // OrganisationsColumns: [
+            //      { field: 'ispublic', header: 'Public' },
+            //      { field: 'name', header: 'Name' },
+            //      { field: 'description', header: 'Description' },
+            //      { field: 'participants.length', header: 'Participants' },
+            //      { field: 'creator.username', header: 'Created by' }
+            //      ],
+            // MethodsColumns: [
+            //     { field: 'name', header: 'Name' },
+            //     { field: 'description', header: 'Description' }
+            // ],
             ParticipantsColumns: [
                  { field: 'username', header: 'Username' },
                  { field: 'email', header: 'E-mail' },
@@ -150,10 +153,10 @@ export default {
             editNetworkDialog: false,
             ispublicbool: ['true', 'false'],
             deleteNetworkDialog: false,
-            inviteOrganisationsWindow: false,
-            filters: {},
-            selectedOrganisations: null, // might be removable,
-            selectionToggle: false,
+            // inviteOrganisationsWindow: false,
+            // filters: {},
+            // selectedOrganisations: null, // might be removable,
+            // selectionToggle: false,
             submitted: false
         }
     },
@@ -191,38 +194,38 @@ export default {
             this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network Deleted', life: 3000 })
             this.$router.push({ name: 'networks' })
         },
-        async removeOrganisation () {
-            await this.deleteNetworkOrganisations({ data: this.selectedOrganisations })
-            this.selectedOrganisations = null
-            this.initialize()
-        },
-        async openInviteOrganisationsWindow () {
-            await this.fetchOrganisations({ query: `excludenetwork=${this.network?.id || 0}` })
-            this.inviteOrganisationsWindow = true
-        },
-        async sendInvitationToOrganisations () {
-            await this.deleteNetworkOrganisations({ data: this.selectedOrganisations })
-            this.initialize()
-        },
+        // async removeOrganisation () {
+        //     await this.deleteNetworkOrganisations({ data: this.selectedOrganisations })
+        //     this.selectedOrganisations = null
+        //     this.initialize()
+        // },
+        // async openInviteOrganisationsWindow () {
+        //     await this.fetchOrganisations({ query: `excludenetwork=${this.network?.id || 0}` })
+        //     this.inviteOrganisationsWindow = true
+        // },
+        // async sendInvitationToOrganisations () {
+        //     await this.deleteNetworkOrganisations({ data: this.selectedOrganisations })
+        //     this.initialize()
+        // },
         hideDialogs () {
             this.editNetworkDialog = false
             this.deleteNetworkDialog = false
         },
-        goToSelectedOrganisations (selectedRows) {
-            // this.$toast.add({ severity: 'info', summary: 'Item Selected', detail: 'Name:', life: 3000 })
-            if (!this.selectionToggle) {
-                this.setOrganisation({ ...selectedRows[0] })
-                this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
-            } else {
-                this.selectedOrganisations = selectedRows
-            }
-       },
-       goToSelectedMethods (selectedRows) {
-           console.log(selectedRows[0])
-           this.setMethod({ ...selectedRows[0] })
-           console.log(this.method.id)
-           this.$router.push({ name: 'methoddetails', params: { id: this.method.id } })
-       },
+    //     goToSelectedOrganisations (selectedRows) {
+    //         // this.$toast.add({ severity: 'info', summary: 'Item Selected', detail: 'Name:', life: 3000 })
+    //         if (!this.selectionToggle) {
+    //             this.setOrganisation({ ...selectedRows[0] })
+    //             this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+    //         } else {
+    //             this.selectedOrganisations = selectedRows
+    //         }
+    //    },
+    //    goToSelectedMethods (selectedRows) {
+    //        console.log(selectedRows[0])
+    //        this.setMethod({ ...selectedRows[0] })
+    //        console.log(this.method.id)
+    //        this.$router.push({ name: 'methoddetails', params: { id: this.method.id } })
+    //    },
        goToSelectedUsers (selectedRows) {
         this.setUser({ ...selectedRows[0] })
         this.$router.push({ name: 'userdetails', params: { id: this.user.id } })

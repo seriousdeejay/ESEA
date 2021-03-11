@@ -22,10 +22,13 @@ class MethodViewSet(viewsets.ModelViewSet):
         # return Method.objects.filter(ispublic=True)
         network = self.request.GET.get('network', None)
         organisation = self.request.GET.get('organisation', None)
+        excludenetwork = self.request.GET.get('excludenetwork', None)
         if network is not None:
             return Method.objects.filter(networks=network)
         if organisation is not None:
             return Method.objects.filter(networks__organisations=organisation).distinct()
+        if excludenetwork is not None:
+            return Method.objects.exclude(networks=excludenetwork)
         return Method.objects.all()
 
     def create(self, serializer):

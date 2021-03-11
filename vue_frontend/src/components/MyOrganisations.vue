@@ -1,0 +1,180 @@
+<template>
+    <Toolbar>
+        <template #left>
+            <ToggleButton v-if="selectionEnabled" v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" class="p-mr-2" />
+            <div v-if="networkOrganisations">
+                <div v-if="!addingProcess">
+                    <Button label="Invite Organisations" icon="pi pi-plus" class="p-button-success p-mr-2" @click="addableOrganisations()" />
+                    <Button label="Remove Organisations" icon="pi pi-trash" class="p-button-danger" @click="confirmationDialog = true" :disabled="!selectedRows.length" />
+                </div>
+                <div v-else>
+                    <Button label="Show network organisations" class="p-button-success p-mr-2" @click="initialize()" />
+                    <Button label="Add selected Organisations" class="p-button-primary p-mr-2" @click="confirmationDialog = true" :disabled="!selectedRows.length" />
+                </div>
+            </div>
+            <div v-else>
+                <Button label="Create Organisation" icon="pi pi-plus" class="p-button-success p-mr-2" @click="createDialog = true" />
+                <Button label="Delete Organisation" icon="pi pi-trash" class="p-button-danger" @click="confirmationDialog = true" :disabled="!selectedRows.length" />
+            </div>
+        </template>
+        <template #right>
+            <span class="p-input-icon-left">
+                <i class="pi pi-search" />
+                <InputText v-model="filters['global']" placeholder="Search..." />
+            </span>
+        </template>
+    </Toolbar>
+    <div v-if="organisations.length">
+        <DataTable ref="dt" :value="organisations" v-model:selection="selectedRows" :selectionMode="selectionToggle? 'multiple' : 'single'" dataKey="id" :metaKeySelection="false" @row-select="goToSelectedOrganisation"
+        :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
+
+        <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field" />
+        </Datatable>
+    </div>
+    <div v-else class="p-p-3 p-text-bold"> {{addingProcess? 'There are no organisations to add!' : 'This network has no organisations, add some!'}}</div>
+
+    <Dialog v-model:visible="confirmationDialog" :style="{width: '450px'}" header="Confirm" :modal="true">
+      <div class="confirmation-content">
+          <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
+            <span v-if="networkOrganisations">Are you sure you want to <b>{{addingProcess? 'add' : 'remove'}}</b> the following organisations?</span>
+            <span v-else>Are you sure you want to <b>delete</b> the following organisations?</span>
+            <br>
+            <div class="p-shadow-2 p-m-3 p-p-3">
+            <div v-for="item in selectedRows" :key=item.name>{{item.name}}</div>
+            </div>
+      </div>
+      <template #footer>
+        <Button label="No" icon="pi pi-times" class="p-button-text" @click="(confirmationDialog = false) && (selectedRows = [])"/>
+        <Button v-if="networkOrganisations" label="Yes" icon="pi pi-check" class="p-button-text" @click="addingProcess? addOrganisations() : removeOrganisations()" />
+        <Button v-else label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteOrganisations()" />
+      </template>
+    </Dialog>
+
+    <Dialog v-model:visible="createDialog" :style="{width: '450px'}" header="Organisation Details" :modal="true" class="p-fluid">
+        <div class="p-field">
+            <label for="name">Name</label>
+            <InputText id="name" v-model.trim="organisation.name" required="true" autofocus :class="{'p-invalid': submitted && !organisation.name}"
+            @blur="updateOrganisationForm({ name: $event.target.value })" />
+            <small class="p-error" v-if="submitted && !organisation.name">Name is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="description">Description</label>
+            <Textarea id="description" v-model="organisation.description" required="true" rows="3" cols="20"
+            @blur="updateOrganisationForm({ description: $event.target.value })" />
+        </div>
+        <div class="p-field">
+            <label for="ispublic">Should this organisation be public? </label>
+            <SelectButton id="ispublic" v-model="boolChoice" required="true" :options="ispublicbool"
+            @blur="updateOrganisationForm({ ispublic: boolChoice })" />
+        </div>
+        <template #footer>
+            <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="createDialog = false" />
+            <Button label="Save" icon="pi pi-check" class="p-button-text" @click="createNewOrganisation" :disabled="!organisation.name" />
+        </template>
+    </Dialog>
+
+</template>
+<script>
+import { mapActions, mapState } from 'vuex'
+export default {
+    props: {
+        columns: {
+            type: Array,
+            default: function () {
+                return [
+                    { field: 'ispublic', header: 'Public' },
+                    { field: 'name', header: 'Name' },
+                    { field: 'description', header: 'Description' },
+                    { field: 'participants.length', header: 'Participants' },
+                    { field: 'creator.username', header: 'created_by' }
+                ]
+            }
+        },
+        networkOrganisations: {
+            type: Boolean,
+            default: false
+        },
+        selectionEnabled: {
+            type: Boolean,
+            default: false
+        }
+    },
+    data () {
+        return {
+            filters: {},
+            selectedRows: [],
+            selectionToggle: false,
+            addingProcess: false,
+            confirmationDialog: false,
+            createDialog: false,
+            submitted: false,
+            ispublicbool: [true, false],
+            boolChoice: null
+
+        }
+    },
+    computed: {
+        ...mapState('organisation', ['organisations', 'organisation']),
+        ...mapState('network', ['network'])
+    },
+    created () {
+        this.initialize()
+    },
+    methods: {
+        ...mapActions('organisation', ['fetchOrganisations', 'setOrganisation', 'createOrganisation', 'deleteOrganisation', 'updateOrganisationForm']),
+        ...mapActions('network', ['patchNetwork']),
+        async initialize () {
+            if (this.networkOrganisations) {
+                this.fetchOrganisations({ query: `?network=${this.network?.id || 0}` })
+            } else {
+                this.fetchOrganisations({})
+            }
+            this.selectedRows = []
+            this.confirmationDialog = false
+            this.addingProcess = false
+        },
+        addableOrganisations () {
+            this.fetchOrganisations({ query: `?excludenetwork=${this.network?.id || 0}` })
+            this.addingProcess = true
+            this.selectionToggle = true
+        },
+        async addOrganisations () {
+            await this.patchNetwork({ data: this.selectedRows })
+            this.initialize()
+        },
+        async removeOrganisations () {
+            await this.patchNetwork({ data: this.selectedRows })
+            this.initialize()
+        },
+        async deleteOrganisations () {
+            await this.selectedRows.forEach((organisation, i) => {
+                console.log(organisation.id)
+                this.deleteOrganisation({ id: organisation?.id || 0 })
+                this.$toast.add({ severity: 'success', summary: 'The following organisation was deleted', detail: `organisation: ${organisation.name}`, life: 3000 })
+            })
+            this.initialize()
+        },
+        async createNewOrganisation () {
+            this.submitted = true
+            if (this.organisation.name.trim()) {
+                await this.createOrganisation({})
+                this.$toast.add({ severity: 'success', summary: 'Organisation created', detail: `organisation: ${organisation.name}`, life: 3000 })
+            this.createDialog = false
+            this.submitted = false
+            this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+            }
+            console.log('create')
+        },
+        async goToSelectedOrganisation (event) {
+            this.$toast.add({ severity: 'info', summary: 'Organisation Selected', detail: `${event.data.name}`, life: 3000 })
+            if (!this.selectionToggle) {
+                console.log(event.data)
+                await this.setOrganisation({ ...event.data })
+                console.log(this.organisation)
+                this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+            }
+        }
+    }
+}
+</script>

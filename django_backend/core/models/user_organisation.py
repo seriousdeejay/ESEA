@@ -8,7 +8,7 @@ USERPERMISSIONS = (
 
 class UserOrganisation(models.Model):
     participant = models.ForeignKey('CustomUser', related_name='participants', on_delete=models.CASCADE)            #post instance.customuser_set.all()
-    organisation = models.ForeignKey('Organisation', related_name='organisations', on_delete=models.CASCADE)        # user instance.post_set.all()
+    organisation = models.ForeignKey('Organisation', related_name='orgs', on_delete=models.CASCADE)        # user instance.post_set.all()
     role = models.CharField(max_length=255, choices = USERPERMISSIONS, default='RU') # Could give permissions to a user based on their role
 
     class Meta:

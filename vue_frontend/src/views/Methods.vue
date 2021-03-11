@@ -3,7 +3,7 @@
         <h1>Methods Overview</h1>
         <Toast position="top-right"/>
         <div class="card p-m-5 p-shadow-2">
-            <my-methods :columns="columns"></my-methods>
+            <my-methods :columns="columns" selection-enabled></my-methods>
         </div>
     </div>
 

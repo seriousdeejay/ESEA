@@ -13,9 +13,12 @@ class OrganisationViewSet(viewsets.ModelViewSet):
     serializer_class = OrganisationSerializer
    
     def get_queryset(self): # First query on localhost/organisations
+        network = self.request.GET.get('network', None)
         excludenetwork = self.request.GET.get('excludenetwork', None)
+        if network is not None:
+            return Organisation.objects.filter(networks=network)
         if excludenetwork is not None:
-            return Organisation.objects.exclude(network=excludenetwork)
+            return Organisation.objects.exclude(networks=excludenetwork)
         if self.request.user.is_authenticated:
             user = self.request.user
             print(self.request.user)
