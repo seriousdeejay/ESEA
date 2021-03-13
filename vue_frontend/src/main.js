@@ -37,6 +37,7 @@ import InputNumber from 'primevue/inputnumber'
 import InputText from 'primevue/inputtext'
 import RadioButton from 'primevue/radiobutton'
 import Checkbox from 'primevue/checkbox'
+import Sidebar from 'primevue/sidebar'
 // const eventsHub = createApp
 
 router.beforeEach((to, from, next) => {
@@ -77,5 +78,6 @@ app.component('InputNumber', InputNumber)
 app.component('InputText', InputText)
 app.component('RadioButton', RadioButton)
 app.component('Checkbox', Checkbox)
+app.component('Sidebar', Sidebar)
 
 app.mount('#app')

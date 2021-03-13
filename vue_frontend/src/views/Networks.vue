@@ -5,7 +5,6 @@
         <div class="card p-m-5 p-shadow-2">
           <Toolbar>
                 <template #left>
-                        <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" />
                         <Button label="Create Network" icon="pi pi-plus" class="p-button-success p-mx-2" @click="openCreateNetworkDialog" />
                 </template>
                 <template #right>
@@ -15,7 +14,7 @@
                     </span>
                 </template>
             </Toolbar>
-            <personalised-datatable table-name="networks" selectionToggle :columns="NetworkColumns" :filters="filters"
+            <personalised-datatable table-name="networks" selection-toggle :columns="NetworkColumns" :filters="filters"
             :custom-data="networks" @item-redirect="goToNetwork"/>
         </div>
     </div>

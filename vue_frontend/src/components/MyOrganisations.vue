@@ -149,22 +149,20 @@ export default {
         },
         async deleteOrganisations () {
             await this.selectedRows.forEach((organisation, i) => {
-                console.log(organisation.id)
                 this.deleteOrganisation({ id: organisation?.id || 0 })
-                this.$toast.add({ severity: 'success', summary: 'The following organisation was deleted', detail: `organisation: ${organisation.name}`, life: 3000 })
             })
+            this.$toast.add({ severity: 'success', summary: 'success', detail: 'organisations deleted', life: 3000 })
             this.initialize()
         },
         async createNewOrganisation () {
             this.submitted = true
             if (this.organisation.name.trim()) {
                 await this.createOrganisation({})
-                this.$toast.add({ severity: 'success', summary: 'Organisation created', detail: `organisation: ${organisation.name}`, life: 3000 })
+                this.$toast.add({ severity: 'success', summary: 'Organisation created', detail: `organisation: ${this.organisation.name}`, life: 3000 })
             this.createDialog = false
             this.submitted = false
             this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
             }
-            console.log('create')
         },
         async goToSelectedOrganisation (event) {
             this.$toast.add({ severity: 'info', summary: 'Organisation Selected', detail: `${event.data.name}`, life: 3000 })

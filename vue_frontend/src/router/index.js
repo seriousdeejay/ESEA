@@ -71,7 +71,8 @@ const routes = [
     name: 'organisations',
     component: () => import('../views/Organisations.vue'),
     meta: {
-      requiresLogin: true
+      requiresLogin: true,
+      breadcrumb: [{ label: 'Organisations', to: '/organisations' }]
     }
   },
   {
@@ -79,7 +80,63 @@ const routes = [
     name: 'organisationdetails',
     component: () => import('../views/OrganisationDetails.vue'),
     meta: {
-      requiresLogin: true
+      requiresLogin: true,
+      breadcrumb: [
+        { label: 'Organisations', to: '/organisations' },
+        { label: '', to: { name: 'organisationdetails', params: { id: '' } } }
+      ]
+    }
+  },
+  {
+    path: '/organisations/:id/reports',
+    name: 'organisationreports',
+    component: () => import('../views/OrganisationReports.vue'),
+    meta: {
+      requiresLogin: true,
+      breadcrumb: [
+        { label: 'Organisations', to: '/organisations' },
+        { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
+        { label: 'Reports', to: { name: 'organisationreports', params: { id: '' } } }
+      ]
+    }
+  },
+  {
+    path: '/organisations/:id/surveys',
+    name: 'organisationsurveys',
+    component: () => import('../views/OrganisationSurveys.vue'),
+    meta: {
+      requiresLogin: true,
+      breadcrumb: [
+        { label: 'Organisations', to: '/organisations' },
+        { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
+        { label: 'Surveys', to: { name: 'organisationsurveys', params: { id: '' } } }
+      ]
+    }
+  },
+  {
+    path: '/organisations/:id/stakeholders',
+    name: 'organisationstakeholders',
+    component: () => import('../views/OrganisationStakeholders.vue'),
+    meta: {
+      requiresLogin: true,
+      breadcrumb: [
+        { label: 'Organisations', to: '/organisations' },
+        { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
+        { label: 'Stakeholders', to: { name: 'organisationstakeholders', params: { id: '' } } }
+      ]
+    }
+  },
+  {
+    path: '/organisations/:id/networks',
+    name: 'organisationnetworks',
+    component: () => import('../views/OrganisationNetworks.vue'),
+    meta: {
+      requiresLogin: true,
+      breadcrumb: [
+        { label: 'organisations', to: '/organisations' },
+        { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
+        { label: 'Networks', to: { name: 'organisationnetworks', params: { id: '' } } }
+      ]
     }
   },
   {

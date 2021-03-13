@@ -3,6 +3,7 @@
 </template>
 <script>
 import BreadCrumb from 'primevue/breadcrumb'
+import { mapState } from 'vuex'
 
 export default {
     components: {
@@ -18,37 +19,30 @@ export default {
     },
     watch: {
         '$route' () {
-            var breadcrumbList
-            breadcrumbList = this.$route.meta.breadcrumb
-            console.log(breadcrumbList)
-            this.changeBreadCrumb(breadcrumbList)
+            var bread = this.$route.meta.breadcrumb || {}
+            this.changeBreadCrumb(bread)
         }
     },
+    computed: {
+        ...mapState('organisation', ['organisation'])
+    },
     methods: {
-        changeBreadCrumb (breadcrumbList) {
-            // const realpath = this.$route.path
-            const pathname = this.$route.name
+        changeBreadCrumb (bread) {
             const paths = this.$route.path.split('/').slice(1)
-            const breadcrumb = this.$route.meta.breadcrumb || {}
-            console.log('===', breadcrumb)
+
             paths.forEach((path, i) => {
-                if (breadcrumb[i]) {
-                    if (!breadcrumb[i].label) {
-                        // breadcrumb[i].label = path
-                        breadcrumb[i] = { label: path, to: { name: pathname, params: { id: parseInt(path) } } }
-                        console.log(breadcrumb[i])
-                        // breadcrumb[i].to.params.id = path
-                        // breadcrumb[i].label = path
-                        // breadcrumb[i].to = realpath
+                console.log(path)
+                console.log(bread[i - 1])
+                if (bread[i]) {
+                    if (bread[i].to.params) {
+                        if (parseInt(path)) {
+                            bread[i].label = this.organisation.name
+                        }
+                        bread[i] = { label: bread[i].label, to: { name: bread[i].to.name, params: { id: parseInt(this.$route.params.id) } } }
                     }
-                //         breadcrumb[i].label = path
-                //         breadcrumb[i].to = path
-                //     // breadcrumb[i] = breadcrumb[i].label ? breadcrumb[i].label : path
-                }
+                 }
             })
-            console.log('}}}', breadcrumb)
-            this.items = breadcrumb
-            console.log(this.items)
+            this.items = bread
         }
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="accessToken!=null" class="window card p-m-5 p-shadow-3" style="min-height: 800px; height: auto; min-width: 1100px; background-color: #F8F9FA;">
+  <div v-if="accessToken!=null"> <!--style="min-height: 800px; height: auto; min-width: 1100px; background-color: #F8F9FA;"-->
     <Menubar :model="items" v-if="accessToken!=null" style="background-color: #EFEEEE;">
         <template #start>
             <img alt="logo" src="./assets/logo.png" height="40" class="p-mr-5">
@@ -110,7 +110,8 @@ export default {
 <style lang="scss">
 body, html, #app {
   min-height: 100%;
-  background-color: lightgray;
+  background-color: #F8F9FA;
+  margin: 0 0;
   }
 
 #app {

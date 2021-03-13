@@ -13,7 +13,10 @@ class NetworkViewSet(viewsets.ModelViewSet):
     serializer_class = NetworkSerializer
    
     def get_queryset(self): # First query on localhost/organisations
-        print(self.request.user)
+        print(self.request.user) 
+        organisation = self.request.GET.get('organisation', None)
+        if organisation is not None:
+            return Network.objects.filter(organisations=organisation)
         if self.request.user.is_authenticated:
             user = self.request.user
             return Network.objects.filter(Q(created_by=user) | Q(ispublic = True))

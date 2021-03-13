@@ -2,6 +2,7 @@
     <Toolbar>
         <template #left>
             <ToggleButton v-if="selectionEnabled" v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" class="p-mr-2" />
+            <Button label="Create Method" icon="pi pi-plus" class="p-button-success p-mr-2" @click="importDialog = true" />
             <div v-if="networkMethods">
                 <div v-if="!addingProcess">
                         <Button label="Add Methods" icon="pi pi-plus" class="p-button-success p-mr-2" @click="addableMethods()" />
@@ -13,16 +14,8 @@
                 </div>
             </div>
             <div v-else>
-                <Button label="Create Method" icon="pi pi-plus" class="p-button-success p-mr-2" @click="importDialog = true" />
                 <Button label="Delete Method" icon="pi pi-trash" class="p-button-danger" @click="confirmationDialog = true" :disabled="!selectedRows.length" />
             </div>
-
-            <!-- <ToggleButton v-if="selectionToggleButton" v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" class="p-mr-2" />
-            <Button v-if="createButton && createButton2" label="Create Method" icon="pi pi-plus" class="p-button-success p-mr-2" @click="(importDialog = true)" />
-            <Button v-if="addButton && addButton2" :label="addToggle? 'show network methods' : 'add Methods'" class="p-button-success p-mr-2" @click="addToggle? initialize() : addableMethods()" />
-            <Button v-if="addToggle" :label="'Add methods'" icon="" class="p-button-primary p-mr-2" @click="selectedRows.length ? addMethods() : ''" :disabled="!selectedRows.length" />
-            <Button v-if="removeButton && removeButton2" label="Remove Methods" icon="pi pi-trash" class="p-button-danger" @click="selectionToggle? removeMethods(): RemovableMethods()" :disabled="(!selectionToggle || !selectedRows.length)" />
-            <Button label="delete Method" icon="pi pi-trash" class="p-button-danger" @click="confirmationDialog = true" :disabled="!selectedRows.length"/> -->
         </template>
 
         <template #right>
@@ -33,13 +26,12 @@
         </template>
     </Toolbar>
     <div v-if="methods.length">
-    <DataTable ref="dt" :value="methods" v-model:selection="selectedRows" :selectionMode="selectionToggle? 'multiple' : 'single'" dataKey="id" :metaKeySelection="false" @row-select="goToSelectedMethods"
-        :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
+        <DataTable ref="dt" :value="methods" v-model:selection="selectedRows" :selectionMode="selectionToggle? 'multiple' : 'single'" dataKey="id" :metaKeySelection="false" @row-select="goToSelectedMethods"
+            :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
 
-        <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field" />
-    </DataTable>
-    <h5 v-if="selectionToggle" class="p-p-3 p-m-3 p-shadow-5">Select the methods you want to add/remove!</h5>
+            <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field" />
+        </DataTable>
     </div>
     <div v-else class="p-p-3 p-text-bold"> {{addingProcess? 'There are no methods to add!' : 'This network has no methods, add some!'}}</div>
 
@@ -93,22 +85,6 @@ export default {
             type: Boolean,
             default: false
         }
-        // selectionToggleButton: {
-        //     type: Boolean,
-        //     default: false
-        // },
-        // createButton: {
-        //     type: Boolean,
-        //     default: false
-        // },
-        // addButton: {
-        //     type: Boolean,
-        //     default: false
-        // },
-        // removeButton: {
-        //     type: Boolean,
-        //     default: false
-        // }
     },
     data () {
         return {
@@ -124,13 +100,6 @@ export default {
         ...mapState('method', ['methods', 'method']),
         ...mapState('network', ['network'])
     },
-    // watch: {
-    //     selectedRows: function (val) {
-    //     if (val) {
-    //     console.log(this.selectedRows)
-    //     }
-    //     }
-    // },
     created () {
         this.initialize()
     },
@@ -139,13 +108,14 @@ export default {
         ...mapActions('network', ['patchNetwork']),
         async initialize () {
             if (this.networkMethods) {
+                console.log('eee')
                 this.fetchMethods({ query: `?network=${this.network?.id || 0}` })
             } else {
                 this.fetchMethods({})
             }
             this.selectedRows = []
             this.confirmationDialog = false
-            this.addingProcess = true
+            this.addingProcess = false
         },
         createMethod (event) {
             console.log('create method')
@@ -154,10 +124,6 @@ export default {
             this.fetchMethods({ query: `?excludenetwork=${this.network?.id || 0}` })
             this.addingProcess = true
             this.selectionToggle = true
-            // this.selectionToggle = true
-            // this.addToggle = true
-            // this.createButton2 = false
-            // this.removeButton2 = false
         },
         async addMethods () {
             await this.patchNetwork({ data: this.selectedRows })
@@ -192,13 +158,3 @@ export default {
     }
 }
 </script>
-
-        // selectionToggle: {
-        //     type: Boolean,
-        //     default: true
-        // }
-
-    // },
-        // onRowSelect (event) {
-        //     this.$emit('item-redirect', this.selectedRows)
-        // },

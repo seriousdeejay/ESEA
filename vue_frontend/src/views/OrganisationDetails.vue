@@ -1,80 +1,97 @@
 <template>
-    <div class="card p-mx-5">
-        <h1>{{ organisation.name }} - created by {{ organisation.creator.username }}</h1>
-        <div class="p-grid">
-            <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
-                <div class="p-fluid">
-                   <p class="p-text-justify">{{ organisation.description }} - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis mi sit amet faucibus malesuada. Vestibulum fringilla sed dui bibendum laoreet. Donec suscipit sit amet leo et mattis. Aenean mattis tempus turpis a vulputate. Nunc bibendum pulvinar neque, nec mattis nisl tincidunt ut. Nam a quam id justo dictum pulvinar. Sed luctus dictum ligula, id sagittis tellus aliquam id. Vestibulum auctor vestibulum turpis.</p>
+     <div class="p-grid nested-grid" style="height: 90vh;">
+    <organisation-menu class=""></organisation-menu>
+    <div class="p-col p-grid nested-grid p-mx-5 p-px-5">
+        <div class="p-col-9 p-py-5">
+            <div class="p-grid">
+                <div class="p-col-2 p-d-flex p-jc-start">
+                    <div class="p-grid">
+                        <p class="p-col-12 p-text-left p-text-italic p-m-0" >{{ organisation.name }}</p>
+                        <h3 class="p-col-12 p-text-left p-m-0">Overview</h3>
                     </div>
             </div>
-            <div class="p-col-2">
-                <Divider layout="vertical">
-                </Divider>
-            </div>
-            <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
-                <Button label="Edit Organisation" icon="pi pi-user-plus" class="p-button-success p-mr-2" @click="editOrganisationDialog = true"/>
+            <div class="p-col-10 p-d-flex p-ai-center p-jc-end">
+                <Button label="Edit Organisation" icon="pi pi-user-plus" class="p-button-secondary p-mr-2" @click="editOrganisationDialog = true"/>
                 <Button label="Delete Organisation" icon="pi pi-trash" class="p-button-danger" @click="confirmDeletion" />
+            </div>
+            <Divider />
+            <div class="p-col-12 p-text-justify"><h4 class="p-text-bold">Description</h4>
+                {{ organisation.description }} - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis mi sit amet faucibus malesuada. Vestibulum fringilla sed dui bibendum laoreet. Donec suscipit sit amet leo et mattis. Aenean mattis tempus turpis a vulputate. Nunc bibendum pulvinar neque, nec mattis nisl tincidunt ut. Nam a quam id justo dictum pulvinar. Sed luctus dictum ligula, id sagittis tellus aliquam id. Vestibulum auctor vestibulum turpis.
+                </div>
+        </div>
+        <div class="p-col-12 p-shadow-5">
+            <div v-if="tasks">
+                <h4>All Done!</h4>
+                <p class="p-text-italic">
+                    {{organisation.name}} and all related networks does not require your attention right now.
+                </p>
+            </div>
+            <div v-else>
+                <h4>The following tasks require your attention.</h4>
+                <Button label="Task 1: As employee of organisation 2 you are asked to fill in the survey of network 1." class="p-button-success p-shadow-10"/>
+                <br><br>
+                <Button label="Task 2: As manager of organisation 2 you are asked to fill in the survey of network 1." class="p-button-primary p-shadow-10" />
+
+                <!-- <div class="p-shadow-2 p-m-3 p-p-3 p-text-left"><span class="p-text-bold">Task 1:</span> As employee of {{organisation.name}} you are asked to fill in the survey of network 1.</div>
+                <div class="p-shadow-2 p-m-3 p-p-3 p-text-left"><span class="p-text-bold">Task 2:</span> As manager of {{organisation.name}} you are asked to fill in the survey of network 1.</div> -->
             </div>
         </div>
     </div>
-
-    <TabView>
-         <TabPanel header="Methods">
-            Content II
-        </TabPanel>
-        <TabPanel header="Surveys">
-            Content III
-        </TabPanel>
-        <TabPanel header="Members">
-            <Toolbar>
-                <template #left>
-                    <ToggleButton v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" />
-                    <div v-if="!inviteUsersWindow">
-                        <Button label="Invite Users" icon="pi pi-plus" class="p-button-success p-mx-2" @click="openInviteUsersWindow" />
-                        <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="removeMember" :disabled="!selectedUsers" />
+    <div class="p-col-1"><Divider layout="vertical" /></div>
+    <div class="p-col-2">
+        <div class="p-grid">
+            <div class="p-col-12">
+                <h3 class="p-mb-2 p-text-left">Network Membership</h3>
+                <Divider class="p-m-0" />
+                <div class="p-m-3">
+                    <div v-if="networks.length">
+                        <div v-for="network, num in networks" :key="network.name">
+                            {{num+1}}. <router-link :to="{name: 'networkdetails', params: { id: network.id } }" style="text-decoration: none; color: blue;">{{network.name}}</router-link>
+                            <Divider class="p-m-1" />
+                        </div>
                     </div>
                     <div v-else>
-                        <Button label="Show Organisation's members" class="p-button-primary p-mx-2" @click="inviteUsersWindow = false"/>
-                        <Button label="Send invitation to selected users" icon="pi pi-plus" class="p-button-success" @click="sendInvitationToUsers" />
+                        <div class="p-py-5 p-text-italic">No networks to display</div>
                     </div>
-                </template>
-                <template #right>
-                    <span class="p-input-icon-left">
-                        <i class="pi pi-search" />
-                        <InputText v-model="filters['global']" placeholder="Search..." />
-                    </span>
-                </template>
-            </Toolbar>
-            <personalised-datatable v-if="true" table-name="Members" selectionToggle :columns="ParticipantsColumns"
-            :custom-data="inviteUsersWindow? users : organisationParticipants" @item-redirect="goToSelectedUsers"/>
-            <h4 v-else>This Organisation does not have any members yet</h4>
-        </TabPanel>
-    </TabView>
-
-    <!-- <div class="card p-m-5 p-shadow-2">
-        <DataTable ref="dt" :value="organisationParticipants" v-model:selection="selectedOrganisations" selectionMode="single" dataKey="id"
-        :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
-
-            <h1>Participants</h1>
-            <Toolbar>
-                <template #left>
-                    <Button label="Invite" icon="pi pi-plus" class="p-button-success p-mr-2" @click="nothingyet" />
-                    <Button label="Remove" icon="pi pi-trash" class="p-button-danger" @click="nothingyet" :disabled="!selectedProducts || !selectedProducts.length" />
-                </template>
-
-                <template #right>
-                    <span class="p-input-icon-left">
-                        <i class="pi pi-search" />
-                        <InputText v-model="filters['global']" placeholder="Search..." />
-                    </span>
-                </template>
-            </Toolbar>
-
-            <Column field="username" header="Username" :sortable="true"></Column>
-            <Column field="first_name" header="First name" :sortable="true"></Column> Should insert full name here!
-        </DataTable>
-    </div> -->
+                </div>
+                <router-link :to="{name: 'organisationnetworks', params: { id: this.organisation?.id}}" style="text-decoration: none; color: blue;">Show all Related Networks</router-link>
+            </div>
+            <div class="p-col-12">
+                <h3 class="p-mb-2 p-text-left">Related Surveys</h3>
+                <Divider class="p-m-0" />
+                <div class="p-m-3">
+                    <div v-if="!organisations.length">
+                        <div v-for="organisation, num in organisations" :key="organisation.name">
+                            {{num+1}}. <router-link :to="{name: 'organisationsurveys', params: { id: organisation.id }}" style="text-decoration: none; color: blue;">survey {{num+1}}</router-link>
+                            <Divider class="p-m-1" />
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="p-py-5 p-text-italic">No available surveys</div>
+                    </div>
+                </div>
+                <router-link :to="{name: 'organisationsurveys', params: { id: organisation.id }}" style="text-decoration: none; color: blue;">Show all Organisation Surveys</router-link>
+            </div>
+              <div class="p-col-12">
+                <h3 class="p-mb-2 p-text-left">Reports</h3>
+                <Divider class="p-m-0" />
+                <div class="p-m-3">
+                    <div v-if="!organisations.length">
+                        <div v-for="organisation, num in organisations" :key="organisation.name">
+                            {{num+1}}. <router-link :to="{name: 'organisationreports', params: { id: organisation.id }}" style="text-decoration: none; color: blue;">report {{num+1}}</router-link>
+                            <Divider class="p-m-1" />
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="p-py-5 p-text-italic">No reports yet</div>
+                    </div>
+                </div>
+                <router-link :to="{name: 'organisationreports', params: { id: organisation.id } }" style="text-decoration: none; color: blue;">Show all Organisation Reports</router-link>
+            </div>
+        </div>
+    </div>
+</div>
+     </div>
 
     <Dialog v-model:visible="editOrganisationDialog" :style="{width: '450px'}" header="Network Details" :modal="true" class="p-fluid">
         <div class="p-field">
@@ -110,13 +127,15 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import PersonalisedDatatable from '../components/PersonalisedDatatable'
+// import PersonalisedDatatable from '../components/PersonalisedDatatable'
+import OrganisationMenu from '../components/OrganisationMenu'
 // import { AxiosInstance } from '../plugins/axios'
 // import { required, minLength } from 'vuelidate/lib/validators'
 
 export default {
     components: {
-        PersonalisedDatatable
+        // PersonalisedDatatable,
+        OrganisationMenu
     },
     data () {
         return {
@@ -141,7 +160,8 @@ export default {
         }
     },
     computed: {
-        ...mapState('organisation', ['organisation', 'organisationParticipants']), // organisationparticipants
+        ...mapState('organisation', ['organisations', 'organisation', 'organisationParticipants']), // organisationparticipants
+        ...mapState('network', ['networks']),
         ...mapState('user', ['users', 'user'])
     },
     created () {
@@ -157,7 +177,7 @@ export default {
         ...mapActions('organisation', ['fetchOrganisation', 'updateOrganisation', 'deleteOrganisation', 'deleteOrganisationUsers']),
         ...mapActions('user', ['fetchUsers', 'setUser']),
         async initialize () {
-            await this.fetchOrganisation({ id: this.organisation?.id || 0 })
+            await this.fetchOrganisation({ id: this.$route.params.id || this.organisation?.id || 0 })
             await this.fetchUsers({ query: `organisation=${this.organisation?.id || 0}` })
             // await this.fetchOrganisationParticipants(this.organisation?.id || 0)
         },

@@ -1,12 +1,60 @@
 <template>
-<h3>Homepage</h3>
-<!-- <div v-for="organisation in org" :key="organisation.id">{{ organisation.name }} - 1</div>
-{{ organisations.name }} -->
-<div v-for="organisation in organisations" :key="organisation.name">{{organisation.name}}</div>
+<h3>Dashboard</h3>
+<div class="p-grid nested-grid p-mx-5 p-px-5">
+    <div class="p-col-8 p-py-5">
+        <div v-if="!tasks">
+            <h4>All Done!</h4>
+            <p>
+                None of your organisations or networks require your attention right now.
+            </p>
+        </div>
+        <div v-else>
+            <h4>The following tasks require your attention.</h4>
+            <div class="p-shadow-2 p-m-3 p-p-3 p-text-left"><span class="p-text-bold">Task 1:</span> Fill in the survey of network 1.</div>
+            <div class="p-shadow-2 p-m-3 p-p-3 p-text-left"><span class="p-text-bold">Task 2:</span> Reply to network participation request on network 2.</div>
+        </div>
+    </div>
+    <div class="p-col-1"><Divider layout="vertical" /></div>
+    <div class="p-col-3">
+        <div class="p-grid">
+            <div class="p-col-12">
+                <h3 class="p-mb-2">Your Networks</h3>
+                <Divider class="p-m-0" />
+                <div class="p-m-3">
+                    <div v-if="networks.length">
+                        <div v-for="network, num in networks" :key="network.name">
+                            {{num+1}}. <router-link :to="{name: 'networkdetails', params: { id: network.id } }" style="text-decoration: none; color: blue;">{{network.name}}</router-link>
+                            <Divider class="p-m-1" />
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="p-py-5 p-text-italic">No networks to display</div>
+                    </div>
+                </div>
+                <router-link to="/networks" style="text-decoration: none; color: blue;">View all Networks</router-link>
+            </div>
+            <div class="p-col-12">
+                <h3 class="p-mb-2">Your Organisations</h3>
+                <Divider class="p-m-0" />
+                <div class="p-m-3">
+                    <div v-if="organisations.length">
+                        <div v-for="organisation, num in organisations" :key="organisation.name">
+                            {{num+1}}. <router-link :to="{name: 'organisationdetails', params: { id: organisation.id } }" style="text-decoration: none; color: blue;">{{organisation.name}}</router-link>
+                            <Divider class="p-m-1" />
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="p-py-5 p-text-italic">No organisations to display</div>
+                    </div>
+                </div>
+                <router-link to="/organisations" style="text-decoration: none; color: blue;">View all organisations</router-link>
+            </div>
+        </div>
+    </div>
+</div>
 </template>
 
 <script>
-// import { AxiosInstance } from '../plugins/axios'
 import { mapState, mapActions } from 'vuex'
 
 export default {
@@ -21,7 +69,8 @@ export default {
         }
     },
     computed: {
-    ...mapState('organisation', ['organisations'])
+    ...mapState('organisation', ['organisations']),
+    ...mapState('network', ['networks'])
     },
     created () {
         this.initialize()
@@ -37,35 +86,4 @@ export default {
        }
     }
 }
-        // AxiosInstance.get(`http://127.0.0.1:8000/organisations/${this.$route.params.id}/`)
-        //     .then(response => {
-        //         console.log(response.data)
-        //         this.post = response.data
-        //     })
-
-    // <div class="companydetails">
-    //      <form @submit.prevent="updatecompany" method="post">
-    //         <div class="">
-    //             <label for="title">Title</label>
-    //             <input
-    //                 type="text"
-    //                 id="title"
-    //                 v-model="post.title"
-    //                 name="title"
-    //                 placeholder="enter title"
-    //             >
-    //         </div>
-    //         <div class="">
-    //             <label for="content">Content</label>
-    //              <input
-    //                 type="text"
-    //                 id="content"
-    //                 v-model="post.content"
-    //                 name="content"
-    //                 placeholder="enter content"
-    //             >
-    //         </div>
-    //         <button type="submit" class="btn btn-primary">Submit</button>
-    //     </form>
-    // </div>
 </script>

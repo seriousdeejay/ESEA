@@ -6,7 +6,7 @@ const createUrl = ({ id, query }) => {
     if (id) {
         return `${base}${id}/`
     } else if (query) {
-        return `${base}?${query}`
+        return `${base}${query}`
     } else {
         return base
     }
