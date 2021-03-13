@@ -11,7 +11,7 @@
     </Menubar>
     <my-bread-crumb />
     <!-- <h1>Breadcrumb with Chosen Network>Chosen Organisation>Chosen Method</h1> -->
-      <router-view/>
+    <router-view/>
   </div>
   <div v-else class="centered">
     <router-view style="background-color: white;"/>

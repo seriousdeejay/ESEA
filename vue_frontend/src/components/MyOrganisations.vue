@@ -170,7 +170,7 @@ export default {
                 console.log(event.data)
                 await this.setOrganisation({ ...event.data })
                 console.log(this.organisation)
-                this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+                this.$router.push({ name: 'organisationoverview', params: { OrganisationId: this.organisation.id } })
             }
         }
     }

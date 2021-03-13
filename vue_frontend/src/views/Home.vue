@@ -39,7 +39,7 @@
                 <div class="p-m-3">
                     <div v-if="organisations.length">
                         <div v-for="organisation, num in organisations" :key="organisation.name">
-                            {{num+1}}. <router-link :to="{name: 'organisationdetails', params: { id: organisation.id } }" style="text-decoration: none; color: blue;">{{organisation.name}}</router-link>
+                            {{num+1}}. <router-link :to="{name: 'organisationoverview', params: { OrganisationId: organisation.id } }" style="text-decoration: none; color: blue;">{{organisation.name}}</router-link>
                             <Divider class="p-m-1" />
                         </div>
                     </div>

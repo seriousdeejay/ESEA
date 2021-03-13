@@ -1,6 +1,6 @@
 <template>
      <div class="p-grid nested-grid" style="height: 90vh;">
-    <organisation-menu class=""></organisation-menu>
+    <organisation-sidebar class=""></organisation-sidebar>
     <div class="p-col p-grid nested-grid p-mx-5 p-px-5">
         <div class="p-col-9 p-py-5">
             <div class="p-grid">
@@ -128,14 +128,14 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 // import PersonalisedDatatable from '../components/PersonalisedDatatable'
-import OrganisationMenu from '../components/OrganisationMenu'
+import OrganisationSidebar from '../components/OrganisationSidebar'
 // import { AxiosInstance } from '../plugins/axios'
 // import { required, minLength } from 'vuelidate/lib/validators'
 
 export default {
     components: {
         // PersonalisedDatatable,
-        OrganisationMenu
+        OrganisationSidebar
     },
     data () {
         return {

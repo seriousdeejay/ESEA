@@ -67,78 +67,153 @@ const routes = [
     }
   },
   {
+    path: '/organisation/:OrganisationId',
+    name: 'organisation',
+    component: () => import('../views/organisation/Organisation'),
+    children: [
+      {
+        path: 'overview',
+        name: 'organisationoverview',
+        component: () => import('../views/organisation/OrganisationOverview'),
+        meta: {
+          breadcrumb: [
+            { label: 'Organisations', to: '/organisations' },
+            { label: '', to: { name: 'organisationoverview', params: { id: '' } } },
+            { label: 'Overview', to: { name: 'organisationoverview' } }
+          ]
+        }
+      },
+      {
+      path: 'reports',
+      name: 'organisationreports',
+      component: () => import('../views/organisation/OrganisationReports'),
+      meta: {
+        breadcrumb: [
+          { label: 'Organisations', to: '/organisations' },
+          { label: '', to: { name: 'organisationoverview', params: { id: '' } } },
+          { label: 'Reports', to: { name: 'organisationreports' } }
+        ]
+      }
+      },
+      {
+      path: 'surveys',
+      name: 'organisationsurveys',
+      component: () => import('../views/organisation/OrganisationSurveys'),
+      meta: {
+        breadcrumb: [
+          { label: 'Organisations', to: '/organisations' },
+          { label: '', to: { name: 'organisationoverview', params: { id: '' } } },
+          { label: 'Surveys', to: { name: 'organisationsurveys' } }
+        ]
+      }
+      },
+      {
+        path: 'stakeholders',
+        name: 'organisationstakeholders',
+        component: () => import('../views/organisation/OrganisationStakeholders'),
+        meta: {
+          breadcrumb: [
+            { label: 'Organisations', to: '/organisations' },
+            { label: '', to: { name: 'organisationoverview', params: { id: '' } } },
+            { label: 'Stakeholders', to: { name: 'organisationstakeholders' } }
+          ]
+        }
+      },
+      {
+        path: 'networks',
+        name: 'organisationnetworks',
+        component: () => import('../views/organisation/OrganisationNetworks'),
+        meta: {
+          breadcrumb: [
+            { label: 'Organisations', to: '/organisations' },
+            { label: '', to: { name: 'organisationoverview', params: { id: '' } } },
+            { label: 'Networks', to: { name: 'organisationnetworks' } }
+          ]
+        }
+      }
+    ],
+    meta: {
+      breadcrumb: [
+        { label: 'Organisations', to: '/organisations' },
+        { label: '', to: { name: 'organisation', params: { id: '' } } }
+      ]
+    }
+  },
+  {
     path: '/organisations',
     name: 'organisations',
     component: () => import('../views/Organisations.vue'),
     meta: {
       requiresLogin: true,
-      breadcrumb: [{ label: 'Organisations', to: '/organisations' }]
-    }
-  },
-  {
-    path: '/organisations/:id',
-    name: 'organisationdetails',
-    component: () => import('../views/OrganisationDetails.vue'),
-    meta: {
-      requiresLogin: true,
       breadcrumb: [
-        { label: 'Organisations', to: '/organisations' },
-        { label: '', to: { name: 'organisationdetails', params: { id: '' } } }
+        { label: 'Organisations', to: '/organisations' }
       ]
     }
   },
-  {
-    path: '/organisations/:id/reports',
-    name: 'organisationreports',
-    component: () => import('../views/OrganisationReports.vue'),
-    meta: {
-      requiresLogin: true,
-      breadcrumb: [
-        { label: 'Organisations', to: '/organisations' },
-        { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
-        { label: 'Reports', to: { name: 'organisationreports', params: { id: '' } } }
-      ]
-    }
-  },
-  {
-    path: '/organisations/:id/surveys',
-    name: 'organisationsurveys',
-    component: () => import('../views/OrganisationSurveys.vue'),
-    meta: {
-      requiresLogin: true,
-      breadcrumb: [
-        { label: 'Organisations', to: '/organisations' },
-        { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
-        { label: 'Surveys', to: { name: 'organisationsurveys', params: { id: '' } } }
-      ]
-    }
-  },
-  {
-    path: '/organisations/:id/stakeholders',
-    name: 'organisationstakeholders',
-    component: () => import('../views/OrganisationStakeholders.vue'),
-    meta: {
-      requiresLogin: true,
-      breadcrumb: [
-        { label: 'Organisations', to: '/organisations' },
-        { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
-        { label: 'Stakeholders', to: { name: 'organisationstakeholders', params: { id: '' } } }
-      ]
-    }
-  },
-  {
-    path: '/organisations/:id/networks',
-    name: 'organisationnetworks',
-    component: () => import('../views/OrganisationNetworks.vue'),
-    meta: {
-      requiresLogin: true,
-      breadcrumb: [
-        { label: 'organisations', to: '/organisations' },
-        { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
-        { label: 'Networks', to: { name: 'organisationnetworks', params: { id: '' } } }
-      ]
-    }
-  },
+  // {
+  //   path: '/organisations/:id',
+  //   name: 'organisationdetails',
+  //   component: () => import('../views/OrganisationDetails.vue'),
+  //   meta: {
+  //     requiresLogin: true,
+  //     breadcrumb: [
+  //       { label: 'Organisations', to: '/organisations' },
+  //       { label: '', to: { name: 'organisationdetails', params: { id: '' } } }
+  //     ]
+  //   }
+  // },
+  // {
+  //   path: '/organisations/:id/reports',
+  //   name: 'organisationreports',
+  //   component: () => import('../views/OrganisationReports.vue'),
+  //   meta: {
+  //     requiresLogin: true,
+  //     breadcrumb: [
+  //       { label: 'Organisations', to: '/organisations' },
+  //       { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
+  //       { label: 'Reports', to: { name: 'organisationreports', params: { id: '' } } }
+  //     ]
+  //   }
+  // },
+  // {
+  //   path: '/organisations/:id/surveys',
+  //   name: 'organisationsurveys',
+  //   component: () => import('../views/OrganisationSurveys.vue'),
+  //   meta: {
+  //     requiresLogin: true,
+  //     breadcrumb: [
+  //       { label: 'Organisations', to: '/organisations' },
+  //       { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
+  //       { label: 'Surveys', to: { name: 'organisationsurveys', params: { id: '' } } }
+  //     ]
+  //   }
+  // },
+  // {
+  //   path: '/organisations/:id/stakeholders',
+  //   name: 'organisationstakeholders',
+  //   component: () => import('../views/OrganisationStakeholders.vue'),
+  //   meta: {
+  //     requiresLogin: true,
+  //     breadcrumb: [
+  //       { label: 'Organisations', to: '/organisations' },
+  //       { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
+  //       { label: 'Stakeholders', to: { name: 'organisationstakeholders', params: { id: '' } } }
+  //     ]
+  //   }
+  // },
+  // {
+  //   path: '/organisations/:id/networks',
+  //   name: 'organisationnetworks',
+  //   component: () => import('../views/OrganisationNetworks.vue'),
+  //   meta: {
+  //     requiresLogin: true,
+  //     breadcrumb: [
+  //       { label: 'organisations', to: '/organisations' },
+  //       { label: '', to: { name: 'organisationdetails', params: { id: '' } } },
+  //       { label: 'Networks', to: { name: 'organisationnetworks', params: { id: '' } } }
+  //     ]
+  //   }
+  // },
   {
     path: '/methods',
     name: 'methods',

@@ -29,10 +29,7 @@ export default {
     methods: {
         changeBreadCrumb (bread) {
             const paths = this.$route.path.split('/').slice(1)
-
             paths.forEach((path, i) => {
-                console.log(path)
-                console.log(bread[i - 1])
                 if (bread[i]) {
                     if (bread[i].to.params) {
                         if (parseInt(path)) {

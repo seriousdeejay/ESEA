@@ -99,7 +99,7 @@ export default {
             commit('deleteOrganisation', payload)
             dispatch('setOrganisation', {})
         },
-        async deleteOrganisationUsers ({ state, commit }, payload) {
+        async patchOrganisation ({ state, commit }, payload) {
             const id = state.organisation.id
             const data = payload.data
             const { error } = await OrganisationService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })

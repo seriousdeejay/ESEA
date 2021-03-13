@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
-from ..models import Network, Organisation, Method, CustomUser
+from ..models import Network, Organisation, Method, CustomUser, Survey
 from ..serializers import NetworkSerializer, OrganisationSerializer
 
 
@@ -15,8 +15,14 @@ class NetworkViewSet(viewsets.ModelViewSet):
     def get_queryset(self): # First query on localhost/organisations
         print(self.request.user) 
         organisation = self.request.GET.get('organisation', None)
+        excludeorganisation = self.request.GET.get('excludeorganisation', None)
+        # organisationsurveys = self.request.GET.get('organisationsurveys', None)
         if organisation is not None:
             return Network.objects.filter(organisations=organisation)
+        if excludeorganisation is not None:
+            return Network.objects.exclude(organisations=excludeorganisation)
+        # if organisationsurveys is not None:
+        #     return Survey.objects.filter(method__networks__organisations=organisationsurveys)
         if self.request.user.is_authenticated:
             user = self.request.user
             return Network.objects.filter(Q(created_by=user) | Q(ispublic = True))
@@ -35,7 +41,7 @@ class NetworkViewSet(viewsets.ModelViewSet):
         try:
             for item in data: 
                 try:
-                    organisation = Organisation.objects.get(id=item['id'], name=item['name'])
+                    organisation = Organisation.objects.get(id=int(item['id']), name=item['name'])
                     if network_object.organisations.filter(pk=organisation.pk).exists():
                         network_object.organisations.remove(organisation)
                     else:

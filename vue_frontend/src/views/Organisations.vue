@@ -13,7 +13,7 @@ import MyOrganisations from '../components/MyOrganisations'
 
 export default {
     components: {
-        MyOrganisations
+       MyOrganisations
     },
     data () {
         return {
