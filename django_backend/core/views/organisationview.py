@@ -5,7 +5,7 @@ from rest_framework import viewsets
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
-from ..models import Organisation, CustomUser
+from ..models import Organisation, CustomUser, UserOrganisation
 from ..serializers import OrganisationSerializer
 
 
@@ -26,12 +26,22 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         # return Organisation.objects.all()
     
     # Need to put perform_create on the userorganisation model (?)
-    def create(self, serializer):
-        creator = get_object_or_404(CustomUser, pk=self.request.user.id)
-        serializer = OrganisationSerializer(data=self.request.data)
-        if serializer.is_valid():
-            serializer.save(creator=creator, participants=[creator])
-            return Response(serializer.data)
+    # def create(self, serializer):
+        
+    #     serializer = OrganisationSerializer(data=self.request.data)
+    #     if serializer.is_valid():
+    #         serializer.save(creator=self.request.user)
+    #         O = Organisation.objects.get(id=serializer.data['id'])
+    #         u = UserOrganisation.objects.create(user=self.request.user, organisation=O)
+    #         return Response(serializer.data)
+    # #     creator = get_object_or_404(CustomUser, pk=self.request.user.id)
+    # #     user_organisation = UserOrganisation.objects.create(user=self.request.user, organisation=)
+
+    # #     serializer = OrganisationSerializer(data=self.request.data)
+    # #     if serializer.is_valid():
+    # #         serializer.save(creator=creator, organisation_participants=[creator])
+    # #         return Response(serializer.data)
+    #     return Response({"Nothing uploaded"})
 
     def partial_update(self, request, *args, **kwargs):
         organisation_object = get_object_or_404(Organisation, pk=self.get_object().id)

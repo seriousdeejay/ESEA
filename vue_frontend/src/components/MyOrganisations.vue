@@ -161,7 +161,7 @@ export default {
                 this.$toast.add({ severity: 'success', summary: 'Organisation created', detail: `organisation: ${this.organisation.name}`, life: 3000 })
             this.createDialog = false
             this.submitted = false
-            this.$router.push({ name: 'organisationdetails', params: { id: this.organisation.id } })
+            this.$router.push({ name: 'organisationoverview', params: { OrganisationId: this.organisation.id } })
             }
         },
         async goToSelectedOrganisation (event) {

@@ -72,7 +72,7 @@ export default {
             })
           },
           async saveAuthenticatedUserDetails (context) {
-            const { response, error } = await UserService.get({ query: 'currentuser=1' })
+            const { response, error } = await UserService.get({ query: '?currentuser=1' })
             if (error) {
               console.log(error)
             }

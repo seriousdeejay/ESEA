@@ -3,6 +3,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
 from ..models import CustomUser
+from .user_organisation import UserOrganisationSerializer
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -40,7 +41,9 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    user_organisations =  UserOrganisationSerializer(many=True)
+    
     class Meta:
         model = CustomUser
-        fields = '__all__'
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['username', 'email', 'first_name', 'last_name_prefix', 'last_name', 'registered_on', 'user_organisations']
+        extra_kwargs = {'password': {'write_only': True}, 'organisations': {'required': False}}

@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
 
-from ..models import Survey, Method
-from ..serializers import SurveyOverviewSerializer, SurveyDetailSerializer
+from ..models import Survey, Method, UserOrganisation, Organisation
+from ..serializers import SurveyOverviewSerializer, SurveyDetailSerializer, UserOrganisationSerializer
 
 
 class SurveyViewSet(viewsets.ModelViewSet):
@@ -12,6 +12,14 @@ class SurveyViewSet(viewsets.ModelViewSet):
     # queryset = Survey.objects.all()
 
     def get_queryset(self):
+        organisation = self.request.GET.get('organisation', None)
+        if organisation is not None:
+            organisation = Organisation.objects.get(id=organisation)
+            userorganisation = get_object_or_404(UserOrganisation, participant=self.request.user, organisation=organisation)
+            u = userorganisation.__dict__
+            print(u)
+            #return Response(serializer.data)
+            # return Survey.objects.filter(method=self.kwargs['method_pk'], stakeholder_groups=stakeholdergroups)
         return Survey.objects.filter(method=self.kwargs['method_pk'])
 
     def perform__create(self, serializer):
@@ -20,6 +28,7 @@ class SurveyViewSet(viewsets.ModelViewSet):
     
     def retrieve(self, request, method_pk, pk):
         survey = get_object_or_404(self.get_queryset(), pk=pk)
+        print(survey)
         serializer = SurveyDetailSerializer(survey)
         return Response(serializer.data) 
 

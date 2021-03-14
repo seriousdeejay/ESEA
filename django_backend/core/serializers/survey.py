@@ -5,40 +5,40 @@ from .direct_indicator import DirectIndicatorSerializer
 
 
 class SurveyOverviewSerializer(serializers.ModelSerializer):
-    stakeholder = serializers.CharField(max_length=255)
+    stakeholders = serializers.StringRelatedField( many=True)
     method = serializers.StringRelatedField()
 
     class Meta:
         model = Survey
-        fields = ['id', 'name', 'description', 'rate', 'anonymous', 'questions', 'method', 'stakeholder']
+        fields = ['id', 'name', 'description', 'rate', 'anonymous', 'questions', 'method', 'stakeholders']
         read_only_fields=['method']
 
     def update(self, instance, validated_data):
-        if 'stakeholder' in validated_data:
-            validated_data['stakeholder_group'] = self.update_stakeholder(
-                stakeholder_group=instance.stakeholder_group, 
-                name=validated_data['stakeholder'], 
-                method=instance.method)
+        if 'stakeholder_groups' in validated_data:
+            validated_data['stakeholder_groups'] = self.update_stakeholders(
+            stakeholder_groups=instance.stakeholder_groups, 
+            name=validated_data['stakeholder_groups'], 
+            method=instance.method)
         return super().update(instance, validated_data)
     
     def to_representation(self,instance):
         internal = {
-            'id': instance.id,
+           'id': instance.id,
             'name': instance.name,
             'description': instance.description,
             'rate': instance.rate,
             'anonymous': instance.anonymous,
             'questions': instance.questions,
             'method': instance.method,
-            'stakeholder': instance.stakeholder_group,
+            'stakeholders': instance.stakeholder_groups
         }
         return super().to_representation(internal)
 
-    def update_stakeholder(self, stakeholder_group, name, method):
-        if len(stakeholder_group.surveys.all()) > 1:
-            stakeholder, _ = StakeholderGroup.objects.get_or_create(name=name, method=method)
-            return stakeholder
-        return stakeholder_group.update(name=name)
+    # def update_stakeholder(self, stakeholder_groups, name, method):
+    #     if len(stakeholder_group.surveys.all()) > 1:
+    #         stakeholder, _ = StakeholderGroup.objects.get_or_create(name=name, method=method)
+    #         return stakeholder
+    #     return stakeholder_group.update(name=name)
 
     
 class SurveyQuestionOptionSerializer(serializers.Serializer):
