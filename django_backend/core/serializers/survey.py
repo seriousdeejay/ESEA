@@ -6,6 +6,7 @@ from .direct_indicator import DirectIndicatorSerializer
 
 class SurveyOverviewSerializer(serializers.ModelSerializer):
     stakeholder = serializers.CharField(max_length=255)
+    method = serializers.StringRelatedField()
 
     class Meta:
         model = Survey

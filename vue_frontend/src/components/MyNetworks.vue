@@ -119,13 +119,13 @@ export default {
             //     })
             // })
             // await apicalls.then()
-            await this.selectedRows.forEach((network) => {
-                this.patchNetwork({ id: network.id, data: [this.organisation] })
-                console.log('check')
-            })
-            // for (const network of this.selectedRows) {
-            //     await this.patchNetwork({ id: network.id, data: [this.organisation] })
-            // }
+            // await this.selectedRows.forEach((network) => {
+            //     this.patchNetwork({ id: network.id, data: [this.organisation] })
+            //     console.log('check')
+            // })
+            for (const network of this.selectedRows) {
+                await this.patchNetwork({ id: network.id, data: [this.organisation] })
+            }
             this.Dialog = false
             this.initialize()
         },
