@@ -27,12 +27,10 @@ export default {
         network: {},
         networkorganisations: [],
         // networkparticipants: [],
-        form: {
-            name: 'Network N',
-            description: 'Description of Network N',
-            ispublic: true,
-            organisations: [
-            ]
+        networkform: {
+            name: null,
+            description: null,
+            ispublic: null
         },
         error: []
     },
@@ -68,8 +66,8 @@ export default {
             state.error = error
         },
         updateNetworkForm (state, data) {
-			state.form = { ...state.form, ...data }
-		}
+            state.networkform = { ...state.networkform, ...data }
+        }
     },
     actions: {
         async fetchNetworks ({ commit }, payload) {
@@ -90,7 +88,8 @@ export default {
             commit('setNetworkOrganisations', response)
         },
         async createNetwork ({ state, commit, dispatch }) {
-            const data = state.form // getRequestData(state.form)
+            console.log(state.networkform)
+            const data = state.networkform // getRequestData(state.form)
             const { response, error } = await NetworkService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } })
             if (error) {
                 commit('setError', { error })

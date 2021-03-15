@@ -27,6 +27,7 @@
         <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field" />
         </Datatable>
     </div>
+    <div v-else class="p-p-3"><h3 class="p-text-light p-text-italic">There are no users to display</h3></div>
 
 <Dialog v-model:visible="Dialog" :style="{width: '450px'}" header="Confirm" :modal="true">
         <div class="confirmation-content">
@@ -94,7 +95,7 @@ export default {
         },
         async addableUsers () {
             console.log('>>', this.$route.params.OrganisationId)
-            await this.fetchUsers({ query: '?excludeorganisation=3' })
+            await this.fetchUsers({ query: `?excludeorganisation=${this.$route.params.OrganisationId}` })
             this.addingProcess = true
             this.selectionToggle = true
             this.selectedRows = []

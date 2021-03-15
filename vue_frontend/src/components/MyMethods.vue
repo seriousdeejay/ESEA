@@ -53,9 +53,9 @@
     </Dialog>
 
     <Dialog v-model:visible="importDialog" :style="{width: '450px'}" header="Import your Method" :modal="true" class="p-fluid">
-        <FileUpload name="myfile" url="http://localhost:8000/import-yaml/" @upload="onUpload" :multiple="true" accept="" :maxFileSize="1000000">
+        <FileUpload name="myfile" :customUpload="true" @uploader="onUpload" :fileLimit="1" accept=".yaml" :maxFileSize="1000000">
             <template #empty>
-                <p>Drag and drop YAML files to here to upload.</p>
+                <p>Drag and drop your YAML file here to upload.</p>
             </template>
         </FileUpload>
         <template #footer>
@@ -65,7 +65,9 @@
 </template>
 
 <script>
+import { AxiosInstance } from '../plugins/axios'
 import { mapActions, mapState } from 'vuex'
+
 export default {
     props: {
         columns: {
@@ -104,7 +106,7 @@ export default {
         this.initialize()
     },
     methods: {
-        ...mapActions('method', ['fetchMethods', 'setMethod']),
+        ...mapActions('method', ['fetchMethods', 'setMethod', 'uploadMethod']),
         ...mapActions('network', ['patchNetwork']),
         async initialize () {
             if (this.networkMethods) {
@@ -143,10 +145,22 @@ export default {
                 this.$toast.add({ severity: 'success', summary: 'The following method was deleted', detail: `${method.name}`, life: 3000 })
             })
         },
-        onUpload () {
-            this.initialize()
-            this.importDialog = false
-            this.$toast.add({ severity: 'success', summary: 'Method created', detail: 'New method', life: 3000 })
+        async onUpload (event) {
+            // for (const file of event.files) {
+            //     console.log(file)
+            // }
+            var formData = new FormData()
+            formData.append('file', event.files[0])
+            return new Promise((resolve, reject) => {
+            AxiosInstance.post('/import-yaml/', formData)
+            .then(response => {
+                this.importDialog = false
+                this.$toast.add({ severity: 'success', summary: 'Method created', detail: 'New method', life: 3000 })
+                this.initialize()
+            resolve()
+            })
+            .catch(err => { reject(err) })
+            })
         },
         goToSelectedMethods (event) {
             this.$toast.add({ severity: 'info', summary: 'Method Selected', detail: `${event.data.name}`, life: 3000 })

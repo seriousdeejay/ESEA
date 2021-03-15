@@ -9,7 +9,7 @@ class Organisation(models.Model):
     # image = models.ImageField(blank=True, upload_to="organisation/", default="organisation/default.png")
     created_by = models.ForeignKey('CustomUser', editable=False, on_delete=models.SET_NULL, null=True) # related_name='organisation_creator'
     members = models.ManyToManyField('CustomUser', through="UserOrganisation", through_fields=('organisation', 'user'), related_name='organisations', blank=True)
-    
+
     class Meta:
         verbose_name = _('organisation')
         verbose_name_plural = _('organisations')

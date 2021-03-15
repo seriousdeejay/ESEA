@@ -20,10 +20,9 @@ class UsersViewSet(viewsets.ReadOnlyModelViewSet):
         if currentuser is not None:
             return CustomUser.objects.filter(id=self.request.user.id)
         if network is not None:
-            return CustomUser.objects.filter(accessible_organisations__networks=network).distinct() # Should pass network id(s) in order to serve the participants of network(s)
+            return CustomUser.objects.filter(organisations__networks=network).distinct() # Should pass network id(s) in order to serve the participants of network(s)
         if organisation is not None:
-            return CustomUser.objects.filter(accessible_organisations=organisation)
+            return CustomUser.objects.filter(organisations=organisation)
         if excludeorganisation is not None:
-            return CustomUser.objects.exclude(accessible_organisations=excludeorganisation)
-
+            return CustomUser.objects.exclude(organisations=excludeorganisation)
         return CustomUser.objects.all()

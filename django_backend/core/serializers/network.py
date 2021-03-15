@@ -5,8 +5,8 @@ from ..models import Network
 
 class NetworkSerializer(serializers.ModelSerializer):
     created_by = serializers.StringRelatedField()
-    organisations = serializers.StringRelatedField(many=True)
-    methods = serializers.StringRelatedField(many=True)
+    organisations = serializers.StringRelatedField(many=True, required=False)
+    methods = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = Network

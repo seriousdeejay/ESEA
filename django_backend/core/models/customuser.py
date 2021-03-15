@@ -10,10 +10,9 @@ class CustomUser(AbstractUser):
     last_name_prefix = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50)
     registered_on = models.DateTimeField(default=now, editable=False)
-    # organisations = models.ManyToManyField('Organisation', through='UserOrganisation')
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = []
+    # REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.username

@@ -10,7 +10,7 @@
                     </div>
                 </div> -->
     <div class="card p-mx-5">
-        <h1>{{ network.name }} - created by {{ network.created_by.username }}</h1>
+        <h1>{{ network.name }} - created by {{ network.created_by }}</h1>
         <div class="p-grid">
             <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
                 <div class="p-fluid">
@@ -21,7 +21,7 @@
                 <Divider layout="vertical" />
             </div>
             <div class="p-col-5 p-d-flex p-ai-center p-jc-center">
-                 <p>{{ network.created_by.username }}</p>
+                 <p>{{ network.created_by }}</p>
                 <Button label="Edit Network" icon="pi pi-user-plus" class="p-button-success p-m-2" @click="editNetworkDialog = true" />
                 <Button label="Delete Network" icon="pi pi-trash" class="p-button-danger" @click="deleteNetworkDialog = true" />
             </div>
@@ -121,7 +121,7 @@ export default {
         ...mapActions('user', ['fetchUsers', 'setUser']),
         async initialize () {
             await this.fetchNetwork({ id: this.network?.id || 0 })
-            await this.fetchUsers({ query: `network=${this.network?.id || 0}` })
+            await this.fetchUsers({ query: `?network=${this.network?.id || 0}` })
         },
         async editNetwork () {
             this.editNetworkDialog = false

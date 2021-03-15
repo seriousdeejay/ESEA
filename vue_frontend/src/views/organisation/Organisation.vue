@@ -5,7 +5,7 @@
         </div>
         <div class="p-col">
             <div class="p-col-12 p-text-left p-text-italic p-m-0">
-                <p>Organisation Name</p>
+                <p>{{organisation.name}}</p>
                 <h3>{{currentPage}}</h3>
             </div>
             <router-view />
@@ -14,7 +14,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import OrganisationSidebar from '../../components/OrganisationSidebar'
+
 export default {
     components: {
     OrganisationSidebar
@@ -23,6 +25,9 @@ export default {
         return {
         currentPage: ''
         }
+    },
+    computed: {
+        ...mapState('organisation', ['organisation'])
     },
     methods: {
         changePagename (pagename) {

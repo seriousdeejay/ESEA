@@ -25,7 +25,9 @@ class NetworkViewSet(viewsets.ModelViewSet):
 
     
     def create(self, serializer):
+        print(self.request.user)
         serializer = NetworkSerializer(data=self.request.data)
+        print(serializer.initial_data)
         serializer.is_valid(raise_exception=True)
         serializer.save(created_by=self.request.user)
         return Response(serializer.data)

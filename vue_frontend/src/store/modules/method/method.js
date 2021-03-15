@@ -1,5 +1,5 @@
 import MethodService from '../../../services/MethodService'
-// import { mapState } from "vuex"
+import { AxiosInstance } from '../../../plugins/axios'
 
 export default {
     namespaced: true,
@@ -49,6 +49,19 @@ export default {
                 return
             }
             commit('setMethod', response)
+        },
+        async uploadMethod (payload) {
+            var formData = new FormData()
+            formData.append('file', payload)
+            console.log(payload)
+            return new Promise((resolve, reject) => {
+                AxiosInstance.post('/import-yaml/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }) // { headers: { 'Content-Type': 'multipart/form-data' } }
+            .then(response => {
+                console.log(response)
+                resolve()
+                })
+            .catch(err => { reject(err) })
+            })
         },
         async updateMethod ({ state, commit }) {
             const id = state.method.id

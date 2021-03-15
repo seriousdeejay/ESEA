@@ -86,8 +86,8 @@ export default {
                     { field: 'ispublic', header: 'Public' },
                     { field: 'name', header: 'Name' },
                     { field: 'description', header: 'Description' },
-                    { field: 'participants.length', header: 'Participants' },
-                    { field: 'creator.username', header: 'created_by' }
+                    { field: 'organisation_members.length', header: 'Members' },
+                    { field: 'created_by', header: 'created_by' }
                 ]
             }
         },

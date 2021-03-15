@@ -42,7 +42,7 @@ export default {
         async initialize () {
             await this.fetchMethods({})
             for (const method of this.methods) {
-                await this.fetchSurveys({ mId: method.id })
+                await this.fetchSurveys({ mId: method.id, query: `?organisation=${this.$route.params.OrganisationId}` })
             }
         }
     }

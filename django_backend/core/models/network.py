@@ -10,7 +10,7 @@ class Network(models.Model):
     created_by = models.ForeignKey('CustomUser', editable=False, on_delete=models.SET_NULL, null=True) # related_name='network_creator'
     organisations = models.ManyToManyField('Organisation', related_name="networks", blank=True) 
     methods = models.ManyToManyField('Method', related_name="networks", blank=True)
-
+    
     class Meta: 
         verbose_name = _('network')
         verbose_name_plural = _('networks')
