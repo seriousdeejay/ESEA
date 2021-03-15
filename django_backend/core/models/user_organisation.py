@@ -7,9 +7,9 @@ USERPERMISSIONS = (
 )
 
 class UserOrganisation(models.Model):
-    user = models.ForeignKey("CustomUser", related_name='user_organisations', on_delete=models.CASCADE)            #post instance.customuser_set.all()
-    organisation = models.ForeignKey("Organisation", related_name='organisation_members', on_delete=models.CASCADE)        # user instance.post_set.all()
-    role = models.CharField(max_length=255, choices = USERPERMISSIONS, default='RU') # Could give permissions to a user based on their role
+    user = models.ForeignKey("CustomUser", related_name='user_organisations', on_delete=models.CASCADE)
+    organisation = models.ForeignKey("Organisation", related_name='organisation_members', on_delete=models.CASCADE)
+    role = models.CharField(max_length=255, choices = USERPERMISSIONS, default='RU')
     stakeholdergroups = models.ManyToManyField('StakeholderGroup', blank=True)
 
     class Meta:
@@ -23,3 +23,7 @@ class UserOrganisation(models.Model):
         # o.members.all()   All members
         # u.user_organisations.all() --> All UserOrganisation instances with user=u
         # u.accessible_organisations.all()
+
+         #post instance.customuser_set.all()
+         # user instance.post_set.all()
+         # Could give permissions to a user based on their role

@@ -2,14 +2,12 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from .stakeholder_group import StakeholderGroup
-from .direct_indicator import DirectIndicator
+# from .direct_indicator import DirectIndicator
 
 
 class SurveyManager(models.Manager):
     def create(self, name, description, anonymous, stakeholder, method, rate=0):
-        stakeholdergroup, _ = StakeholderGroup.objects.get_or_create(name="Employee") # stakeholder = string, should be changed to stakeholder = stakeholder
-        print(stakeholdergroup)
-        
+        stakeholdergroup, _ = StakeholderGroup.objects.get_or_create(name="Employee")
         survey = Survey(name=name, description=description, rate=rate, anonymous=anonymous, stakeholder_groups=stakeholdergroup, method=method)
         # directindicators = DirectIndicator.objects.filter(topic__method=method.id)
         # print('---', directindicators)
@@ -21,8 +19,8 @@ class SurveyManager(models.Manager):
 
 class Survey(models.Model):
     objects = SurveyManager()
-    name=models.CharField(max_length=120, unique=False, blank=False)
-    description = models.CharField(max_length=45, blank=True, null=True)
+    name=models.CharField(max_length=255, unique=False, blank=False)
+    description = models.CharField(max_length=1000, blank=True, null=True)
     rate = models.IntegerField(default=0)
     anonymous = models.BooleanField(null=False)
     questions = models.ManyToManyField('DirectIndicator', blank=False)

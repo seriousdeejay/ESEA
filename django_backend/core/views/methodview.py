@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.core.files.storage import FileSystemStorage
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 import yaml
 
 from ..models import Method, CustomUser, Topic, DirectIndicator, Survey
@@ -15,11 +16,6 @@ class MethodViewSet(viewsets.ModelViewSet):
     serializer_class = MethodSerializer
 
     def get_queryset(self):
-        #if False: #self.request.user.is_authenticated:
-        #    pass
-            # user = self.request.user
-            # return Method.objects.filter(Q(organisation that are accessible for user) | Q(ispublic = True)) ??
-        # return Method.objects.filter(ispublic=True)
         network = self.request.GET.get('network', None)
         organisation = self.request.GET.get('organisation', None)
         excludenetwork = self.request.GET.get('excludenetwork', None)
@@ -29,14 +25,13 @@ class MethodViewSet(viewsets.ModelViewSet):
             return Method.objects.filter(networks__organisations=organisation).distinct()
         if excludenetwork is not None:
             return Method.objects.exclude(networks=excludenetwork)
-        return Method.objects.all()
+        return Method.objects.filter(Q(created_by=self.request.user) | Q(ispublic = True))
 
     def create(self, serializer):
-        # creator = get_object_or_404(CustomUser, pk=self.request.user.id)
         serializer = MethodSerializer(data=self.request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)        
+        serializer.is_valid(raise_exception=True)
+        serializer.save(created_by=self.request.user)
+        return Response(serializer.data)        
 
 # @method_decorator(csrf_exempt, name='dispatch')
 @api_view(['GET', 'POST'])
