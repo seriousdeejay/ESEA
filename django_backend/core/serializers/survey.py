@@ -2,11 +2,12 @@ from rest_framework import serializers
 
 from ..models import Survey, StakeholderGroup
 from .direct_indicator import DirectIndicatorSerializer
+from .method import MethodSerializer
 
 
 class SurveyOverviewSerializer(serializers.ModelSerializer):
     stakeholders = serializers.StringRelatedField( many=True)
-    method = serializers.StringRelatedField()
+    method = MethodSerializer()
 
     class Meta:
         model = Survey

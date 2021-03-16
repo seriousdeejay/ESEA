@@ -3,28 +3,35 @@
         <div class="p-col-12 p-p-3" style="background-color: #dcedc8;">
             <h1>{{survey.name}}</h1>
             <h3>{{survey.description}}</h3>
+            <div class="p-jc-center">
+            <span class="p-text-left p-text-bold">Respondent:</span> '{{surveyResponse.user_organisation.user}}' <br>
+            <span class="p-text-left p-text-bold">organisation:</span> '{{surveyResponse.user_organisation.organisation}}'
+            </div>
         </div>
 
-        <div class="p-grid p-col-6 p-p-3">
-            <div v-for="topic in survey.topics" :key="topic.id" class="p-grid p-col-12 p-m-3" style="background-color: lightgrey; border-radius: 10px;">
+        <div class="p-grid p-col-6 p-p-3" style="min-width: 800px;">
+            <div v-for="topic in survey.topics" :key="topic.id" class="p-grid p-col-12" style="background-color: #F5F5F5; border-radius: 10px;">
                 <div class="p-col-12 p-text-left"><h3>Topic: '{{topic.name}}</h3></div>
                 <survey-question
                 v-for="question in topic.questions"
                 :key="question.id"
                 :question="question"
                 :answer="answers[question.id]"
+                :readonly="true"
                 />
 
-                <div v-for="subtopic in topic.sub_topics" :key="subtopic.id" class="p-m-3" style="background-color: white; border-radius: 10px;">
+                <div v-for="subtopic in topic.sub_topics" :key="subtopic.id" class="p-col-12 p-m-3" style="background-color: white; border-radius: 10px;">
                     <div class="p-col-12 p-text-left"><h3>Topic: '{{subtopic.name}}</h3></div>
                      <survey-question
                     v-for="question in subtopic.questions"
                     :key="question.id"
                     :question="question"
                     :answer="answers[question.id]"
+                    :readonly="true"
                 />
                 </div>
             </div>
+            <Button label="Go to surveys" class="p-button-success p-mt-4" style="width: 100%" @click="goToSurveys"/>
         </div>
     </div>
 </template>
@@ -78,9 +85,15 @@ export default {
         ...mapActions('surveyResponse', ['fetchSurveyResponses', 'setSurveyResponse']),
         // ...mapActions('surveyResponseCalculation', ['fetchSurveyResponseCalculations']),
         async initialize () {
+            console.log(this.method)
             await this.fetchSurvey({ mId: this.method.id, id: this.survey.id })
+            await this.fetchSurveyResponses({ mId: this.method.id, sId: this.survey.id })
             this.setSurveyResponse(this.surveyResponse[0])
             // await this.fetchSurveyResponseCalculations({ mId: this.method.id, sId: this.survey.id, id: this.surveyResponse.id })
+        },
+        goToSurveys () {
+            console.log('d', this.$route.params)
+            this.$router.push({ name: 'organisationsurveys', params: { OrganisationId: this.$route.params.OrganisationId } })
         }
     }
 }

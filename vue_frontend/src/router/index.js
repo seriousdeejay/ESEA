@@ -239,7 +239,7 @@ const routes = [
     }
   },
   {
-    path: '/methods/:id/surveys/:surveyId',
+    path: '/organisations/:OrganisationId/methods/:id/surveys/:surveyId',
     name: 'survey-fill',
     component: () => import('../views/SurveyResponse.vue'),
     meta: {
@@ -247,7 +247,7 @@ const routes = [
     }
   },
   {
-    path: '/methods/:id/surveys/:surveyId/result',
+    path: '/organisations/:OrganisationId/methods/:id/surveys/:surveyId/result',
     name: 'method-survey-result',
     component: () => import('../views/SurveyUserResult.vue'),
     meta: {
@@ -261,7 +261,12 @@ const routes = [
     meta: {
       requiresLogin: true
     }
-  }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: '404',
+    component: () => import('../views/Logout.vue')
+}
 ]
 
 const router = createRouter({
@@ -271,3 +276,7 @@ const router = createRouter({
 })
 
 export default router
+
+// let resolved = this.$router.resolve('YOUR URL')
+// if(resolved.route.name != '404')
+//    // DO SOMETHING

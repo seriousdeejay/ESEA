@@ -2,10 +2,11 @@ from rest_framework import serializers
 
 from ..models import SurveyResponse
 from .question_response import QuestionResponseSerializer
-
+from .user_organisation import UserOrganisationSerializer
 
 class SurveyResponseSerializer(serializers.ModelSerializer):
     question_responses = QuestionResponseSerializer(many=True)
+    user_organisation = UserOrganisationSerializer(read_only=True)
 
     class Meta:
         model = SurveyResponse

@@ -13,10 +13,14 @@ class SurveyResponseViewSet(viewsets.ModelViewSet):
     serializer_class = SurveyResponseSerializer
 
     def get_queryset(self):
+        organisation = self.request.GET.get('organisation', None)
+        if organisation is not None:
+            # could also get UserOrganisation and add it to the filter
+            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'], user_organisation__organisation=organisation, user_organisation__user=self.request.user)
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'])
 
     def perform_create(self, serializer):
-        user_organisation = get_object_or_404(UserOrganisation, user=self.request.user, organisation=1) # organisation=self.kwargs['organisation_pk']
+        user_organisation = get_object_or_404(UserOrganisation, user=self.request.user, organisation=2) # organisation=self.kwargs['organisation_pk']
         survey = get_object_or_404(Survey, pk=self.kwargs['survey_pk'])
         print(user_organisation, survey)
         serializer.save(survey=survey, user_organisation=user_organisation)

@@ -19,8 +19,8 @@ class SurveyViewSet(viewsets.ModelViewSet):
             except:
                 return Survey.objects.none()
             ids = userorganisation.stakeholdergroups.values_list('id', flat=True)
-            return Survey.objects.filter(method__networks__organisations=organisation, stakeholder_groups__pk__in=ids)
-        # return Survey.objects.filter(method=self.kwargs['method_pk'])
+            return Survey.objects.filter(method__networks__organisations=organisation, stakeholder_groups__pk__in=ids).exclude(responses__user_organisation=userorganisation.id)
+        return Survey.objects.filter(method=self.kwargs['method_pk'])
     
     def retrieve(self, request, method_pk, pk):
         survey = get_object_or_404(self.get_queryset(), pk=pk)

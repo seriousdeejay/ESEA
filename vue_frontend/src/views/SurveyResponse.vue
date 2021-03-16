@@ -3,12 +3,13 @@
     <div class="p-col-12 p-p-3" style="background-color: #dcedc8;">
         <h1>{{survey.name}}</h1>
         <h3>{{survey.description}}</h3>
+        {{surveyResponse}}
     </div>
     <div class="p-grid p-col-6 p-p-3" style="background-color: white; border-radius: 10px;">
         <div class="p-col-6 p-text-left">Topic {{ topicNumber + 1}} of {{totalTopics}}</div>
         <div class="p-col-6 p-text-right"><ProgressBar :value="progressBarValue">{{progressBarValue}}% completed</ProgressBar></div>
         <div class="p-col-12 p-text-left"><h3>Topic: '{{currentTopic.name}}'</h3></div>
-        <survey-question
+        <survey-question class="p-col-12"
         v-for="question in currentTopic.questions"
         :key="question.id"
         :question="question"
@@ -60,7 +61,7 @@ export default {
         },
         answers () {
             const answers = {}
-            if (this.surveyResponse?.id !== this.surveyId && this.surveyResponse.question_responses) {
+            if (this.surveyResponse?.id !== this.survey.id && this.surveyResponse.question_responses) {
                 this.surveyResponse.question_responses.forEach((answer) => {
                     answers[answer.direct_indicator_id] = answer.value
                 })
@@ -78,7 +79,7 @@ export default {
             await this.fetchSurvey({ mId: this.method.id, id: this.survey.id })
             await this.fetchSurveyResponses({ mId: this.method.id, sId: this.survey.id })
             if (this.surveyResponses.length) {
-				this.setSurveyResponse(this.surveyResponses[0])
+				this.setSurveyResponse(this.surveyResponses[1])
 				return
             }
             this.createSurveyResponse({ mId: this.method.id, sId: this.survey.id })
@@ -107,7 +108,7 @@ export default {
         finishSurvey () {
             console.log(this.surveyResponse)
             this.updateSurveyResponse({ mId: this.method.id, sId: this.survey.id, surveyResponse: { ...this.surveyResponse } })
-            this.$router.push({ name: 'method-survey-result', params: { id: this.method.id, surveyId: this.survey.id } })
+            this.$router.push({ name: 'method-survey-result', params: { OrganisationId: this.$route.params.OrganisationId, id: this.method.id, surveyId: this.survey.id } })
         },
         updateAnswer (id, answer) {
             this.updateSurveyResponse({

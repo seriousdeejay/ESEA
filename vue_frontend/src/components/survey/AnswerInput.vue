@@ -1,19 +1,19 @@
 <template>
     <div class="p-p-3 p-my-3" style="border: 1px solid lightgrey;">
-        <InputNumber v-if="type === questionTypes.NUMBER" v-model="lazyValue" />
-        <InputText v-if="type === questionTypes.TEXT" type="text" v-model="lazyValue" />
+        <InputNumber v-if="type === questionTypes.NUMBER" v-model="lazyValue" :disabled="readonly" />
+        <InputText v-if="type === questionTypes.TEXT" type="text" v-model="lazyValue" :disabled="readonly" />
 
         <div v-if="type === questionTypes.CHECKBOX">
             <div v-for="(option, index) in options" :key="`${index}-option`" class="p-field-checkbox">
-                <Checkbox :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" />
+                <Checkbox :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" />
                 <label :for="`${index}-option`" class="p-text-left">{{option[optionTextKey]}}</label>
             </div>
         </div>
 
         <div v-if="type === questionTypes.RADIO">
             <div v-for="(option, index) in options" :key="`${index}-option`" class="p-field-radiobutton">
-                <RadioButton :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" />
-                <label :for="`${index}-option`">{{option[optionTextKey]}}</label>
+                <RadioButton :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" />
+                <label :for="`${index}-option`" class="p-text-left">{{option[optionTextKey]}}</label>
             </div>
         </div>
     </div>
