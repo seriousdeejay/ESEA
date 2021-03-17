@@ -7,9 +7,11 @@
             :type="question.answertype"
             :options="question.options"
             :readonly="readonly"
+            :checkanswerrequired="checkanswerrequired"
             option-value-key="text"
             required
             @input="changeAnswer"
+            @completed="completed"
             />
             <div v-if="question.description">
                 <p class="p-text-justify p-text-light p-m-0" style="color: lightgrey;"><small>Description:</small><br>
@@ -40,6 +42,10 @@ export default {
         readonly: {
             type: Boolean,
             default: false
+        },
+        checkanswerrequired: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
@@ -51,6 +57,10 @@ export default {
         changeAnswer (answer) {
             console.log(answer)
             this.$emit('input', answer)
+        },
+        completed (completedBool) {
+            console.log(completedBool)
+            this.$emit('completed', completedBool)
         }
     }
 }

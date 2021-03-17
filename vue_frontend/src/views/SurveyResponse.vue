@@ -3,7 +3,6 @@
     <div class="p-col-12 p-p-3" style="background-color: #dcedc8;">
         <h1>{{survey.name}}</h1>
         <h3>{{survey.description}}</h3>
-        {{surveyResponse}}
     </div>
     <div class="p-grid p-col-6 p-p-3" style="background-color: white; border-radius: 10px;">
         <div class="p-col-6 p-text-left">Topic {{ topicNumber + 1}} of {{totalTopics}}</div>
@@ -14,15 +13,20 @@
         :key="question.id"
         :question="question"
         :answer="answers[question.id]"
+        :checkanswerrequired="checkAnswerRequired"
         @input="updateAnswer(question.id, $event)"
+        @completed="completed"
         />
 
     <div class="p-col-6 p-text-left">
         <Button label="Previous Topic" class="p-button-raised p-button-sm" :disabled="topicNumber === 0" @click="previousTopic"/>
     </div>
-    <div class="p-col-6 p-text-right">
-        <Button v-if="topicNumber + 1 < totalTopics" label="Next Topic" class="p-button-raised p-button-sm" @click="nextTopic" />
-        <Button v-else label="Finish Survey" class="p-button-success p-button-raised p-button-sm" @click="finishSurvey" />
+    <div class="p-col-3 p-text-right">
+        <Button label="Save for Now" class="p-button-primary p-button-raised p-button-sm" @click="saveSurvey" />
+    </div>
+    <div class="p-col-3 p-text-right">
+        <Button v-if="topicNumber + 1 < totalTopics" label="Next Topic" class="p-button-raised p-button-sm" style="width: 100%" @click="nextTopic" />
+        <Button v-else label="Finish Survey" class="p-col p-button-success p-button-raised p-button-sm" style="width: 100%" @click="finishSurvey" />
     </div>
     </div>
 </div>
@@ -42,7 +46,8 @@ export default {
         return {
         topicNumber: 0,
         progressBarValue: 0,
-        radiovalue: null
+        currentanswer: null,
+        checkAnswerRequired: false
         }
     },
     computed: {
@@ -77,12 +82,15 @@ export default {
         ...mapActions('surveyResponse', ['fetchSurveyResponses', 'setSurveyResponse', 'updateSurveyResponse', 'createSurveyResponse']),
         async initialize () {
             await this.fetchSurvey({ mId: this.method.id, id: this.survey.id })
-            await this.fetchSurveyResponses({ mId: this.method.id, sId: this.survey.id })
+            await this.fetchSurveyResponses({ mId: this.method.id, sId: this.survey.id, OiD: this.$route.params.OrganisationId, query: `?organisation=${this.$route.params.OrganisationId}` })
+            console.log(this.surveyResponses)
             if (this.surveyResponses.length) {
-				this.setSurveyResponse(this.surveyResponses[1])
+                console.log('check')
+				this.setSurveyResponse(this.surveyResponses[0])
 				return
             }
-            this.createSurveyResponse({ mId: this.method.id, sId: this.survey.id })
+            console.log('check')
+            this.createSurveyResponse({ mId: this.method.id, sId: this.survey.id, OrganisationId: 16 })
         },
         progress (pageturn) {
             var interval = 100 / this.totalTopics
@@ -101,16 +109,24 @@ export default {
         },
         nextTopic () {
             if (this.topicNumber + 1 < this.totalTopics) {
+                this.checkAnswerRequired = true
                 this.topicNumber += 1
                 this.progress('next')
             }
         },
+        saveSurvey () {
+            this.updateSurveyResponse({ mId: this.method.id, sId: this.survey.id, surveyResponse: { ...this.surveyResponse } })
+            this.$router.push({ name: 'organisationsurveys', params: { OrganisationId: this.$route.params.OrganisationId } })
+        },
         finishSurvey () {
             console.log(this.surveyResponse)
+            this.surveyResponse.finished = true
             this.updateSurveyResponse({ mId: this.method.id, sId: this.survey.id, surveyResponse: { ...this.surveyResponse } })
             this.$router.push({ name: 'method-survey-result', params: { OrganisationId: this.$route.params.OrganisationId, id: this.method.id, surveyId: this.survey.id } })
         },
         updateAnswer (id, answer) {
+            this.currentanswer = answer
+            console.log(this.currentanswer)
             this.updateSurveyResponse({
                 mId: this.method.id,
                 sId: this.survey.id,
@@ -122,6 +138,9 @@ export default {
                     ]
                 }
             })
+        },
+        completed (completed) {
+            console.log('>>', completed)
         }
     }
 }

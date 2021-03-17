@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
 
-from ..models import Survey, Method, UserOrganisation, Organisation
+from ..models import Survey, Method, UserOrganisation, Organisation, SurveyResponse
 from ..serializers import SurveyOverviewSerializer, SurveyDetailSerializer, UserOrganisationSerializer
 
 
@@ -12,15 +12,20 @@ class SurveyViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         organisation = self.request.GET.get('organisation', None)
-        if organisation is not None:
+        completedbyorganisation = self.request.GET.get('completedbyorganisation', None)
+        if organisation or completedbyorganisation is not None:
             try:
-                organisation = Organisation.objects.get(id=organisation)
-                userorganisation = UserOrganisation.objects.get(user=self.request.user, organisation=organisation)
+                org = Organisation.objects.get(id=organisation or completedbyorganisation)
+                userorganisation = UserOrganisation.objects.get(user=self.request.user, organisation=org)
             except:
                 return Survey.objects.none()
             ids = userorganisation.stakeholdergroups.values_list('id', flat=True)
-            return Survey.objects.filter(method__networks__organisations=organisation, stakeholder_groups__pk__in=ids).exclude(responses__user_organisation=userorganisation.id)
-        return Survey.objects.filter(method=self.kwargs['method_pk'])
+            print(ids)
+            if organisation:
+                return Survey.objects.filter(method__networks__organisations=org, stakeholder_groups__pk__in=ids).exclude(responses__in=SurveyResponse.objects.filter(user_organisation=userorganisation, finished=True))
+            if completedbyorganisation:
+                return Survey.objects.filter(method__networks__organisations=org, stakeholder_groups__pk__in=ids, responses__user_organisation=userorganisation, responses__finished=True)    
+       #  return Survey.objects.filter(method=self.kwargs['method_pk'])
     
     def retrieve(self, request, method_pk, pk):
         survey = get_object_or_404(self.get_queryset(), pk=pk)

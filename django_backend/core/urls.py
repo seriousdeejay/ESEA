@@ -17,7 +17,11 @@ method_router.register(r'topics', topicview.TopicViewSet, basename="method-topic
 method_router.register(r'questions', direct_indicatorview.DirectIndicatorViewSet, basename="method-questions")
 
 survey_router = routers.NestedSimpleRouter(method_router, r'surveys', lookup="survey")
-survey_router.register(r'responses', survey_responseview.SurveyResponseViewSet, basename="survey-responses")
+survey_router.register(r'organisations', organisationview.OrganisationViewSet, basename="survey-organisations")
+
+organisation_router = routers.NestedSimpleRouter(survey_router, r'organisations', lookup="organisation")
+organisation_router.register(r'responses', survey_responseview.SurveyResponseViewSet, basename="organisation-responses")
+
 # router.register(r'topics', topicview.TopicViewSet, basename='topics')
 # router.register(r'questions', direct_indicatorview.DirectIndicatorViewSet, basename='questions')
 # router.register(r'surveys', surveyview.SurveyViewSet, basename='surveys')
@@ -32,7 +36,8 @@ urlpatterns = [
     path('import-yaml/', methodview.upload_yaml),
     path('', include(router.urls)),
     path('', include(method_router.urls)),
-    path('', include(survey_router.urls))
+    path('', include(survey_router.urls)),
+    path('', include(organisation_router.urls))
 ]
 
 

@@ -20,13 +20,13 @@ class SurveyResponseViewSet(viewsets.ModelViewSet):
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'])
 
     def perform_create(self, serializer):
-        user_organisation = get_object_or_404(UserOrganisation, user=self.request.user, organisation=2) # organisation=self.kwargs['organisation_pk']
+        user_organisation = get_object_or_404(UserOrganisation, user=self.request.user, organisation=self.kwargs['organisation_pk']) # organisation=self.kwargs['organisation_pk']
         survey = get_object_or_404(Survey, pk=self.kwargs['survey_pk'])
         print(user_organisation, survey)
         serializer.save(survey=survey, user_organisation=user_organisation)
     
     @action(detail=False, methods=['get'])
-    def all(self, request, method_pk, survey_pk):
+    def all(self, request, method_pk, survey_pk, organisation_pk):
         
         all_respondents = SurveyResponse.objects.filter(survey__method=method_pk, survey=survey_pk)
 

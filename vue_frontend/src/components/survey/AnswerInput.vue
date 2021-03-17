@@ -1,18 +1,18 @@
 <template>
     <div class="p-p-3 p-my-3" style="border: 1px solid lightgrey;">
-        <InputNumber v-if="type === questionTypes.NUMBER" v-model="lazyValue" :disabled="readonly" />
-        <InputText v-if="type === questionTypes.TEXT" type="text" v-model="lazyValue" :disabled="readonly" />
+        <InputNumber v-if="type === questionTypes.NUMBER" v-model="lazyValue" :disabled="readonly" required/>
+        <InputText v-if="type === questionTypes.TEXT" type="text" v-model="lazyValue" :disabled="readonly" required/>
 
         <div v-if="type === questionTypes.CHECKBOX">
             <div v-for="(option, index) in options" :key="`${index}-option`" class="p-field-checkbox">
-                <Checkbox :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" />
+                <Checkbox :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" required/>
                 <label :for="`${index}-option`" class="p-text-left">{{option[optionTextKey]}}</label>
             </div>
         </div>
 
         <div v-if="type === questionTypes.RADIO">
             <div v-for="(option, index) in options" :key="`${index}-option`" class="p-field-radiobutton">
-                <RadioButton :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" />
+                <RadioButton :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" required/>
                 <label :for="`${index}-option`" class="p-text-left">{{option[optionTextKey]}}</label>
             </div>
         </div>
@@ -56,11 +56,16 @@ export default {
         readonly: {
             type: Boolean,
             default: false
+        },
+        checkanswerrequired: {
+            type: Boolean,
+            default: false
         }
     },
     data () {
         return {
             lazyValue: this.value,
+            completedBool: true,
             questionTypes: QUESTION_TYPES
         }
     },
@@ -76,6 +81,7 @@ export default {
             }
         },
         lazyValue (val) {
+            console.log('hello')
             if (val === this.value) return
             if (this.type === this.questionTypes.CHECKBOX) {
                 const checked = this.splitValue(this.value)
@@ -86,7 +92,17 @@ export default {
                 if (val === checked) return
 			}
 			this.$emit('input', `${val}`)
+        },
+        checkanswerrequired (val) {
+            console.log('hi')
         }
+        // checkanswerrequired: function (val, oldval) {
+        //     console.log('hello')
+        //     if (this.checkanswerrequired) {
+        //         console.log('goodday')
+        //     this.$emit('completed', this.completedBool)
+        //     }
+        // }
     },
     created () {
         if (this.type === this.questionTypes.CHECKBOX) {

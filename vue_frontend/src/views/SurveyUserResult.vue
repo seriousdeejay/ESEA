@@ -87,8 +87,9 @@ export default {
         async initialize () {
             console.log(this.method)
             await this.fetchSurvey({ mId: this.method.id, id: this.survey.id })
-            await this.fetchSurveyResponses({ mId: this.method.id, sId: this.survey.id })
-            this.setSurveyResponse(this.surveyResponse[0])
+            await this.fetchSurveyResponses({ mId: this.method.id, sId: this.survey.id, OrganisationId: this.$route.params.OrganisationId, query: `?organisation=${this.$route.params.OrganisationId}` })
+            console.log(this.surveyResponses)
+            this.setSurveyResponse(this.surveyResponses[0])
             // await this.fetchSurveyResponseCalculations({ mId: this.method.id, sId: this.survey.id, id: this.surveyResponse.id })
         },
         goToSurveys () {

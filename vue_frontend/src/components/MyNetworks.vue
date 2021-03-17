@@ -26,9 +26,13 @@
         </template>
     </Toolbar>
     <div v-if="networks.length">
-        <DataTable ref="dt" :value="networks" v-model:selection="selectedRows" :selectionMode="selectionToggle? 'multiple' : 'single'" dataKey="id" :metaKeySelection="false" @row-select="goToSelectedNetwork"
+        <DataTable ref="dt" :value="networks" v-model:selection="selectedRows" :selectionMode="selectionToggle? 'multiple' : 'single'" dataKey="id" :loading="loading" @row-select="goToSelectedNetwork"
         :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
+
+        <template #loading>
+            Loading records, please wait...
+        </template>
 
         <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field" />
         </Datatable>
@@ -86,7 +90,8 @@ export default {
             selectedRows: [],
             selectionToggle: false,
             addingProcess: false,
-            Dialog: false
+            Dialog: false,
+            loading: true
         }
     },
     computed: {
@@ -99,8 +104,9 @@ export default {
     methods: {
         ...mapActions('network', ['fetchNetworks', 'setNetwork', 'patchNetwork']),
         async initialize () {
-            console.log('initalize')
+            this.loading = true
             await this.fetchNetworks({ query: this.query })
+            this.loading = false
             this.selectedRows = []
             this.addingProcess = false
             this.selectionToggle = false

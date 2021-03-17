@@ -28,7 +28,6 @@ class Survey(models.Model):
     anonymous = models.BooleanField(null=False)
     questions = models.ManyToManyField('DirectIndicator', blank=False)
     method =  models.ForeignKey('Method', related_name="surveys", on_delete=models.CASCADE)
-    # stakeholder_group = models.ForeignKey('StakeholderGroup', related_name='surveys', on_delete=models.CASCADE)
     stakeholder_groups = models.ManyToManyField('StakeholderGroup')
 
     class Meta:
