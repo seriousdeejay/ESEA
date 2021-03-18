@@ -38,8 +38,8 @@
     <Dialog v-model:visible="confirmationDialog" :style="{width: '450px'}" header="Confirm" :modal="true">
       <div class="confirmation-content">
           <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
-            <span v-if="networkMethods">Are you sure you want to <b>{{addingProcess? 'add' : 'remove'}}</b> the following organisations?</span>
-            <span v-else>Are you sure you want to <b>delete</b> the following organisations?</span>
+            <span v-if="networkMethods">Are you sure you want to <b>{{addingProcess? 'add' : 'remove'}}</b> the following methods?</span>
+            <span v-else>Are you sure you want to <b>delete</b> the following methods?</span>
             <br>
             <div class="p-shadow-2 p-m-3 p-p-3">
             <div v-for="item in selectedRows" :key=item.name>{{item.name}}</div>

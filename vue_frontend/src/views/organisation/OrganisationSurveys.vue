@@ -12,7 +12,7 @@
         </template>
     </Toolbar>
     <div v-if="surveys.length && !loading">
-        <DataTable ref="dt" autoLayout="true" :value="surveys" v-model:selection="selectedRows" :selectionMode="selectionToggle? 'multiple' : 'single'" :dataKey="id" :loading="loading" @row-select="goToSurvey"
+        <DataTable ref="dt" autoLayout="false" :value="surveys" v-model:selection="selectedRows" :selectionMode="selectionToggle? 'multiple' : 'single'" :dataKey="id" :loading="loading" @row-select="goToSurvey"
         :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
 
@@ -22,25 +22,34 @@
             <!-- <template # empty>
                 empty
             </template> -->
+            <Column
+                v-for="column in columns"
+                :key="column"
+                :field="column.field"
+                :header="column.header"
+                ><template v-if="column.header === 'action'" #body="slotProps">
+                    <Button v-if="surveyWithResponse" type="button" label="Results" class="p-button-raised p-button secondary" @click="goToSurveyResult(slotProps.data)" />
+                    <Button v-else label="Participate"  @click="goToSurveyResult(slotProps.data)" />
+                </template>
+            </Column>
 
-            <Column field="name" header="Name"></Column>
-            <Column field="description" header="Description"></Column>
+            <!-- <Column field="name" header="Name"></Column>
+            <Column v-if="false" field="description" header="Description"></Column>
             <Column field="questions.length" header="Questions"></Column>
             <Column field="method.name" header="Method"></Column>
             <Column field="stakeholders" header="Stakeholder group"></Column>
-            <div v-if="true">
-            <Column  header="Action" headerStyle="width: 15%">
+            <Column header="Action" headerStyle="width: 15%">
                 <template #body="slotProps">
-                    <Button v-if="surveyWithResponse" type="button" label="Results" class="p-button-raised p-button secondary" @click="goToSurveyResult(slotProps.data)" :disabled="existingsurveyresult"/>
-                    <Button v-else label="Participate" />
+                    <Button v-if="surveyWithResponse" type="button" label="Results" class="p-button-raised p-button secondary" @click="goToSurveyResult(slotProps.data)" />
+                    <Button v-else label="Participate"  @click="goToSurveyResult(slotProps.data)" />
                 </template>
-            </Column>
-            </div>
+            </Column> -->
         </DataTable>
     </div>
     <div v-else class="p-p-5 p-text-italic">
-        Your organisation has no surveys to display.<br> Join a network to get available surveys!
+        Your organisation has no surveys to display. This can have the following reasons: <br> 1). you have done all surveys, <br> 2). related networks have not deployed a survey <br> 3). this organisation isn't member of a network.
     </div>
+    {{surveyWithResponse}}
 </template>
 
 <script>
@@ -84,9 +93,13 @@ export default {
             this.$forceUpdate()
             if (this.surveyWithResponse) {
                 this.loading = true
+                if (this.columns.length === 5) {
+                this.columns.push({ header: 'action' })
+                }
                 await this.fetchSurveys({ mId: 0, query: `?completedbyorganisation=${this.$route.params.OrganisationId}` })
                 this.loading = false
             } else {
+                this.columns.splice(5, 1)
                 this.initialize()
             }
         },

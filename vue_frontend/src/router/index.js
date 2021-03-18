@@ -58,14 +58,103 @@ const routes = [
     }
   },
   {
-    path: '/networks/:id',
-    name: 'networkdetails',
-    component: () => import('../views/NetworkDetails.vue'),
+    path: '/network/:NetworkId',
+    name: 'network',
+    component: () => import('../views/network/Network'),
+    children: [
+      {
+        path: 'overview',
+        name: 'networkoverview',
+        component: () => import('../views/network/NetworkOverview'),
+        meta: {
+          requiresLogin: true,
+          breadcrumb: [
+            { label: 'Networks', to: '/networks' },
+            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
+            { label: 'Overview', to: { name: 'networkoverview' } }
+          ]
+        }
+      },
+      {
+        path: 'methods',
+        name: 'networkmethods',
+        component: () => import('../views/network/NetworkMethods'),
+        meta: {
+          requiresLogin: true,
+          breadcrumb: [
+            { label: 'Networks', to: '/networks' },
+            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
+            { label: 'Methods', to: { name: 'networkmethods' } }
+          ]
+        }
+      },
+      {
+        path: 'surveys',
+        name: 'networksurveys',
+        component: () => import('../views/network/NetworkSurveys'),
+        meta: {
+          requiresLogin: true,
+          breadcrumb: [
+            { label: 'Networks', to: '/networks' },
+            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
+            { label: 'Surveys', to: { name: 'networksurveys' } }
+          ]
+        }
+      },
+      {
+        path: 'survey-responses',
+        name: 'networksurveyresponses',
+        component: () => import('../views/network/NetworkSurveyResponses'),
+        meta: {
+          requiresLogin: true,
+          breadcrumb: [
+            { label: 'Networks', to: '/networks' },
+            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
+            { label: 'Survey Responses', to: { name: 'networksurveyresponses' } }
+          ]
+        }
+      },
+      {
+        path: 'organisations',
+        name: 'networkorganisations',
+        component: () => import('../views/network/NetworkOrganisations'),
+        meta: {
+          requiresLogin: true,
+          breadcrumb: [
+            { label: 'Networks', to: '/networks' },
+            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
+            { label: 'Organisations', to: { name: 'networkorganisations' } }
+          ]
+        }
+      },
+      {
+        path: 'settings',
+        name: 'networksettings',
+        component: () => import('../views/network/NetworkSettings'),
+        meta: {
+          requiresLogin: true,
+          breadcrumb: [
+            { label: 'Networks', to: '/networks' },
+            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
+            { label: 'Settings', to: { name: 'networksettings' } }
+          ]
+        }
+      }
+    ],
     meta: {
       requiresLogin: true,
-      breadcrumb: [{ label: 'networks', to: '/networks' }, { label: '', to: { name: 'networkdetails', params: { id: '' } } }]
+      breadcrumb: [{ label: 'networks', to: '/networks' }, { label: '', to: { name: 'networkoverview', params: { id: '' } } }]
     }
   },
+  // {
+  //   path: '/networks/:id',
+  //   name: 'networkdetails',
+  //   component: () => import('../views/NetworkDetails.vue'),
+  //   meta: {
+  //     requiresLogin: true,
+  //     breadcrumb: [{ label: 'networks', to: '/networks' }, { label: '', to: { name: 'networkdetails', params: { id: '' } } }]
+  //   }
+  // },
   {
     path: '/organisation/:OrganisationId',
     name: 'organisation',

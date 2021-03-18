@@ -109,7 +109,7 @@ export default {
         },
         nextTopic () {
             if (this.topicNumber + 1 < this.totalTopics) {
-                this.checkAnswerRequired = true
+                this.checkAnswerRequired = !this.checkAnswerRequired
                 this.topicNumber += 1
                 this.progress('next')
             }

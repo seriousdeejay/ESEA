@@ -104,7 +104,7 @@ export default {
                 console.log(selectedRows[0])
                 this.setNetwork({ ...selectedRows[0] })
                 // this.$toast.add({ severity: 'info', summary: 'Network Selected', detail: 'Name: ' + event.name, life: 3000 })
-                this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })
+                this.$router.push({ name: 'networkoverview', params: { NetworkId: this.network.id } })
             } else {
                 this.selectedNetworks = selectedRows
             }

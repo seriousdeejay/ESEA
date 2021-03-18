@@ -23,7 +23,7 @@
                 <div class="p-m-3">
                     <div v-if="networks.length">
                         <div v-for="network, num in networks" :key="network.name">
-                            {{num+1}}. <router-link :to="{name: 'networkdetails', params: { id: network.id } }" style="text-decoration: none; color: blue;">{{network.name}}</router-link>
+                            {{num+1}}. <router-link :to="{name: 'networkoverview', params: { NetworkId: network.id } }" style="text-decoration: none; color: blue;">{{network.name}}</router-link>
                             <Divider class="p-m-1" />
                         </div>
                     </div>

@@ -59,13 +59,13 @@ export default {
         },
         checkanswerrequired: {
             type: Boolean,
-            default: false
+            default: undefined
         }
     },
     data () {
         return {
             lazyValue: this.value,
-            completedBool: true,
+            completedBool: this.checkanswerrequired,
             questionTypes: QUESTION_TYPES
         }
     },
@@ -75,6 +75,9 @@ export default {
 		// },
     },
     watch: {
+        completedBool (val) {
+            console.log('hi')
+        },
         value (val) {
             if (val !== this.lazyValue) {
                 this.lazyValue = this.type === this.questionTypes.CHECKBOX ? this.splitValue(val) : val
@@ -92,9 +95,6 @@ export default {
                 if (val === checked) return
 			}
 			this.$emit('input', `${val}`)
-        },
-        checkanswerrequired (val) {
-            console.log('hi')
         }
         // checkanswerrequired: function (val, oldval) {
         //     console.log('hello')
