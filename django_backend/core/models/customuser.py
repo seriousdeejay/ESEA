@@ -10,6 +10,7 @@ class CustomUser(AbstractUser):
     last_name_prefix = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50)
     registered_on = models.DateTimeField(default=now, editable=False)
+    uniquetoken = models.CharField(max_length=8, blank=True)
 
     USERNAME_FIELD = 'username'
     # REQUIRED_FIELDS = []

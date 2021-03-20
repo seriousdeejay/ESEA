@@ -4,7 +4,7 @@
             <organisation-sidebar :links="links" :name="network.name" @reroute="goToPage"/>
         </div>
         <div class="p-col">
-            <div class="p-col-12 p-text-left p-text-italic p-m-0">
+            <div class="p-col-12 p-text-left p-text-italic p-m-0 p-px-5">
                 <p>{{network.name}}</p>
                 <h3>{{pagename || this.$route.meta.breadcrumb[this.$route.meta.breadcrumb.length-1].label}}</h3>
             </div>

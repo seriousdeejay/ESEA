@@ -89,15 +89,16 @@ const routes = [
         }
       },
       {
-        path: 'surveys',
-        name: 'networksurveys',
-        component: () => import('../views/network/NetworkSurveys'),
+        path: 'method/:MethodId',
+        name: 'networkmethod',
+        component: () => import('../views/network/NetworkMethod'),
         meta: {
           requiresLogin: true,
           breadcrumb: [
             { label: 'Networks', to: '/networks' },
             { label: '', to: { name: 'networkoverview', params: { id: '' } } },
-            { label: 'Surveys', to: { name: 'networksurveys' } }
+            { label: 'Methods', to: { name: 'networkmethods' } },
+            { label: 'BIA', to: { name: 'networkmethod' } }
           ]
         }
       },

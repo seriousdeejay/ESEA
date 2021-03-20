@@ -29,7 +29,11 @@
         :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
 
-        <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field" />
+        <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field">
+            <template v-if="col.field === 'ispublic'" #body="slotProps">
+            <i class="pi" :class="{'true-icon pi-check-circle': slotProps.data.ispublic, 'false-icon pi-times-circle': !slotProps.data.ispublic}"></i>
+            </template>
+        </Column>
         </Datatable>
     </div>
     <div v-else class="p-p-3 p-text-bold"> {{addingProcess? 'There are no organisations to add!' : 'This network has no organisations, add some!'}}</div>
@@ -87,7 +91,7 @@ export default {
                     { field: 'name', header: 'Name' },
                     { field: 'description', header: 'Description' },
                     { field: 'organisation_members.length', header: 'Members' },
-                    { field: 'created_by', header: 'created_by' }
+                    { field: 'created_by', header: 'Created by' }
                 ]
             }
         },

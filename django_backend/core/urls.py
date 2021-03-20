@@ -34,10 +34,11 @@ urlpatterns = [
     path('api-token/', TokenObtainPairView.as_view()),
     path('ap-refresh/', TokenRefreshView.as_view()),
     path('import-yaml/', methodview.upload_yaml),
+    path('import-employees/<int:organisation_pk>/', userview.import_employees, name="import_employees_of_organisation"),
     path('', include(router.urls)),
     path('', include(method_router.urls)),
     path('', include(survey_router.urls)),
-    path('', include(organisation_router.urls))
+    path('', include(organisation_router.urls)),
 ]
 
 

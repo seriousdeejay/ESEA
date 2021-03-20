@@ -1,11 +1,12 @@
 <template>
 <div class="p-grid nested-grid p-px-5" style="min-height: 60vh;">
-    <div class="" style="min-width: 600px;">
+    <div class="" style="width: 500px;">
         <div class="p-fluid p-text-left p-my-5">
+            <!-- <form id="networkeditingform" @submit="checkform"> -->
             <div class="p-field">
                 <label for="name">Name</label>
                 <InputText id="name" v-model.trim="network.name" required="true" autofocus :class="{'p-invalid': submitted && !network.name}" class="p-text-italic" />
-                <small class="p-error" v-if="submitted && !network.name">Name is required.</small>
+                <small class="p-error" v-if="!network.name">Name is required.</small>
             </div>
             <div class="p-field">
                 <label for="description">Description</label>
@@ -13,22 +14,37 @@
             </div>
                 <div class="p-field">
                 <label for="ispublic">Should this network be public? </label>
-                <SelectButton id="ispublic" v-model="boolChoice" :options="ispublicbool" optionLabel="name" @focus="check" :disabled="true" />
+                <SelectButton id="ispublic" v-model="boolChoice" :options="ispublicbool" optionLabel="name" @focus="check" :disabled="true" class="p-mb-3" />
+
+                <small class="p-text-italic">*Public networks and their organisations are visible to anyone. Explicitly granted access is still required for certain operations.</small>
             </div>
         </div>
+        <!-- </form>  -->
         <div class="p-col-12 p-d-flex p-jc-between">
-        <Button label="Save Network Changes" class="p-button-success" @click="editNetwork"/>
+        <Button label="Save Network Details" class="p-button-primary" @click="editNetwork" :disabled="false"/>
         <Button label="Delete Network" class="p-button-danger" @click="deleteNetworkDialog = true" />
         </div>
     </div>
 </div>
 
-<Dialog v-model:visible="ispublicDialog" :style="{width: '450px'}" header="Premium required" :modal="true">
-    You need premium to make your network private.
-      <template #footer>
-        <Button label="No thanks" icon="pi pi-times" class="p-button-text" @click="ispublicDialog = false"/>
-        <Button label="What's Premium?" icon="pi pi-question" class="p-button-text" @click="ispublicDialog = false" />
-      </template>
+    <Dialog v-model:visible="ispublicDialog" :style="{width: '450px'}" header="Premium required" :modal="true">
+        <i class="pi pi-star p-mr-3" style="font-size: 1.5rem" />
+        <span>You need premium to make your network private.</span>
+        <template #footer>
+            <Button label="No thanks" icon="pi pi-times" class="p-button-text" @click="ispublicDialog = false"/>
+            <Button label="What's Premium?" icon="pi pi-question" class="p-button-text" @click="ispublicDialog = false" />
+        </template>
+    </Dialog>
+
+    <Dialog v-if="network" v-model:visible="deleteNetworkDialog" :style="{width: '450px'}" header="Confirm" :modal="true">
+        <div class="confirmation-content">
+            <i class="pi pi-exclamation-triangle p-mr-3" style="font-size:1.5rem" />
+            <span>Are you sure you want to delete <b>{{network.name}}</b>?</span>
+        </div>
+        <template #footer>
+            <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteNetworkDialog = false"/>
+            <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="removeNetwork()" />
+        </template>
     </Dialog>
 </template>
 <script>
@@ -42,18 +58,25 @@ export default {
                 ],
             boolChoice: null,
             ispublicDialog: false,
-            deleteNetworkDialog: false
+            deleteNetworkDialog: false,
+            networkfor: {}
         }
     },
     watch: {
         boolChoice () {
             console.log('d')
             // this.boolChoice = { name: 'Public', value: this.network.ispublic }
-            // this.network.ispublic = this.boolChoice.value
+            this.network.ispublic = this.boolChoice.value
+        },
+        networkform () {
+            console.log('a change!')
         }
     },
     computed: {
-        ...mapState('network', ['network'])
+        ...mapState('network', ['network', 'networkform'])
+        // networkform () {
+        //     return this.network
+        // }
     },
     created () {
         this.initialize()
@@ -65,6 +88,9 @@ export default {
         },
         check () {
             this.ispublicDialog = true
+        },
+        inputChanged (event) {
+            console.log('hi')
         },
         async editNetwork () {
             await this.updateNetwork({})

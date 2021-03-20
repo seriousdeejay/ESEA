@@ -59,7 +59,7 @@ export default {
                 { field: 'name', header: 'Name' },
                 { field: 'description', header: 'Description' },
                 { field: 'organisations.length', header: 'Organisations' },
-                { field: 'created_by.username', header: 'Created by' }
+                { field: 'created_by', header: 'Created by' }
             ],
             selectionToggle: false,
             selectedNetworks: null,

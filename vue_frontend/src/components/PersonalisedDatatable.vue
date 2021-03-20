@@ -4,7 +4,11 @@
         :rowsPerPageOptions="[5,10,25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" class="p-datatable-striped">
 
             <!-- <h1>{{tableName}}</h1> -->
-            <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field"></Column>
+            <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field">
+            <template v-if="col.field === 'ispublic'" #body="slotProps">
+                <i class="pi" :class="{'true-icon pi-check-circle': slotProps.data.ispublic, 'false-icon pi-times-circle': !slotProps.data.ispublic}"></i>
+            </template>
+            </Column>
         </DataTable>
 </template>
 

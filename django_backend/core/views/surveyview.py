@@ -25,7 +25,7 @@ class SurveyViewSet(viewsets.ModelViewSet):
                 return Survey.objects.filter(method__networks__organisations=org, stakeholder_groups__pk__in=ids).exclude(responses__in=SurveyResponse.objects.filter(user_organisation=userorganisation, finished=True))
             if completedbyorganisation:
                 return Survey.objects.filter(method__networks__organisations=org, stakeholder_groups__pk__in=ids, responses__user_organisation=userorganisation, responses__finished=True)    
-       #  return Survey.objects.filter(method=self.kwargs['method_pk'])
+        return Survey.objects.filter(method=self.kwargs['method_pk'])
     
     def retrieve(self, request, method_pk, pk):
         survey = get_object_or_404(self.get_queryset(), pk=pk)

@@ -26,7 +26,6 @@ export default {
         networks: [],
         network: {},
         networkorganisations: [],
-        // networkparticipants: [],
         networkform: {
             name: null,
             description: null,
@@ -39,6 +38,7 @@ export default {
             state.networks = data
         },
         setNetwork (state, { data }) {
+            console.log('>>', data)
             state.network = data || {}
         },
         addNetworkToList (state, { data }) {
@@ -102,14 +102,17 @@ export default {
         },
         async updateNetwork ({ state, commit }) {
             const id = state.network.id
+            console.log(id)
             const data = state.network
+            console.log(data)
             const { response, error } = await NetworkService.put({ id, data, headers: { 'Content-Type': 'multipart/form-data' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
+            console.log(response)
             commit('updateNetwork', { ...response, id })
-            commit('setNetwork', response.data)
+            commit('setNetwork', response)
         },
         async deleteNetwork ({ commit, dispatch }, payload) {
             const { error } = await NetworkService.delete(payload)
@@ -121,14 +124,19 @@ export default {
             dispatch('setNetwork', {})
         },
         async patchNetwork ({ state, commit }, payload) {
+            console.log(payload.id)
+            console.log(state.network.id)
             const id = payload.id || state.network.id
-            const data = payload.data
+            console.log(id)
+            const data = payload.data // payload.data
             console.log(data)
-            const { error } = await NetworkService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
+            const { response, error } = await NetworkService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
+            commit('updateNetwork', { ...response, id })
+            commit('setNetwork', response.data)
             commit('deleteNetworkOrganisations', data)
         },
         setNetwork ({ state, commit }, { id }) {

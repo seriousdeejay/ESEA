@@ -13,7 +13,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name_prefix', 'last_name')
+        fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name_prefix', 'last_name', 'uniquetoken')
     
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -21,12 +21,14 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        print(validated_data)
         user = CustomUser.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
             first_name=validated_data['first_name'],
             last_name_prefix=validated_data['last_name_prefix'],
-            last_name=validated_data['last_name']
+            last_name=validated_data['last_name'],
+            uniquetoken = validated_data['uniquetoken']
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -42,8 +44,9 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     user_organisations =  UserOrganisationSerializer(many=True)
+    password = serializers.CharField()
     
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'first_name', 'last_name_prefix', 'last_name', 'registered_on', 'user_organisations']
+        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name_prefix', 'last_name', 'registered_on', 'user_organisations', 'uniquetoken']
         extra_kwargs = {'password': {'write_only': True}, 'organisations': {'required': False}}

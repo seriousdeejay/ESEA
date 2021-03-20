@@ -14,7 +14,7 @@
                         <div class="p-col-6 p-text-bold"> Email </div>
                         <div class="p-col-6"> {{ user.email }} </div>
                         <div class="p-col-6 p-text-bold"> Account Creation </div>
-                        <div class="p-col-6"> {{ user.date_joined }} </div> <!-- Date should be fixed to DD-MM-YYYY! -->
+                        <div class="p-col-6"> {{ user.registered_on.slice(0, 10) }} </div> <!-- Date should be fixed to DD-MM-YYYY! -->
                         <div class="p-col-12" >
                             <div class="p-text-bold" >Bio</div>
                             <p class="p-text-justify">Hello this is my Bio! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
