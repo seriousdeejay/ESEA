@@ -1,5 +1,5 @@
 from rest_framework.response import Response 
-from rest_framework import viewsets
+from rest_framework import viewsets, response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.renderers import JSONRenderer
@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 import yaml
 
-from ..models import Method, CustomUser, Topic, DirectIndicator, Survey
+from ..models import Method, Organisation, CustomUser, Topic, DirectIndicator, Survey
 from ..serializers import MethodSerializer
 
 
@@ -33,7 +33,22 @@ class MethodViewSet(viewsets.ModelViewSet):
         serializer = MethodSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(created_by=self.request.user)
-        return Response(serializer.data)        
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        method_object = get_object_or_404(Method, pk=self.get_object().id)
+        for instance in request.data:
+            try:
+                organisation = get_object_or_404(Organisation, id=instance['id'])
+                if method_object.organisations.filter(id=organisation.id).exists():
+                    method_object.organisations.remove(organisation)
+                else:
+                    method_object.organisations.add(organisation)
+            except:
+                return Response({"Error"})
+        serializer = MethodSerializer(method_object)
+        return Response(serializer.data)
+        
 
 @method_decorator(csrf_exempt, name='dispatch')
 @api_view(['GET', 'POST'])

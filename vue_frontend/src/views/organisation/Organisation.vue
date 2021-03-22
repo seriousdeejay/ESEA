@@ -28,7 +28,8 @@ export default {
                 { label: 'Reports', icon: 'chart-bar' },
                 { label: 'Surveys', icon: 'book' },
                 { label: 'Stakeholders', icon: 'users' },
-                { label: 'Networks', icon: 'cloud' }
+                { label: 'Networks', icon: 'cloud' },
+                { label: 'Settings', icon: 'cog' }
             ],
             pagename: undefined
         }

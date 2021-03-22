@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
-from ..models import Survey, StakeholderGroup
+from ..models import Survey, StakeholderGroup, SurveyResponse
 from .direct_indicator import DirectIndicatorSerializer
 from .method import MethodSerializer
-
+from .survey_response import SurveyResponseSerializer
 
 class SurveyOverviewSerializer(serializers.ModelSerializer):
     stakeholders = serializers.StringRelatedField( many=True)

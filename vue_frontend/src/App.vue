@@ -57,7 +57,7 @@ export default {
           ]
         },
         {
-          label: 'organisations',
+          label: 'Organisations',
           icon: 'pi pi-globe',
           to: '/organisations',
           items: [

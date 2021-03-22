@@ -6,6 +6,7 @@ class Method(models.Model):
     name = models.CharField(max_length=255, unique=False, blank=False)
     description = models.TextField(max_length=1000, blank=True)
     created_by = models.ForeignKey('CustomUser', editable=False, on_delete=models.SET_NULL, null=True) # related_name='method_creator'
+    organisations = models.ManyToManyField('Organisation', related_name="methods", blank=True)
 
     def __str__(self):
         return self.name
@@ -14,6 +15,5 @@ class Method(models.Model):
          return (
              f"<Method id='{self.id}' name='{self.name}' "
              f"description='{self.description}' is_public='{self.ispublic}' "
-             f"organization='{self.organisations}'>"
          )
 

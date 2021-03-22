@@ -1,9 +1,9 @@
 from rest_framework.response import Response
 from rest_framework import viewsets
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404
 
-from ..models import Organisation, CustomUser, UserOrganisation, StakeholderGroup
+from ..models import Organisation, CustomUser, UserOrganisation, StakeholderGroup, SurveyResponse
 from ..serializers import OrganisationSerializer
 
 
@@ -13,7 +13,17 @@ class OrganisationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         network = self.request.GET.get('network', None)
         excludenetwork = self.request.GET.get('excludenetwork', None)
+        method = self.request.GET.get('method', None)
+        excludemethod = self.request.GET.get('excludemethod', None)
         if network is not None:
+            if method is not None:
+                print('It Works!')
+                return Organisation.objects.filter(networks=network, methods=method)
+                #serializer_class = OrganisationResponsesSerializer
+                #return Organisation.objects.prefetch_related(Prefetch('methods.surveys.responses', queryset=SurveyResponse.objects.filter(survey__method=method, survey__method__networks=network), to_attr='filtered_survey_responses'))
+            if excludemethod is not None:
+                print('check')
+                return Organisation.objects.filter(networks=network).exclude(methods=excludemethod)
             return Organisation.objects.filter(networks=network)
         if excludenetwork is not None:
             return Organisation.objects.exclude(networks=excludenetwork)

@@ -220,6 +220,18 @@ const routes = [
             { label: 'Networks', to: { name: 'organisationnetworks' } }
           ]
         }
+      },
+      {
+        path: 'settings',
+        name: 'organisationsettings',
+        component: () => import('../views/organisation/OrganisationSettings'),
+        meta: {
+          breadcrumb: [
+            { label: 'Organisations', to: '/organisations' },
+            { label: '', to: { name: 'organisationoverview', params: { id: '' } } },
+            { label: 'Settings', to: { name: 'organisationsettings' } }
+          ]
+        }
       }
     ],
     meta: {

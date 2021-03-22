@@ -1,9 +1,8 @@
 <template>
-<div class="p-grid nested-grid p-px-5" style="min-height: 60vh;">
-    <div class="" style="width: 500px;">
+    <div class="-px-5" style="width: 500px">
         <div class="p-fluid p-text-left p-my-5">
             <!-- <form id="networkeditingform" @submit="checkform"> -->
-            <div class="p-field">
+             <div class="p-field">
                 <label for="name">Name</label>
                 <InputText id="name" v-model.trim="network.name" required="true" autofocus :class="{'p-invalid': submitted && !network.name}" class="p-text-italic" />
                 <small class="p-error" v-if="!network.name">Name is required.</small>
@@ -12,20 +11,18 @@
                 <label for="description">Description</label>
                 <Textarea id="description" v-model="network.description" class="p-text-italic" required="false" rows="3" cols="20" />
             </div>
-                <div class="p-field">
+            <div class="p-field">
                 <label for="ispublic">Should this network be public? </label>
-                <SelectButton id="ispublic" v-model="boolChoice" :options="ispublicbool" optionLabel="name" @focus="check" :disabled="true" class="p-mb-3" />
-
+                <SelectButton id="ispublic" v-model="boolChoice" :options="ispublicbool" optionLabel="name" @focus="ispublicDialog = true" :disabled="true" class="p-mb-3" />
                 <small class="p-text-italic">*Public networks and their organisations are visible to anyone. Explicitly granted access is still required for certain operations.</small>
             </div>
         </div>
-        <!-- </form>  -->
-        <div class="p-col-12 p-d-flex p-jc-between">
-        <Button label="Save Network Details" class="p-button-primary" @click="editNetwork" :disabled="false"/>
-        <Button label="Delete Network" class="p-button-danger" @click="deleteNetworkDialog = true" />
+            <!-- </form>  -->
+        <div class="p-d-flex p-jc-between">
+            <Button label="Save Network Details" class="p-button-primary" @click="editNetwork" :disabled="false"/>
+            <Button label="Delete Network" class="p-button-danger" @click="deleteNetworkDialog = true" />
         </div>
     </div>
-</div>
 
     <Dialog v-model:visible="ispublicDialog" :style="{width: '450px'}" header="Premium required" :modal="true">
         <i class="pi pi-star p-mr-3" style="font-size: 1.5rem" />
@@ -58,8 +55,7 @@ export default {
                 ],
             boolChoice: null,
             ispublicDialog: false,
-            deleteNetworkDialog: false,
-            networkfor: {}
+            deleteNetworkDialog: false
         }
     },
     watch: {
@@ -67,9 +63,6 @@ export default {
             console.log('d')
             // this.boolChoice = { name: 'Public', value: this.network.ispublic }
             this.network.ispublic = this.boolChoice.value
-        },
-        networkform () {
-            console.log('a change!')
         }
     },
     computed: {
@@ -85,12 +78,6 @@ export default {
         ...mapActions('network', ['updateNetwork', 'deleteNetwork']),
         initialize () {
             this.boolChoice = { name: 'Public', value: this.network.ispublic }
-        },
-        check () {
-            this.ispublicDialog = true
-        },
-        inputChanged (event) {
-            console.log('hi')
         },
         async editNetwork () {
             await this.updateNetwork({})
