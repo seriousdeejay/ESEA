@@ -90,7 +90,7 @@ export default {
 				return
             }
             console.log('check')
-            this.createSurveyResponse({ mId: this.method.id, sId: this.survey.id, OrganisationId: 16 })
+            this.createSurveyResponse({ mId: this.method.id, sId: this.survey.id, OrganisationId: this.$route.params.OrganisationId })
         },
         progress (pageturn) {
             var interval = 100 / this.totalTopics

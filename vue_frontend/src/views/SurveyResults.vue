@@ -1,24 +1,73 @@
 <template>
-    <div class="p-d-flex p-grid p-jc-center p-m-0">
-        <div class="p-col-12 p-p-3" style="background-color: #dcedc8;">
+    <div class="p-d-flex p-grid p-nested-grid p-jc-center p-m-0">
+        <div class="p-grid p-col-12 p-ai-center" style="background-color: #dcedc8;">
+            <div class="p-col-4">
+                <SelectButton v-model="amountDisplayButtonValue" :options="amountDisplayButtonOptions" optionLabel="name" />
+            </div>
+            <div class="p-col-8 p-text-left">
             <h1>{{survey.name}}</h1>
             <h3>{{survey.description}}</h3>
             <p>Respondents: {{ surveyResult.respondents }} of {{ surveyResult.all_respondents }} </p>
+            </div>
+        </div>
+    <div class="p-grid p-col-6 p-p-3" style="min-width: 800px;">
+            <div v-for="topic in survey.topics" :key="topic.id" class="p-grid p-col-12 p-p-5" style="background-color: #F5F5F5; border-radius: 10px;">
+                <div class="p-col-12 p-text-left"><h3>Topic: '{{topic.name}}</h3></div>
+                <!-- <survey-question
+                v-for="question in topic.questions"
+                :key="question.id"
+                :question="question"
+                :answer="answers[question.id]"
+                :readonly="true"
+                /> -->
+                <survey-question-results
+					v-for="question in topic.questions"
+					:key="`question-${question.id}`"
+					:question="question"
+					:answers="answers[question.key]"
+					:amountdisplaychoice="amountDisplayButtonValue"
+					class="mt-6"
+				/>
+
+                <div v-for="subtopic in topic.sub_topics" :key="subtopic.id" class="p-col-12 p-p-3 p-my-3" style="background-color: white; border-radius: 10px;">
+                    <div class="p-col-12 p-text-left"><h3>Topic: '{{subtopic.name}}</h3></div>
+                     <!-- <survey-question
+                    v-for="question in subtopic.questions"
+                    :key="question.id"
+                    :question="question"
+                    :answer="answers[question.id]"
+                    :readonly="true"
+                /> -->
+                    <survey-question-results
+						v-for="question in subtopic.questions"
+						:key="`question-${question.id}`"
+						:question="question"
+						:answers="answers[question.key]"
+                        :amountdisplaychoice="amountDisplayButtonValue"
+						class="mt-6"
+					/>
+                </div>
+            </div>
+            <Button label="Go to surveys" class="p-button-success p-mt-4" style="width: 100%" @click="goToSurveys"/>
         </div>
     </div>
-    {{surveyResult}}
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
-// import SurveyQuestionResults from '../components/survey/SurveyQuestionResults'
+import SurveyQuestionResults from '../components/survey/SurveyQuestionResults'
 export default {
     components: {
-        // SurveyQuestionResults
+        SurveyQuestionResults
     },
     data () {
         return {
-            topicNumber: 0
+            topicNumber: 0,
+            amountDisplayButtonValue: { name: 'Percentages', value: 1 },
+            amountDisplayButtonOptions: [
+                { name: 'Percentages', value: 1 },
+                { name: 'Numbers', value: 0 }
+                ]
         }
     },
     computed: {
@@ -26,7 +75,8 @@ export default {
         ...mapState('survey', ['survey']),
         ...mapState('surveyResults', ['surveyResult']),
         answers () {
-            return this.surveyResult.question_responses || {}
+            console.log(this.surveyResult.indicators)
+            return this.surveyResult.indicators || {}
         },
 		calculations () {
 			const calculations = {}
@@ -58,7 +108,7 @@ export default {
             if (this.survey.method !== this.methodId) {
                 this.$router.push({ name: 'methods' })
             }
-            this.fetchSurveyResults({ mId: this.methodId, sId: surveyId })
+            this.fetchSurveyResults({ mId: this.methodId, sId: surveyId, oId: 1 })
         }
     }
 }

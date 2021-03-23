@@ -4,7 +4,7 @@ from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404
 
 from ..models import Organisation, CustomUser, UserOrganisation, StakeholderGroup, SurveyResponse
-from ..serializers import OrganisationSerializer2
+from ..serializers import OrganisationSerializer, OrganisationSerializer2
 
 
 class OrganisationViewSet(viewsets.ModelViewSet):
@@ -46,10 +46,10 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         try:
             for user in data:
                 user = CustomUser.objects.get(id = user['id'])
-                if organisation_object.participants.filter(pk=user.pk).exists():                    
-                    organisation_object.participants.remove(user)
+                if organisation_object.members.filter(pk=user.pk).exists():                    
+                    organisation_object.members.remove(user)
                 else:
-                    organisation_object.participants.add(user)
+                    organisation_object.members.add(user)
         except KeyError:
             pass
         organisation_object.save()

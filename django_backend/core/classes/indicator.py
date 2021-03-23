@@ -23,7 +23,7 @@ class Indicator:
         responses: Optional[List[str]],
     ):
         self.id = id
-        self.name = name
+        self.name = name 
         self.key = key
         self.description = description
         self.formula = formula

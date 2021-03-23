@@ -41,6 +41,7 @@ class OrganisationSerializer2(serializers.ModelSerializer):
     class Meta:
         model = Organisation
         fields = ['id', 'name', 'description', 'created_by', 'members', 'organisation_members']
+
 # class MethodSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         mode = Method

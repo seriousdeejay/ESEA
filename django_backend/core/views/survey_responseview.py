@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404
 from secrets import token_urlsafe
 
 from ..models import (Survey, SurveyResponse, QuestionResponse, UserOrganisation, DirectIndicator)
-from ..serializers import (SurveyResponseSerializer, QuestionResponseSerializer) #, SurveyResponseCalculationSerializer
-from ..utils import map_responses_by_indicator # calculate_indicators,
+from ..serializers import (SurveyResponseSerializer, QuestionResponseSerializer, SurveyResponseCalculationSerializer)
+from ..utils import map_responses_by_indicator, calculate_indicators
 
 
 class SurveyResponseViewSet(viewsets.ModelViewSet):
@@ -20,32 +20,41 @@ class SurveyResponseViewSet(viewsets.ModelViewSet):
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'])
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'])
 
+    # def create(self, serializer, method_pk, survey_pk, organisation_pk):
+        
+    #     print('it exists!')
+    #     return Response('something')
+
     def perform_create(self, serializer):
+        print(self.request.user)
         user_organisation = get_object_or_404(UserOrganisation, user=self.request.user, organisation=self.kwargs['organisation_pk']) # organisation=self.kwargs['organisation_pk']
         survey = get_object_or_404(Survey, pk=self.kwargs['survey_pk'])
         print(user_organisation, survey)
         serializer.save(survey=survey, user_organisation=user_organisation)
+        return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
     def all(self, request, method_pk, survey_pk, organisation_pk):
-        
-        all_respondents = SurveyResponse.objects.filter(survey__method=method_pk, survey=survey_pk)
+        print(organisation_pk)
+        all_respondents = SurveyResponse.objects.filter(user_organisation__organisation=organisation_pk, survey__method=method_pk, survey=survey_pk)
 
-        question_responses = QuestionResponse.objects.filter(survey_response__survey__method=method_pk, survey_response__survey=survey_pk, survey_response__finished=True)
+        question_responses = QuestionResponse.objects.filter(survey_response__user_organisation__organisation= organisation_pk, survey_response__survey__method=method_pk, survey_response__survey=survey_pk, survey_response__finished=True)
         # indirect_indicators = IndirectIndicator.objects.filter(topic__method=method_pk)
         direct_indicators = DirectIndicator.objects.filter(survey=survey_pk)
-        print(direct_indicators)
+        
         for item in question_responses:
             s = QuestionResponseSerializer(item)
-            print(s.data)
         map_responses_by_indicator(direct_indicators, question_responses)
-        #indicators = calculate_indicators(indirect_indicators, direct_indicators)
+        for di in direct_indicators:
+            print(di.key)
+        # serializer = SurveyResponseCalculationSerializer(direct_indicators, many=True)
+        indicators = calculate_indicators(direct_indicators)
         #serializer = SurveyResponseCalculationSerializer(indicators.values(), many=True)
         return Response(
             {
                 "all_respondents": len(all_respondents),
                 "respondents": len(all_respondents.filter(finished=True)),
-                #"indicators": serializer.data,
+                "indicators": indicators,
             }
         )
         
