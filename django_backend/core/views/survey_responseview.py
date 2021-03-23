@@ -16,7 +16,7 @@ class SurveyResponseViewSet(viewsets.ModelViewSet):
         organisation = self.request.GET.get('organisation', None)
         if organisation is not None:
             # could also get UserOrganisation and add it to the filter
-            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'], user_organisation__organisation=organisation, user_organisation__user=self.request.user)
+            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'], user_organisation__organisation=organisation)
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'])
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'])
 

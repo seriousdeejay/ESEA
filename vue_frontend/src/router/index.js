@@ -349,7 +349,7 @@ const routes = [
     }
   },
   {
-    path: '/organisations/:OrganisationId/methods/:id/surveys/:surveyId/result',
+    path: '/organisations/:OrganisationId/methods/:methodId/surveys/:surveyId/result/:id',
     name: 'method-survey-result',
     component: () => import('../views/SurveyUserResult.vue'),
     meta: {

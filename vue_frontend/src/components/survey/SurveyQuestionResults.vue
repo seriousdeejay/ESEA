@@ -27,20 +27,26 @@
         <p>average: {{ average }}</p>
     </div>
     </div>
-    <div v-if="question.description">
-                <p class="p-text-justify p-text-light p-m-0" style="color: lightgrey;"><small>Description:</small><br>
-                <small><small>{{question.description}}</small></small></p>
-            </div>
-            <div v-else>
-                <p  class="p-text-left p-m-0" style="color: lightgrey;"><small>No Description</small>
-                </p></div>
+        <div v-if="question.description">
+                    <p class="p-text-justify p-text-light p-m-0" style="color: lightgrey;"><small>Description:</small><br>
+                    <small><small>{{question.description}}</small></small></p>
+        </div>
+        <div v-else>
+            <p  class="p-text-left p-m-0" style="color: lightgrey;"><small>No Description</small></p>
+        </div>
+        <div class="p-d-flex p-jc-center">
+        <Chart v-if="answertype === questionTypes.RADIO" type="pie" :data="chartData" class="p-col" />
+    </div>
+        <!-- <Chart v-if="answertype === questionTypes.CHECKBOX" type="bar" :data="chartData" /> -->
     </div>
 </template>
 
 <script>
 import { QUESTION_TYPES } from '../../utils/constants'
+import Chart from 'primevue/chart'
 export default {
     components: {
+        Chart
     },
     props: {
         question: {
@@ -58,7 +64,32 @@ export default {
     },
     data () {
         return {
-            questionTypes: QUESTION_TYPES
+            questionTypes: QUESTION_TYPES,
+            chartData: {
+				labels: [],
+				datasets: [
+					{
+                        label: 'Visualisation',
+						data: [],
+						backgroundColor: [
+                            '#42A5F5',
+                            '#66BB6A',
+                            '#FFA726',
+                            '#26C6DA',
+                            '#7E57C2',
+                            '#7AC142',
+                            '#007CC3',
+                            '#00529B',
+                            '#377B2B'
+                        ],
+                        hoverBackgroundColor: [
+                            '#64B5F6',
+                            '#81C784',
+                            '#FFB74D'
+                        ]
+					}
+				]
+			}
         }
     },
     computed: {
@@ -96,10 +127,34 @@ export default {
 			return Object.entries(optionMappedAnswers)
 		}
     },
+    created () {
+        this.initialize()
+    },
     methods: {
+        initialize () {
+            this.optionMappedAnswers.forEach((answer) => {
+                if (answer[1] > 0) {
+                var val = Math.round(answer[1] / this.answers.length * 100)
+                console.log(val)
+                if (answer[0].length > 100) {
+                    var label = 'A'
+                    this.chartData.labels.push(label)
+                } else {
+                    this.chartData.labels.push(answer[0])
+                }
+                this.chartData.datasets[0].data.push(val)
+                }
+            })
+        },
         changeAnswer (answer) {
             this.$emit('input', answer)
         }
     }
 }
 </script>
+
+<style scoped>
+.p-chart {
+    width: 500px;
+}
+</style>

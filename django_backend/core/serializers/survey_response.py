@@ -36,3 +36,5 @@ class SurveyResponseCalculationSerializer(serializers.Serializer):
     calculation = serializers.CharField(read_only=True)
     value = serializers.CharField(read_only=True)
     responses = serializers.ListField(child=serializers.CharField(read_only=True))
+
+    

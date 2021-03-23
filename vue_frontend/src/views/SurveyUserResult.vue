@@ -8,9 +8,8 @@
             <span class="p-text-left p-text-bold">organisation:</span> '{{surveyResponse.user_organisation.organisation}}'
             </div>
         </div>
-
         <div class="p-grid p-col-6 p-p-3" style="min-width: 800px;">
-            <div v-for="topic in survey.topics" :key="topic.id" class="p-grid p-col-12" style="background-color: #F5F5F5; border-radius: 10px;">
+            <div v-for="topic in survey.topics" :key="topic.id" class="p-grid p-col-12 p-p-3" style="background-color: #F5F5F5; border-radius: 10px;">
                 <div class="p-col-12 p-text-left"><h3>Topic: '{{topic.name}}</h3></div>
                 <survey-question
                 v-for="question in topic.questions"
@@ -20,7 +19,7 @@
                 :readonly="true"
                 />
 
-                <div v-for="subtopic in topic.sub_topics" :key="subtopic.id" class="p-col-12 p-m-3" style="background-color: white; border-radius: 10px;">
+                <div v-for="subtopic in topic.sub_topics" :key="subtopic.id" class="p-col-12 p-my-3" style="background-color: white; border-radius: 10px;">
                     <div class="p-col-12 p-text-left"><h3>Topic: '{{subtopic.name}}</h3></div>
                      <survey-question
                     v-for="question in subtopic.questions"
@@ -87,9 +86,10 @@ export default {
         async initialize () {
             console.log(this.method)
             await this.fetchSurvey({ mId: this.method.id, id: this.survey.id })
-            await this.fetchSurveyResponses({ mId: this.method.id, sId: this.survey.id, OrganisationId: this.$route.params.OrganisationId, query: `?organisation=${this.$route.params.OrganisationId}` })
+            await this.fetchSurveyResponses({ mId: this.method.id, sId: this.survey.id, OrganisationId: this.$route.params.OrganisationId })
             console.log(this.surveyResponses)
-            this.setSurveyResponse(this.surveyResponses[0])
+            console.log(this.$route.params.id)
+            this.setSurveyResponse({ id: this.$route.params.id })
             // await this.fetchSurveyResponseCalculations({ mId: this.method.id, sId: this.survey.id, id: this.surveyResponse.id })
         },
         goToSurveys () {

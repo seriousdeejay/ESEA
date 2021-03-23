@@ -130,10 +130,9 @@ export default {
 			state.debouncers[surveyResponse.id]({ mId, sId, surveyResponse })
 		},
 		setSurveyResponse ({ state, commit }, { id } = {}) {
-			const data = state.surveyResponses.find(
-				surveyResponses => surveyResponses.id === id
-			)
+			const data = state.surveyResponses.find(r => r.id === parseInt(id))
 			if (!data) return
+			console.log('hi')
 			commit('setSurveyResponse', { data })
 		},
 		resetError ({ commit }) {

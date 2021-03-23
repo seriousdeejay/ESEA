@@ -28,7 +28,7 @@
 <!-- {{organisations[1].organisation_members[0]}} -->
     <DataTable :value="organisations" :filters="filters3" v-model:expandedRows="expandedRows" dataKey="id" responsiveLayout="scroll">
          <div class="p-d-flex p-jc-between p-ai-center">
-             <Button label="Toggle survey Responses" />
+            <ToggleButton v-model="amountToggle" onLabel="Summarized Responses" offLabel="Individual Responses" onIcon="pi pi-users" offIcon="pi pi-user" />
             <h3 class="p-m-0">Survey Responses</h3>
             <span class="p-input-icon-left"> <i class="pi pi-search" />
                 <InputText v-model="filters3['global']" placeholder="Keyword Search" />
@@ -41,7 +41,7 @@
         <template #expansion="slotProps">
             <div class="p-mx-5 p-px-5">
                 <!-- <p class="p-text-bold">{{surveyResponses.length}} Responses by {{slotProps.data.name}}</p> -->
-                <DataTable :value="slotProps.data.organisation_members" responsiveLayout="scroll">
+                <DataTable v-if="!amountToggle" :value="slotProps.data.organisation_members" responsiveLayout="scroll">
                     <Column field="user" header="Participant"></Column>
                     <Column field="stakeholdergroups" header="Stakeholder Group(s)"></Column>
                     <Column header="Finished?">
@@ -53,6 +53,14 @@
                     </Column>
                     <Column header="">
                     <template #body="slotProps">
+                        <Button type="button" label="Results" class="p-button-raised p-button secondary p-button-sm" @click="goToSurveyResponse(slotProps.data)" />
+                    </template>
+                    </Column>
+                </DataTable>
+                <DataTable v-else :value="surveys" :filters="filters2">
+                    <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field" />
+                    <Column header="">
+                        <template #body="slotProps">
                         <Button type="button" label="Results" class="p-button-raised p-button secondary p-button-sm" @click="goToSurveyResponse(slotProps.data)" />
                     </template>
                     </Column>
@@ -110,7 +118,8 @@
                 ],
                 selectedOrganisations: [],
                 deployMethodDialog: false,
-                expandedRows: []
+                expandedRows: [],
+                amountToggle: false
             }
         },
         computed: {
@@ -138,11 +147,12 @@
                 this.deployMethodDialog = false
                 this.initialize()
             },
-
             async goToSurveyResponse (row) {
-                console.log(row)
-                await this.setSurveyResponse({ ...event.data })
-                this.$router.push({ name: 'method-survey-result', params: { OrganisationId: row.organisation, id: this.method.id, surveyId: row.id } })
+                if (!this.amountToggle) {
+                this.$router.push({ name: 'method-survey-result', params: { OrganisationId: row.organisation, methodId: this.method.id, surveyId: row.id, id: row.survey_responses[0].id } })
+                } else {
+                    this.$router.push({ name: 'method-survey-results', params: { id: this.$route.params.MethodId, surveyId: row.id } })
+                }
             }
         }
     }
