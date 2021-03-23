@@ -3,9 +3,10 @@
         <div class="p-col-12 p-p-3" style="background-color: #dcedc8;">
             <h1>{{survey.name}}</h1>
             <h3>{{survey.description}}</h3>
-            <p>Respondents: {{ surveyResult.Respondents }} of {{ surveyResult.all_respondents }} </p>
+            <p>Respondents: {{ surveyResult.respondents }} of {{ surveyResult.all_respondents }} </p>
         </div>
     </div>
+    {{surveyResult}}
 </template>
 
 <script>
@@ -13,7 +14,7 @@ import { mapState, mapActions } from 'vuex'
 // import SurveyQuestionResults from '../components/survey/SurveyQuestionResults'
 export default {
     components: {
-
+        // SurveyQuestionResults
     },
     data () {
         return {
@@ -21,6 +22,7 @@ export default {
         }
     },
     computed: {
+        ...mapState('organisation', ['organisation']),
         ...mapState('survey', ['survey']),
         ...mapState('surveyResults', ['surveyResult']),
         answers () {

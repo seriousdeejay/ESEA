@@ -4,11 +4,11 @@ from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404
 
 from ..models import Organisation, CustomUser, UserOrganisation, StakeholderGroup, SurveyResponse
-from ..serializers import OrganisationSerializer
+from ..serializers import OrganisationSerializer2
 
 
 class OrganisationViewSet(viewsets.ModelViewSet):
-    serializer_class = OrganisationSerializer
+    serializer_class = OrganisationSerializer2
    
     def get_queryset(self):
         network = self.request.GET.get('network', None)

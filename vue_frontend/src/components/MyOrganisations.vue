@@ -90,7 +90,7 @@ export default {
                     { field: 'ispublic', header: 'Public' },
                     { field: 'name', header: 'Name' },
                     { field: 'description', header: 'Description' },
-                    { field: 'organisation_members.length', header: 'Members' },
+                    { field: 'members.length', header: 'Members' },
                     { field: 'created_by', header: 'Created by' }
                 ]
             }

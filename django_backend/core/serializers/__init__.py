@@ -1,6 +1,6 @@
 from .user import RegisterUserSerializer, UserSerializer
 from .network import NetworkSerializer
-from .organisation import OrganisationSerializer
+from .organisation import OrganisationSerializer, OrganisationSerializer2
 from .user_organisation import UserOrganisationSerializer
 
 from .method import MethodSerializer

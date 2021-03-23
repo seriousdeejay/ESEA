@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from .user_organisation import UserOrganisation
 
 class Organisation(models.Model):
     ispublic = models.BooleanField(default=True)
@@ -19,3 +20,6 @@ class Organisation(models.Model):
     
     def __repr__(self):
         return self.name
+
+    def relevant_survey_responses(self):
+        return UserOrganisation.objects.filter(organisation=self, survey_responses__isnull=False).distinct()

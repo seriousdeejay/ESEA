@@ -25,6 +25,7 @@
         <Column v-for="col of responsecolumns" :field="col.field" :header="col.header" :key="col.field" />
     </DataTable> -->
 <br>
+<!-- {{organisations[1].organisation_members[0]}} -->
     <DataTable :value="organisations" :filters="filters3" v-model:expandedRows="expandedRows" dataKey="id" responsiveLayout="scroll">
          <div class="p-d-flex p-jc-between p-ai-center">
              <Button label="Toggle survey Responses" />
@@ -35,18 +36,20 @@
         </div>
         <Column :expander="true" headerStyle="width: 3rem" />
         <Column field="name" header="Name" sortable></Column>
-        <Column field="organisation_members.length" header="Members" sortable></Column>
+        <Column field="members.length" header="Members" sortable></Column>
         <Column field="organisation_members.length" header="Respondents" sortable></Column>
         <template #expansion="slotProps">
             <div class="p-mx-5 p-px-5">
                 <!-- <p class="p-text-bold">{{surveyResponses.length}} Responses by {{slotProps.data.name}}</p> -->
                 <DataTable :value="slotProps.data.organisation_members" responsiveLayout="scroll">
                     <Column field="user" header="Participant"></Column>
-                    <Column field="organisation" header="Stakeholder Group(s)">
-                    <!-- <template #body="slotProps">
-                        {{slotProps.data.user_organisation.stakeholdergroups[0]}}
-                        <span v-for="item in slotProps.data.user_organisation.stakeholdergroups" :key="item">'{{item}} '</span>
-                    </template> -->
+                    <Column field="stakeholdergroups" header="Stakeholder Group(s)"></Column>
+                    <Column header="Finished?">
+                        <template #body="slotProps">
+                            <i class="pi" :class="{'true-icon pi-check-circle': slotProps.data.survey_responses[0].finished, 'false-icon pi-times-circle': !slotProps.data.survey_responses[0].finished}"></i>
+                        <!-- {{slotProps.data.user_organisation.stakeholdergroups[0]}}
+                        <span v-for="item in slotProps.data.user_organisation.stakeholdergroups" :key="item">'{{item}} '</span> -->
+                    </template>
                     </Column>
                     <Column header="">
                     <template #body="slotProps">
@@ -139,7 +142,7 @@
             async goToSurveyResponse (row) {
                 console.log(row)
                 await this.setSurveyResponse({ ...event.data })
-                this.$router.push({ name: 'method-survey-result', params: { OrganisationId: 'Needs some value', id: this.method.id, surveyId: row.id } })
+                this.$router.push({ name: 'method-survey-result', params: { OrganisationId: row.organisation, id: this.method.id, surveyId: row.id } })
             }
         }
     }
