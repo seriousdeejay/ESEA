@@ -90,7 +90,7 @@ export default {
             this.loading = false
         },
         async changeSurveyType () {
-            this.$forceUpdate()
+            // this.$forceUpdate()
             if (this.surveyWithResponse) {
                 this.loading = true
                 if (this.columns.length === 5) {
@@ -109,7 +109,7 @@ export default {
         },
         async goToSurveyResult (row) {
             await this.fetchSurveyResponses({ mId: 27, sId: row.id, OrganisationId: this.$route.params.OrganisationId })
-            this.$router.push({ name: 'method-survey-result', params: { OrganisationId: this.$route.params.OrganisationId, id: 27, surveyId: row.id } })
+            this.$router.push({ name: 'method-survey-result', params: { OrganisationId: this.$route.params.OrganisationId, methodId: 27, surveyId: row.id, id: 0 } })
         }
     }
 }

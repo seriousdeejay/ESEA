@@ -18,7 +18,7 @@ class DirectIndicator(models.Model):
     key = models.CharField(max_length=45, blank=False)
     min_number = models.IntegerField(null=True)
     max_number = models.IntegerField(null=True)
-    question = models.ForeignKey("Question", on_delete=models.CASCADE)
+    question = models.ForeignKey("Question", related_name="direct_indicators", on_delete=models.CASCADE)
     topic = models.ForeignKey("Topic", related_name="direct_indicators", on_delete=models.CASCADE)
     responses = []
     value = None

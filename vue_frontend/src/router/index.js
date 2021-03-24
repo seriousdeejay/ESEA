@@ -103,19 +103,6 @@ const routes = [
         }
       },
       {
-        path: 'survey-responses',
-        name: 'networksurveyresponses',
-        component: () => import('../views/network/NetworkSurveyResponses'),
-        meta: {
-          requiresLogin: true,
-          breadcrumb: [
-            { label: 'Networks', to: '/networks' },
-            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
-            { label: 'Survey Responses', to: { name: 'networksurveyresponses' } }
-          ]
-        }
-      },
-      {
         path: 'organisations',
         name: 'networkorganisations',
         component: () => import('../views/network/NetworkOrganisations'),

@@ -125,16 +125,16 @@ export default {
         },
         async patchNetwork ({ state, commit }, payload) {
             console.log(payload.id)
-            console.log(state.network.id)
-            const id = payload.id || state.network.id
+            const id = parseInt(payload.id || state.network.id)
             console.log(id)
-            const data = payload.data // payload.data
+            const data = payload.data
             console.log(data)
             const { response, error } = await NetworkService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
+            console.log(response)
             commit('updateNetwork', { ...response, id })
             commit('setNetwork', response.data)
             commit('deleteNetworkOrganisations', data)

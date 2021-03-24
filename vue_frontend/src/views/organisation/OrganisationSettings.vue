@@ -10,18 +10,17 @@
                 <label for="description">Description</label>
                 <Textarea id="description" v-model="organisation.description" class="p-text-italic" required="false" rows="3" cols="20" />
             </div>
-                <div class="p-field">
+            <div class="p-field">
                 <label for="ispublic">Should this orgnaisation be public? </label>
                 <SelectButton id="ispublic" v-model="boolChoice" :options="ispublicbool" optionLabel="name" @focus="ispublicDialog = true" :disabled="true" class="p-mb-3" />
-
                 <small class="p-text-italic">*Public organisations are visible to anyone. Explicitly granted access is still required for certain operations.</small>
             </div>
         </div>
         <div class="p-d-flex p-jc-between">
-                <Button label="Save Network Details" class="p-button-primary" @click="editNetwork" :disabled="false" />
-                <Button label="Delete Network" class="p-button-danger" @click="deleteNetworkDialog = true" />
-            </div>
-   </div>
+            <Button label="Save Organisation Details" class="p-button-primary" @click="editOrganisation" :disabled="false" />
+            <Button label="Delete Organisation" class="p-button-danger" @click="deleteOrganisationDialog = true" />
+        </div>
+    </div>
 
     <Dialog v-model:visible="ispublicDialog" :style="{width: '450px'}" header="Premium required" :modal="true">
         <i class="pi pi-star p-mr-3" style="font-size: 1.5rem" />
@@ -42,7 +41,9 @@
             <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="removeOrganisation()" />
         </template>
     </Dialog>
+
 </template>
+
 <script>
 import { mapState, mapActions } from 'vuex'
 export default {

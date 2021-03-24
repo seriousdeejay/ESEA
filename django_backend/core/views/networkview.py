@@ -34,29 +34,30 @@ class NetworkViewSet(viewsets.ModelViewSet):
         serializer.save(created_by=self.request.user)
         return Response(serializer.data)
 
-    def partial_update(self, request, *args, **kwargs):
-        network_object = get_object_or_404(Network, pk=self.get_object().id)
+    def partial_update(self, request, pk): # , *args, **kwargs
+        print('hi')
+        networkobject = get_object_or_404(Network, pk=pk)
         if "organisation_members" in request.data[0].keys():
             for instance in request.data:
                 try: 
                     organisation = get_object_or_404(Organisation, name=instance['name'])
-                    if network_object.organisations.filter(name=organisation.name).exists():
-                        network_object.organisations.remove(organisation)
+                    if networkobject.organisations.filter(name=organisation.name).exists():
+                        networkobject.organisations.remove(organisation)
                     else:
-                        network_object.organisations.add(organisation)
-                    print(network_object.organisations.all())
+                        networkobject.organisations.add(organisation)
+                    print(networkobject.organisations.all())
                 except:
                     pass
         else:
             for instance in request.data:
                 try: 
                     method = get_object_or_404(Method, name=instance['name'])
-                    if network_object.methods.filter(name=method.name).exists():
-                        network_object.methods.remove(method)
+                    if networkobject.methods.filter(name=method.name).exists():
+                        networkobject.methods.remove(method)
                     else:
-                        network_object.methods.add(method)
-                    print(network_object.methods.all())
+                        networkobject.methods.add(method)
+                    print(networkobject.methods.all())
                 except:
                     pass
-        serializer = NetworkSerializer(network_object)
+        serializer = NetworkSerializer(networkobject)
         return Response(serializer.data)

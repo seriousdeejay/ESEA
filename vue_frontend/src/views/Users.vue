@@ -50,13 +50,6 @@ export default {
       },
     created () {
       this.initialize()
-        // AxiosInstance.get('/users/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
-        // .then(response => {
-        //     this.$store.state.users = response.data
-        // })
-        // .catch(err => {
-        //     console.log(err)
-        // })
     },
     methods: {
       ...mapActions('user', ['fetchUsers', 'setUser']),
@@ -64,10 +57,8 @@ export default {
         await this.fetchUsers({})
       },
       goToUser (selectedRows) {
-        this.$toast.add({ severity: 'info', summary: 'User Selected', detail: 'Items selected', life: 3000 })
-        // this.user = { ...event.data }
-        // this.fetchUser({ ...event.data })
-        // this.$toast.add({ severity: 'info', summary: 'Item Selected', detail: 'Name:', life: 3000 })
+        console.log(selectedRows)
+        this.$toast.add({ severity: 'info', summary: 'User Selected', detail: `${selectedRows[selectedRows.length - 1].username}`, life: 3000 })
         if (!this.selectionToggle) {
           this.setUser({ ...selectedRows[0] })
           this.$router.push({ name: 'userdetails', params: { id: this.user.id } })
@@ -78,4 +69,11 @@ export default {
       }
     }
 }
+        // AxiosInstance.get('/users/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+        // .then(response => {
+        //     this.$store.state.users = response.data
+        // })
+        // .catch(err => {
+        //     console.log(err)
+        // })
 </script>

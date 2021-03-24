@@ -131,6 +131,7 @@ export default {
             // })
             for (const network of this.selectedRows) {
                 await this.patchNetwork({ id: network.id, data: [this.organisation] })
+                console.log(this.organisation)
             }
             this.Dialog = false
             this.initialize()

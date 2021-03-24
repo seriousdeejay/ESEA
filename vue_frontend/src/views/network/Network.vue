@@ -25,8 +25,6 @@ export default {
             links: [
                 { label: 'Overview', icon: 'home' },
                 { label: 'Methods', icon: 'chart-bar' },
-                { label: 'Surveys', icon: 'book' },
-                { label: 'SurveyResponses', icon: 'book' },
                 // { label: 'Stakeholders', icon: 'users' },
                 { label: 'Organisations', icon: 'cloud' },
                 { label: 'Settings', icon: 'cog' }
