@@ -7,7 +7,7 @@ from .survey_response import SurveyResponseSerializer
 
 class SurveyOverviewSerializer(serializers.ModelSerializer):
     stakeholders = serializers.StringRelatedField( many=True)
-    method = MethodSerializer()
+    # method = MethodSerializer()
 
     class Meta:
         model = Survey

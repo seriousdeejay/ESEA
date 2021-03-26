@@ -17,14 +17,16 @@ class SurveyViewSet(viewsets.ModelViewSet):
             try:
                 org = Organisation.objects.get(id=organisation or completedbyorganisation)
                 print(org)
-                userorganisation = UserOrganisation.objects.get(user=self.request.user, organisation=org)
-                print(userorganisation)
+                
+                # userorganisation = UserOrganisation.objects.get(user=self.request.user, organisation=org)
+                #print(userorganisation)
             except:
                 return Survey.objects.none()
-            ids = userorganisation.stakeholdergroups.values_list('id', flat=True)
-            print(ids)
+            #ids = userorganisation.stakeholdergroups.values_list('id', flat=True)
+            #print(ids)
             if organisation:
-                return Survey.objects.filter(method__networks__organisations=org, stakeholder_groups__pk__in=ids).exclude(responses__in=SurveyResponse.objects.filter(user_organisation=userorganisation, finished=True))
+                return Survey.objects.filter(method=self.kwargs['method_pk'])
+                # return Survey.objects.filter(method__networks__organisations=org, stakeholder_groups__pk__in=ids).exclude(responses__in=SurveyResponse.objects.filter(user_organisation=userorganisation, finished=True))
             if completedbyorganisation:
                 return Survey.objects.filter(method__networks__organisations=org, stakeholder_groups__pk__in=ids, responses__user_organisation=userorganisation, responses__finished=True).distinct() 
         return Survey.objects.filter(method=self.kwargs['method_pk'])

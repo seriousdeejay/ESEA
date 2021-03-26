@@ -123,8 +123,7 @@
         computed: {
             ...mapState('method', ['method']),
             ...mapState('organisation', ['organisations']),
-            ...mapState('survey', ['surveys']),
-            ...mapState('organisation', ['organisations'])
+            ...mapState('survey', ['surveys'])
         },
         created () {
             this.initialize()
@@ -146,7 +145,7 @@
                 if (!this.amountToggle) {
                     this.$router.push({ name: 'method-survey-result', params: { OrganisationId: row.organisation, methodId: this.method.id, surveyId: row.id, id: row.survey_responses[0].id } })
                 } else {
-                    this.$router.push({ name: 'method-survey-results', params: { id: this.$route.params.MethodId, surveyId: row.id } })
+                    this.$router.push({ name: 'method-survey-results', params: { OrganisationId: row.organisation, methodId: this.$route.params.MethodId, surveyId: row.id } })
                 }
             }
         }

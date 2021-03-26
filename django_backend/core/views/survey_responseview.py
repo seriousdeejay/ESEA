@@ -16,7 +16,7 @@ class SurveyResponseViewSet(viewsets.ModelViewSet):
         organisation = self.request.GET.get('organisation', None)
         if organisation is not None:
             # could also get UserOrganisation and add it to the filter
-            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'], user_organisation__organisation=organisation)
+            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], user_organisation__organisation=organisation)
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'])
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'])
 
@@ -36,7 +36,8 @@ class SurveyResponseViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def all(self, request, method_pk, survey_pk, organisation_pk):
         print(organisation_pk)
-        all_respondents = SurveyResponse.objects.filter(user_organisation__organisation=organisation_pk, survey__method=method_pk, survey=survey_pk)
+        respondents = UserOrganisation.objects.filter(organisation=organisation_pk)
+        responses = SurveyResponse.objects.filter(user_organisation__organisation=organisation_pk, survey__method=method_pk, survey=survey_pk)
 
         question_responses = QuestionResponse.objects.filter(survey_response__user_organisation__organisation= organisation_pk, survey_response__survey__method=method_pk, survey_response__survey=survey_pk, survey_response__finished=True)
         # indirect_indicators = IndirectIndicator.objects.filter(topic__method=method_pk)
@@ -52,8 +53,8 @@ class SurveyResponseViewSet(viewsets.ModelViewSet):
         #serializer = SurveyResponseCalculationSerializer(indicators.values(), many=True)
         return Response(
             {
-                "all_respondents": len(all_respondents),
-                "respondents": len(all_respondents.filter(finished=True)),
+                "respondents": len(respondents),
+                "responses": len(responses.filter(finished=True)),
                 "indicators": indicators,
             }
         )

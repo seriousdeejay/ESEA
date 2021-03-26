@@ -25,6 +25,7 @@ export default {
         return {
             links: [
                 { label: 'Overview', icon: 'home' },
+                { label: 'Methods', icon: 'chart-bar' },
                 { label: 'Reports', icon: 'chart-bar' },
                 { label: 'Surveys', icon: 'book' },
                 { label: 'Stakeholders', icon: 'users' },

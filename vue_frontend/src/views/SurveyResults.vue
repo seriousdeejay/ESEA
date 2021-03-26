@@ -89,7 +89,7 @@ export default {
             return calculations
         },
         methodId () {
-            return parseInt(this.$route.params.id, 10)
+            return parseInt(this.$route.params.methodId, 10)
         }
     },
     beforeRouteUpdate (to, from, next) {

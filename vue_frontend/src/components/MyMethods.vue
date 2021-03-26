@@ -75,7 +75,8 @@ export default {
             default: function () {
                 return [
                     { field: 'name', header: 'Name' },
-                    { field: 'description', header: 'Description' }
+                    { field: 'description', header: 'Description' },
+                    { field: '', header: '' }
                 ]
             }
         },

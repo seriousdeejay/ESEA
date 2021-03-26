@@ -4,11 +4,11 @@ from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404
 
 from ..models import Organisation, CustomUser, UserOrganisation, StakeholderGroup, SurveyResponse
-from ..serializers import OrganisationSerializer, OrganisationSerializer2
+from ..serializers import OrganisationSerializer
 
 
 class OrganisationViewSet(viewsets.ModelViewSet):
-    serializer_class = OrganisationSerializer2
+    serializer_class = OrganisationSerializer
    
     def get_queryset(self):
         network = self.request.GET.get('network', None)
@@ -30,6 +30,7 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         return Organisation.objects.filter(Q(created_by=self.request.user) | Q(ispublic = True))
     
     def create(self, serializer):
+        print('yeha')
         serializer = OrganisationSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         organisation = serializer.save(created_by=self.request.user)
@@ -37,7 +38,7 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         stakeholdergroup = StakeholderGroup.objects.get(name="Employee")
         userorganisation.stakeholdergroups.add(stakeholdergroup)
         userorganisation.save()
-
+        print('check')
         return Response(serializer.data)
 
     def partial_update(self, request, *args, **kwargs):

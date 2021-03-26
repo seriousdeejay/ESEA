@@ -42,8 +42,8 @@ export default {
     name: 'login',
     data () {
         return {
-            username: 'bob1', // Filled in for easy login, should be removed before deployment!
-            password: 'testinguser',
+            username: 'admin', // Filled in for easy login, should be removed before deployment!
+            password: 'admin',
             incorrectAuth: false
         }
     },

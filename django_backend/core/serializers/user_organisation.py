@@ -9,8 +9,8 @@ class UserOrganisationSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     organisation = serializers.StringRelatedField()
     stakeholdergroups = serializers.StringRelatedField(many=True)
-    # survey_responses = SurveyResponseSerializer(many=True)
+    survey_responses = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = UserOrganisation
-        fields = ['user', 'organisation', 'role', 'stakeholdergroups']
+        fields = ['user', 'organisation', 'role', 'stakeholdergroups', 'survey_responses']

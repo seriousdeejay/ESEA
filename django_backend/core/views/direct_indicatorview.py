@@ -7,9 +7,8 @@ from ..serializers import DirectIndicatorSerializer
 
 
 class DirectIndicatorViewSet(viewsets.ViewSet):
-    def list(self, request, method_pk): # , organization_pk, method_pk):
-        # List of all questions in a method
-        questions = DirectIndicator.objects.filter(topic__method=method_pk) # method_pk, organisation_pk
+    def list(self, request, method_pk):
+        questions = DirectIndicator.objects.filter(topic__method=method_pk)
         serializer = DirectIndicatorSerializer(questions, many=True)
 
         return Response(serializer.data)

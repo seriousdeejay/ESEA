@@ -41,7 +41,10 @@ export default {
             columns: [
                 { field: 'ispublic', header: 'public' },
                 { field: 'name', header: 'Name' },
-                { field: 'description', header: 'Description' }
+                { field: 'description', header: 'Description' },
+                { field: 'surveys.length', header: 'Surveys' },
+                { field: 'networks.length', header: 'Networks' },
+                { field: 'organisations.length', header: 'Organisations' }
                 ]
         }
     }

@@ -24,7 +24,7 @@ class MethodViewSet(viewsets.ModelViewSet):
         if network is not None:
             return Method.objects.filter(networks=network)
         if organisation is not None:
-            return Method.objects.filter(networks__organisations=organisation).distinct()
+            return Method.objects.filter(organisations=organisation).distinct()
         if excludenetwork is not None:
             return Method.objects.exclude(networks=excludenetwork)
         return Method.objects.filter(Q(created_by=self.request.user) | Q(ispublic = True))
