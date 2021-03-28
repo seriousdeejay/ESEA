@@ -14,8 +14,9 @@
     <router-view/>
   </div>
   <div v-else class="centered">
-    <router-view style="background-color: white;"/>
+    <router-view style="background-color: white;" />
   </div>
+    <router-view class="anonymous view" name="anonymousview"/>
 </template>
 <script>
 import { mapState } from 'vuex'

@@ -1,7 +1,13 @@
 from rest_framework.response import Response
 from rest_framework import viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404
+from django_backend.settings import EMAIL_HOST_USER
+from django.core.mail import send_mail
 
 from ..models import Organisation, CustomUser, UserOrganisation, StakeholderGroup, SurveyResponse
 from ..serializers import OrganisationSerializer
@@ -56,3 +62,22 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         organisation_object.save()
         serializer = OrganisationSerializer(organisation_object)
         return Response(serializer.data)
+
+@method_decorator(csrf_exempt, name='dispatch')
+@api_view(['GET', 'POST'])
+@permission_classes((AllowAny, ))
+def send_surveys(request):
+    if request.method == 'POST':
+        for user in request.data:
+            print(user)
+            subject = f"Survey for {user['user_organisations'][0]['organisation']}"
+            message = f"Hi {user['first_name']} {user['last_name_prefix']} {user['last_name']}!\nWe would like you to take a moment to fill in the following survey as employee of {user['user_organisations'][0]['organisation']} to create a report about the organisation's position in the ethical, social and environmental fields.\n\nhttp://localhost:8080/{user['uniquetoken']}"
+            recepient = "seriousdeejay@gmail.com"
+            #send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+            uo, _ = UserOrganisation.objects.get_or_create(user=user['id'], organisation=2)
+            print(uo)
+            newSurveyResponse = SurveyResponse.objects.create(survey_id=13,  user_organisation=uo, token=user['uniquetoken'])
+            print(newSurveyResponse)
+        return Response({'Success'})
+    print('check')
+    return Response({'No Post Request'})

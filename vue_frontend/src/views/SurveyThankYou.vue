@@ -1,0 +1,22 @@
+<template>
+    <div class="p-d-flex p-jc-center p-ai-center" style="height: 100vh; background-color: #e9ecef">
+        <div class="p-p-5 p-shadow-5" style="width: 700px; height: 250px; border-radius: 5px">
+            <h3 class="p-text-left p-text-italic">Thank You very much {{surveyResponse.user_organisation.user}} for participating in this survey!</h3>
+            <Divider />
+            <div class="p-text-justify p-my-2">
+                This survey response, among others, will be used to examine how well your organisation is doing in the environmental, social and ethical fields.
+                Once enough stakeholders filled in the survey a report will be created, which will be made publicly available after its validation.
+            </div>
+            <Button label="Learn more about ESEA" class="p-button-success"></Button>
+        </div>
+    </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+export default {
+    computed: {
+        ...mapState('surveyResponse', ['surveyResponse'])
+    }
+}
+</script>

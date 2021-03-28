@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class SurveyResponse(models.Model):
+class SurveyResponse(models.Model): 
     survey = models.ForeignKey('Survey', related_name="responses", on_delete=models.CASCADE)
     user_organisation = models.ForeignKey('UserOrganisation', related_name="survey_responses", on_delete=models.CASCADE, blank=True, null=True)
     token = models.CharField(max_length=128, blank=True, null=True)

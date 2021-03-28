@@ -1,10 +1,34 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import SurveyFill from '../views/SurveyFill'
+import surveyThankYou from '../views/SurveyThankYou'
 
 const routes = [
   {
+    path: '/survey-fill/:uniquetoken',
+    name: 'survey-fill-page',
+    components: {
+      anonymousview: SurveyFill
+    },
+    meta: {
+      requiresLogin: false
+    }
+  },
+  {
+    path: '/survey-thank-you/',
+    name: 'survey-thank-you',
+    components: {
+      anonymousview: surveyThankYou
+    },
+    meta: {
+      requiresLogin: false
+    }
+  },
+  {
     path: '/register',
     name: 'register',
-    component: () => import('../views/Register.vue')
+    components: {
+      a: () => import('../views/Register.vue')
+    }
   },
   {
     path: '/login',

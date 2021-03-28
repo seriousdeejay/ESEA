@@ -55,11 +55,9 @@ export default {
     },
     methods: {
         changeAnswer (answer) {
-            console.log(answer)
             this.$emit('input', answer)
         },
         completed (completedBool) {
-            console.log(completedBool)
             this.$emit('completed', completedBool)
         }
     }

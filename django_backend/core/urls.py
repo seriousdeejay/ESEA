@@ -35,6 +35,7 @@ urlpatterns = [
     path('ap-refresh/', TokenRefreshView.as_view()),
     path('import-yaml/', methodview.upload_yaml),
     path('import-employees/<int:organisation_pk>/', userview.import_employees, name="import_employees_of_organisation"),
+    path('send-surveys/', organisationview.send_surveys, name="send_surveys_to_emails"),
     path('', include(router.urls)),
     path('', include(method_router.urls)),
     path('', include(survey_router.urls)),

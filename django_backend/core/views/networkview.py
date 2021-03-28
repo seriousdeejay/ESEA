@@ -12,6 +12,7 @@ class NetworkViewSet(viewsets.ModelViewSet):
     serializer_class = NetworkSerializer
    
     def get_queryset(self):
+        print(self.request.user)
         organisation = self.request.GET.get('organisation', None)
         excludeorganisation = self.request.GET.get('excludeorganisation', None)
         # organisationsurveys = self.request.GET.get('organisationsurveys', None)

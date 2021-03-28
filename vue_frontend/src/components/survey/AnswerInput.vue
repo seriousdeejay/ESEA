@@ -76,7 +76,6 @@ export default {
     },
     watch: {
         completedBool (val) {
-            console.log('hi')
         },
         value (val) {
             if (val !== this.lazyValue) {
@@ -84,7 +83,6 @@ export default {
             }
         },
         lazyValue (val) {
-            console.log('hello')
             if (val === this.value) return
             if (this.type === this.questionTypes.CHECKBOX) {
                 const checked = this.splitValue(this.value)
