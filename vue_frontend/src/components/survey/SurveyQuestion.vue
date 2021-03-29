@@ -13,6 +13,7 @@
             @input="changeAnswer"
             @completed="completed"
             />
+            {{answer}}
             <div v-if="question.description">
                 <p class="p-text-justify p-text-light p-m-0" style="color: lightgrey;"><small>Description:</small><br>
                 <small><small>{{question.description}}</small></small></p>

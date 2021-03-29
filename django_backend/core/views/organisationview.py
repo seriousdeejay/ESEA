@@ -73,7 +73,7 @@ def send_surveys(request):
             subject = f"Survey for {user['user_organisations'][0]['organisation']}"
             message = f"Hi {user['first_name']} {user['last_name_prefix']} {user['last_name']}!\nWe would like you to take a moment to fill in the following survey as employee of {user['user_organisations'][0]['organisation']} to create a report about the organisation's position in the ethical, social and environmental fields.\n\nhttp://localhost:8080/{user['uniquetoken']}"
             recepient = "seriousdeejay@gmail.com"
-            #send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+            send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
             uo, _ = UserOrganisation.objects.get_or_create(user=user['id'], organisation=2)
             print(uo)
             newSurveyResponse = SurveyResponse.objects.create(survey_id=13,  user_organisation=uo, token=user['uniquetoken'])

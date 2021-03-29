@@ -5,17 +5,19 @@
 
         <div v-if="type === questionTypes.CHECKBOX">
             <div v-for="(option, index) in options" :key="`${index}-option`" class="p-field-checkbox">
-                <Checkbox :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" required/>
-                <label :for="`${index}-option`" class="p-text-left">{{option[optionTextKey]}}</label>
+                <Checkbox :id="`${index}-option`" class="p-mr-5" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" required/>
+                <label :for="`${index}-option`" class="p-ml-5 p-pl-5 p-text-left">{{option[optionTextKey]}}</label>
+                <!-- {{option[optionValueKey]}} -->
             </div>
         </div>
 
         <div v-if="type === questionTypes.RADIO">
             <div v-for="(option, index) in options" :key="`${index}-option`" class="p-field-radiobutton">
                 <RadioButton :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" required/>
-                <label :for="`${index}-option`" class="p-text-left">{{option[optionTextKey]}}</label>
+                <label :for="`${index}-option`" class="p-ml-2 p-text-left">{{option[optionTextKey]}}</label>
             </div>
         </div>
+        {{lazyValue}}
     </div>
 </template>
 
@@ -79,18 +81,24 @@ export default {
         },
         value (val) {
             if (val !== this.lazyValue) {
-                this.lazyValue = this.type === this.questionTypes.CHECKBOX ? this.splitValue(val) : val
+                console.log('ddd', val)
+                console.log(this.value)
+                console.log(this.lazyValue)
+                // this.lazyValue = this.type === this.questionTypes.CHECKBOX ? this.splitValue(val) : val
             }
         },
         lazyValue (val) {
             if (val === this.value) return
             if (this.type === this.questionTypes.CHECKBOX) {
-                const checked = this.splitValue(this.value)
+                console.log('==========', val)
+                // const checked = this.splitValue(this.value)
+                // console.log('>>>>>>', checked)
                 if (!val.length) {
-                    this.lazyValue = checked
+                    // this.lazyValue = checked
+                    console.log(this.lazyValue)
                     return
                 }
-                if (val === checked) return
+                // if (val === checked) return
 			}
 			this.$emit('input', `${val}`)
         }
@@ -103,8 +111,11 @@ export default {
         // }
     },
     created () {
+        console.log(this.options)
+        console.log(this.value)
+        console.log(this.lazyValue)
         if (this.type === this.questionTypes.CHECKBOX) {
-            this.lazyValue = this.splitValue(this.lazyValue)
+            // this.lazyValue = this.splitValue(this.lazyValue)
         }
     },
     methods: {
