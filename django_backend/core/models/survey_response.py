@@ -24,6 +24,7 @@ class SurveyResponse(models.Model):
         ]
 
     def save_question_responses(self, question_responses):
+        print('ssss', question_responses)
         filtered_question_responses = self.filter_question_responses(
             question_responses
         )
@@ -35,17 +36,25 @@ class SurveyResponse(models.Model):
             question_response['direct_indicator_id']: question_response
             for question_response in filtered_question_responses
         }
-
+        print(question_response_mapping)
+        print(data_mapping)
         # Perform creations and updates.
         question_response_list = []
         for id, data in data_mapping.items():
+            print(data)
             question_response = question_response_mapping.get(id, None)
             if question_response is None:
-                question_response_list.append(self.question_responses.create(**data))
-            elif question_response.value is not data['value']:
-                question_response.value = data['value']
-                question_response.save()
-                question_response_list.append(question_response)
+                question_response_list.append(self.question_responses.create(**data))    
+            else:
+                pass
+                # for value in data['values']:
+                #     print(value)
+                #     if value is not in (question_response.values):
+                #          question_response.values.set(data['values'])
+                #          question_response.save()
+                # # question_response.values is not data['values']:
+                # # question_response.values.set(data['values'])
+                #         question_response_list.append(question_response)
 
         # Perform deletions.
         for id, question_response in question_response_mapping.items():

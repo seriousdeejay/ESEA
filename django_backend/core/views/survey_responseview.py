@@ -78,18 +78,25 @@ class SurveyResponseViewSet(BaseModelViewSet):
         serializer.save(survey=survey, user_organisation=user_organisation)
         return Response(serializer.data)
     
-    def update(self, request, organisation_pk, method_pk, survey_pk, token):
-        print(self.request.user)
+    def update(self, request, organisation_pk, method_pk, survey_pk, token, **kwargs):
+        print(request.data)
         surveyresponse = get_object_or_404(SurveyResponse, token=token)
         serializer = SurveyResponseSerializer(surveyresponse, data = request.data)
+        #print('llll', serializer.initial_data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        print('serializer is valid')
+        serializer.save(**serializer.validated_data)
+        #print('>>>', serializer.data)
         return Response(serializer.data)
         # request.data['method'] = int(method_pk)
         # direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method=method_pk)
         # serializer = DirectIndicatorSerializer(direct_indicator, data=request.data)
         # serializer.is_valid(raise_exception=True)
         # serializer.save()
+    
+    def partial_update(self, request, **kwargs):
+        pass
+        return Response({'d'})
 
     @action(detail=False, methods=['get'])
     # @permission_classes(AllowAny,)

@@ -6,6 +6,7 @@ class QuestionOption(models.Model):
     text = models.CharField(max_length=140, blank=False)
     value = models.IntegerField(blank=False)
     question = models.ForeignKey('Question', related_name="question_options", on_delete=models.CASCADE)
+    question_responses = models.ManyToManyField('QuestionResponse', related_name='values', blank=True)
 
     class Meta:
         db_table = 'f{AppConfig.name}_question_option'
@@ -17,5 +18,5 @@ class QuestionOption(models.Model):
         return f"{self.text}"
 
     def __repr__(self):
-        return (f"<QuestionOption id='{self.id}', text='{self.text} '"
-                f"value='{self.value}' question='{self.question}'>")
+        return (f"text='{self.text} '")
+                # f"value='{self.value}' question='{self.question}'>")
