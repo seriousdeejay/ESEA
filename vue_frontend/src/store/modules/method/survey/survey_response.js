@@ -138,7 +138,7 @@ export default {
 			return { response }
 		},
 		updateSurveyResponse ({ state, commit }, { mId, sId, surveyResponse }) {
-			console.log(surveyResponse.question_responses)
+			console.log('ddd', surveyResponse)
 			if (!surveyResponse || !mId || !sId) return
 			if (!state.debouncers[surveyResponse.id]) {
 				commit('setDebouncer', { id: surveyResponse.id, token: surveyResponse.token, commit })

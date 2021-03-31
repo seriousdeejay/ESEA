@@ -13,4 +13,4 @@ class UserOrganisationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserOrganisation
-        fields = ['user', 'organisation', 'role', 'stakeholdergroups', 'survey_responses']
+        fields = ['id', 'user', 'organisation', 'role', 'stakeholdergroups', 'survey_responses']

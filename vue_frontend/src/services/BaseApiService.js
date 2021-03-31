@@ -17,6 +17,7 @@ export default class BaseApiService {
     }
 
     put (payload) {
+        console.log(payload)
         const url = this.createUrl(payload)
         return apiCall({ method: 'put', url, data: payload.data })
     }

@@ -26,7 +26,7 @@ class Survey(models.Model):
     description = models.CharField(max_length=1000, blank=True, null=True)
     rate = models.IntegerField(default=0)
     anonymous = models.BooleanField(null=False)
-    questions = models.ManyToManyField('DirectIndicator', blank=False)
+    questions = models.ManyToManyField('DirectIndicator', related_name="surveys", blank=False)
     method =  models.ForeignKey('Method', related_name="surveys", on_delete=models.CASCADE) 
     stakeholder_groups = models.ManyToManyField('StakeholderGroup')
 

@@ -56,7 +56,8 @@ export default {
             const answers = {}
             if (this.surveyResponse && this.surveyResponse.question_responses) {
                 this.surveyResponse.question_responses.forEach((answer) => {
-                    answers[answer.direct_indicator_id] = answer.value
+                    console.log(answer)
+                    answers[answer.direct_indicator_id] = answer.values
                 })
             }
             return answers

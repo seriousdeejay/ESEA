@@ -41,21 +41,21 @@ class SurveyResponseViewSet(BaseModelViewSet):
     lookup_field = 'token'
     permission_classes_by_action = {
         'create': (IsAuthenticated,),
-        'list': (IsAuthenticated,),
+        'list': (AllowAny,),
         'retrieve': (AllowAny,),
         'update': (AllowAny,),
         'destroy': (IsAuthenticated,),
         'all': (IsAuthenticated,)
     }
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny,]
     def get_queryset(self):
-        if self.request.user.is_authenticated: 
-            organisation = self.request.GET.get('organisation', None)
-            if organisation is not None:
-                # could also get UserOrganisation and add it to the filter
-                return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], user_organisation__organisation=organisation)
-            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'])
-            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'])
+        print('hi')
+        organisation = self.request.GET.get('organisation', None)
+        if organisation is not None:
+            # could also get UserOrganisation and add it to the filter
+            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], user_organisation__organisation=organisation, finished=True)
+        return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'])
+        return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'])
 
     # def create(self, serializer, method_pk, survey_pk, organisation_pk):
         
@@ -70,22 +70,29 @@ class SurveyResponseViewSet(BaseModelViewSet):
         serializer = SurveyResponseSerializer(surveyresponse)
         return Response(serializer.data) 
 
-    def perform_create(self, serializer):
-        print(self.request.user)
-        user_organisation = get_object_or_404(UserOrganisation, user=self.request.user, organisation=self.kwargs['organisation_pk']) # organisation=self.kwargs['organisation_pk']
-        survey = get_object_or_404(Survey, pk=self.kwargs['survey_pk'])
-        print(user_organisation, survey)
-        serializer.save(survey=survey, user_organisation=user_organisation)
+    def create(self, request, method_pk, survey_pk, organisation_pk):
+        surveyresponse = SurveyResponse.objects.create(survey=request.data['survey'], user_organisation=request.data['user_organisation'])
+        # user_organisation = UserOrganisation.objects.filter(user__username=request.data['user_organisation']['user'], organisation=self.kwargs['organisation_pk']).first()
+        # print(user_organisation)
+        # #get_object_or_404(UserOrganisation, user=request.data['user_organisation']['user'], organisation=self.kwargs['organisation_pk']) # organisation=self.kwargs['organisation_pk']
+        # #print(user_organisation)
+        # survey = get_object_or_404(Survey, pk=self.kwargs['survey_pk'])
+        # serializer = SurveyResponseSerializer(data = request.data)
+        # serializer.is_valid(raise_exception=True)
+        
+        # serializer.save(user_organisation=167)
+        # print(serializer.data)
+        serializer = SurveyResponseSerializer(surveyresponse)
         return Response(serializer.data)
     
     def update(self, request, organisation_pk, method_pk, survey_pk, token, **kwargs):
-        print(request.data)
+        #print('>>>>>>>>>', request.data)
         surveyresponse = get_object_or_404(SurveyResponse, token=token)
         serializer = SurveyResponseSerializer(surveyresponse, data = request.data)
         #print('llll', serializer.initial_data)
         serializer.is_valid(raise_exception=True)
-        print('serializer is valid')
-        serializer.save(**serializer.validated_data)
+        serializer.save()
+        print('dd', serializer.data)
         #print('>>>', serializer.data)
         return Response(serializer.data)
         # request.data['method'] = int(method_pk)
@@ -94,9 +101,6 @@ class SurveyResponseViewSet(BaseModelViewSet):
         # serializer.is_valid(raise_exception=True)
         # serializer.save()
     
-    def partial_update(self, request, **kwargs):
-        pass
-        return Response({'d'})
 
     @action(detail=False, methods=['get'])
     # @permission_classes(AllowAny,)

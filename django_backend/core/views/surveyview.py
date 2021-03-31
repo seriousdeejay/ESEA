@@ -35,13 +35,20 @@ class BaseModelViewSet(viewsets.ModelViewSet):
             return [permission() for permission in (permission_classes or self.permission_classes)]
 
 class SurveyViewSet(BaseModelViewSet):
-    authentication_classes = []
+    # authentication_classes = []
     serializer_class = SurveyOverviewSerializer
     permission_classes_by_action = {
-        'retrieve': (AllowAny,)
+        'create': (IsAuthenticated,),
+        'list': (AllowAny,),                # Should be isAuthenticated, need to find a way to access retrieve survey with an unauthenticated user, and list with authenticated user!
+        'retrieve': (AllowAny,),
+        'update': (IsAuthenticated,),
+        'destroy': (IsAuthenticated,),
+        'all': (IsAuthenticated,)
     }
+    permission_classes = [AllowAny,]
 
     def get_queryset(self):
+        print(self.request.user)
         organisation = self.request.GET.get('organisation', None)
         completedbyorganisation = self.request.GET.get('completedbyorganisation', None)
         if organisation or completedbyorganisation is not None:
@@ -49,22 +56,23 @@ class SurveyViewSet(BaseModelViewSet):
                 org = Organisation.objects.get(id=organisation or completedbyorganisation)
                 print(org)
                 
-                # userorganisation = UserOrganisation.objects.get(user=self.request.user, organisation=org)
+                userorganisation = UserOrganisation.objects.get(user=self.request.user, organisation=org)
                 #print(userorganisation)
             except:
                 return Survey.objects.none()
-            #ids = userorganisation.stakeholdergroups.values_list('id', flat=True)
-            #print(ids)
+            ids = userorganisation.stakeholdergroups.values_list('id', flat=True)
+            print(ids)
             if organisation:
                 return Survey.objects.filter(method=self.kwargs['method_pk'])
                 # return Survey.objects.filter(method__networks__organisations=org, stakeholder_groups__pk__in=ids).exclude(responses__in=SurveyResponse.objects.filter(user_organisation=userorganisation, finished=True))
             if completedbyorganisation:
-                return Survey.objects.filter(method__networks__organisations=org, stakeholder_groups__pk__in=ids, responses__user_organisation=userorganisation, responses__finished=True).distinct() 
-        return Survey.objects.filter(method=self.kwargs['method_pk'])
+                print('ch')
+                return Survey.objects.filter(method__networks__organisations=org, stakeholder_groups__pk__in=ids, responses__user_organisation=userorganisation).distinct() #responses__finished=True
+        # return Survey.objects.filter(method=self.kwargs['method_pk'])
     
 
     def retrieve(self, request, method_pk, pk):
-        survey = get_object_or_404(self.get_queryset(), pk=pk)
+        survey = get_object_or_404(Survey, pk=pk)
         print(survey)
         serializer = SurveyDetailSerializer(survey)
         return Response(serializer.data) 

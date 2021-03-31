@@ -1,8 +1,32 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.shortcuts import get_object_or_404
 
+from .survey import Survey
+from .user_organisation import UserOrganisation
+from .direct_indicator import DirectIndicator
+from .question_response import QuestionResponse
+import random
+import string
 
-class SurveyResponse(models.Model): 
+class SurveyResponseManager(models.Manager):
+    def create(self, survey, user_organisation):
+        token = "".join(random.choice(string.ascii_letters) for i in range(8))
+        survey = get_object_or_404(Survey, id=survey)
+        user_organisation = get_object_or_404(UserOrganisation, id = user_organisation)
+        surveyresponse = SurveyResponse(survey=survey, user_organisation=user_organisation, token=token)
+        surveyresponse.save()
+        
+        direct_indicators = DirectIndicator.objects.filter(surveys=survey)
+        for direct_indicator in direct_indicators.values():
+            question_response = QuestionResponse.objects.create(survey_response=surveyresponse, direct_indicator_id=direct_indicator['id'])
+            print(question_response)
+            question_response.save()
+
+        return surveyresponse
+
+class SurveyResponse(models.Model):
+    objects = SurveyResponseManager()
     survey = models.ForeignKey('Survey', related_name="responses", on_delete=models.CASCADE)
     user_organisation = models.ForeignKey('UserOrganisation', related_name="survey_responses", on_delete=models.CASCADE, blank=True, null=True)
     token = models.CharField(max_length=128, blank=True, null=True)

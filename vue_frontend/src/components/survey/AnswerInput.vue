@@ -5,19 +5,17 @@
 
         <div v-if="type === questionTypes.CHECKBOX">
             <div v-for="(option, index) in options" :key="`${index}-option`" class="p-field-checkbox">
-                <Checkbox :id="`${index}-option`" class="p-mr-5" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" required/>
-                <label :for="`${index}-option`" class="p-ml-5 p-pl-5 p-text-left">{{option[optionTextKey]}}</label>
-                <!-- {{option[optionValueKey]}} -->
+                <Checkbox :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" required/>
+                <label :for="`${index}-option`" class="p-text-left">{{option[optionTextKey]}}</label>
             </div>
         </div>
 
         <div v-if="type === questionTypes.RADIO">
             <div v-for="(option, index) in options" :key="`${index}-option`" class="p-field-radiobutton">
                 <RadioButton :id="`${index}-option`" name="option" :value="option[optionValueKey]" v-model="lazyValue" :disabled="readonly" required/>
-                <label :for="`${index}-option`" class="p-ml-2 p-text-left">{{option[optionTextKey]}}</label>
+                <label :for="`${index}-option`" class="p-text-left">{{option[optionTextKey]}}</label>
             </div>
         </div>
-        {{lazyValue}}
     </div>
 </template>
 
@@ -66,7 +64,7 @@ export default {
     },
     data () {
         return {
-            lazyValue: this.value,
+            lazyValue: [],
             completedBool: this.checkanswerrequired,
             questionTypes: QUESTION_TYPES
         }
@@ -77,51 +75,73 @@ export default {
 		// },
     },
     watch: {
-        completedBool (val) {
-        },
-        value (val) {
-            if (val !== this.lazyValue) {
-                console.log('ddd', val)
-                console.log(this.value)
-                console.log(this.lazyValue)
+        // value (val) {
+            // if (val !== this.lazyValue) {
+                // console.log('ddd', val)
+                // console.log(this.value)
+                // console.log(this.lazyValue)
                 // this.lazyValue = this.type === this.questionTypes.CHECKBOX ? this.splitValue(val) : val
-            }
-        },
+            // }
+        // },
         lazyValue (val) {
-            if (val === this.value) return
-            if (this.type === this.questionTypes.CHECKBOX) {
-                console.log('==========', val)
+            // console.log(this.lazyValue)
+
+            // if (this.type === this.questionTypes.RADIO)
+
+            // if (this.type === this.questionTypes.CHECKBOX) {
+                // console.log('==========', val)
                 // const checked = this.splitValue(this.value)
                 // console.log('>>>>>>', checked)
-                if (!val.length) {
+                // if (!val.length) {
                     // this.lazyValue = checked
-                    console.log(this.lazyValue)
-                    return
-                }
+                    // console.log(this.lazyValue)
+                //    return
+                // }
                 // if (val === checked) return
-			}
-			this.$emit('input', `${val}`)
+			// }
+            console.log('mmm', val)
+            //
+            if ((val === 'undefined') || (val === this.value)) {
+                console.log('dd')
+                return
+            }
+            if (!Array.isArray(val)) {
+               this.$emit('input', [val])
+               return
+            }
+
+            if (typeof (val || val[0]) === 'undefined') {
+                console.log('zz')
+                return
+            }
+            console.log('sss', val)
+			this.$emit('input', val)
         }
-        // checkanswerrequired: function (val, oldval) {
-        //     console.log('hello')
-        //     if (this.checkanswerrequired) {
-        //         console.log('goodday')
-        //     this.$emit('completed', this.completedBool)
-        //     }
-        // }
     },
     created () {
-        console.log(this.options)
-        console.log(this.value)
+        if (this.type === this.questionTypes.RADIO) {
+            console.log('----', this.value)
+            try {
+                this.lazyValue = this.value[0]
+            } catch {
+                this.lazyValue = null
+        }
         console.log(this.lazyValue)
-        if (this.type === this.questionTypes.CHECKBOX) {
+        } else {
+        this.lazyValue = this.value
+        }
+        // console.log(this.options)
+        // console.log(this.value)
+        // console.log(this.lazyValue)
+        // if (this.type === this.questionTypes.CHECKBOX) {
             // this.lazyValue = this.splitValue(this.lazyValue)
-        }
-    },
-    methods: {
-        splitValue (value) {
-            return value ? value.split(',') : value
-        }
+        // }
     }
+    // methods: {
+    //     splitValue (value) {
+    //         console.value('sss', value)
+    //         return value ? value.split(',') : value
+    //     }
+    // }
 }
 </script>
