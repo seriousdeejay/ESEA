@@ -2,6 +2,7 @@ from .customuser import CustomUser
 from .user_organisation import UserOrganisation
 from .network import Network
 from .organisation import Organisation
+from .respondent import Respondent
 
 from .method import Method
 from .survey import Survey
@@ -14,7 +15,6 @@ from .direct_indicator import DirectIndicator
 
 from .survey_response import SurveyResponse
 from .question_response import QuestionResponse
-from .answer_list import AnswerList
 
 #from .network_method import NetworkMethod
 #from .certification_grade import CertificationGrade

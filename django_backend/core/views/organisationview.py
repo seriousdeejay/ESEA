@@ -40,10 +40,10 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         serializer = OrganisationSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         organisation = serializer.save(created_by=self.request.user)
-        userorganisation = UserOrganisation.objects.create(user=self.request.user, organisation=organisation)
-        stakeholdergroup = StakeholderGroup.objects.get(name="Employee")
-        userorganisation.stakeholdergroups.add(stakeholdergroup)
-        userorganisation.save()
+        #userorganisation = UserOrganisation.objects.create(user=self.request.user, organisation=organisation)
+        #stakeholdergroup = StakeholderGroup.objects.get(name="Employee")
+        #userorganisation.stakeholdergroups.add(stakeholdergroup)
+        #userorganisation.save()
         print('check')
         return Response(serializer.data)
 
@@ -68,8 +68,8 @@ class OrganisationViewSet(viewsets.ModelViewSet):
 @permission_classes((AllowAny, ))
 def send_surveys(request):
     if request.method == 'POST':
-        for user in request.data:
-            print(user)
+        for surveyrespondent in request.data:
+            print(surveyrespondent)
             subject = f"Survey for {user['user_organisations'][0]['organisation']}"
             message = f"Hi {user['first_name']} {user['last_name_prefix']} {user['last_name']}!\nWe would like you to take a moment to fill in the following survey as employee of {user['user_organisations'][0]['organisation']} to create a report about the organisation's position in the ethical, social and environmental fields.\n\nhttp://localhost:8080/{user['uniquetoken']}"
             recepient = "seriousdeejay@gmail.com"

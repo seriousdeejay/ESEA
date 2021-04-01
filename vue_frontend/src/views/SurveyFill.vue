@@ -32,10 +32,10 @@
 
     <Dialog v-model:visible="missedQuestionsDialog" :style="{width: '450px'}" header="Missing Answers" :modal="true">
         <i class="pi pi-star p-mr-3" style="font-size: 1.5rem" />
-        <span>You need to fill in the following answers to be able to send your survey response:</span>
+        <span class="p-text-left">You need to fill in the following answers to be able to send your survey response:</span>
         <div class="p-grid p-m-2">
-            <div v-for="question in missedQuestions" :key="question" class="p-col-3">
-                <Button :label="`${question}`" @click="goToQuestion(question)"> </Button>
+            <div v-for="question, i in missedQuestions" :key="question" class="p-col-3">
+                <Button :label="`${i+1}`" @click="goToQuestion(question)"> </Button>
             </div>
         </div>
         <template #footer>

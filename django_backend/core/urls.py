@@ -2,10 +2,11 @@ from django.urls import path, include, re_path
 from rest_framework_nested import routers
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
-from .views import (userview, networkview, organisationview, methodview, surveyview, topicview, direct_indicatorview, survey_responseview)
+from .views import (respondentview, userview, networkview, organisationview, methodview, surveyview, topicview, direct_indicatorview, survey_responseview)
 
 
 router = routers.DefaultRouter()
+router.register(r'respondents', respondentview.RespondentsViewSet, basename="Respondents")
 router.register(r'users', userview.UsersViewSet, basename="Users")
 router.register(r'networks', networkview.NetworkViewSet, basename="Networks")
 router.register(r'organisations', organisationview.OrganisationViewSet, basename="Organisations")

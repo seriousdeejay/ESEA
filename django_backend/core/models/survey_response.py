@@ -3,18 +3,17 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404
 
 from .survey import Survey
-from .user_organisation import UserOrganisation
 from .direct_indicator import DirectIndicator
 from .question_response import QuestionResponse
 import random
 import string
 
 class SurveyResponseManager(models.Manager):
-    def create(self, survey, user_organisation):
+    def create(self, survey, respondent):
         token = "".join(random.choice(string.ascii_letters) for i in range(8))
         survey = get_object_or_404(Survey, id=survey)
-        user_organisation = get_object_or_404(UserOrganisation, id = user_organisation)
-        surveyresponse = SurveyResponse(survey=survey, user_organisation=user_organisation, token=token)
+        #user_organisation = get_object_or_404(UserOrganisation, id = user_organisation)
+        surveyresponse = SurveyResponse(survey=survey, respondent=respondent, token=token)
         surveyresponse.save()
         
         direct_indicators = DirectIndicator.objects.filter(surveys=survey)
@@ -28,8 +27,8 @@ class SurveyResponseManager(models.Manager):
 class SurveyResponse(models.Model):
     objects = SurveyResponseManager()
     survey = models.ForeignKey('Survey', related_name="responses", on_delete=models.CASCADE)
-    user_organisation = models.ForeignKey('UserOrganisation', related_name="survey_responses", on_delete=models.CASCADE, blank=True, null=True)
-    token = models.CharField(max_length=128, blank=True, null=True)
+    respondent = models.OneToOneField('Respondent', related_name="response", on_delete=models.CASCADE, primary_key=True) #primary_key=True
+    token = models.CharField(max_length=8, default="")
     finished = models.BooleanField(default=False)
 
     class Meta:
@@ -37,7 +36,7 @@ class SurveyResponse(models.Model):
         verbose_name_plural = _('survey_responses')
     
     def __str__(self):
-        return f"'{self.survey} ({self.user_organisation})'"
+        return f"'{self.survey} ({self.surveyrespondent})'"
 
     def filter_question_responses(self, question_responses):
         indicator_ids = self.survey.questions.values_list('id', flat=True,)

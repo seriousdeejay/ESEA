@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from ..models import SurveyResponse, QuestionResponse, QuestionOption, DirectIndicator, UserOrganisation
 from .question_response import QuestionResponseSerializer
-from .user_organisation import UserOrganisationSerializer
+# from .user_organisation import UserOrganisationSerializer
 
 import random
 import string
@@ -50,7 +50,8 @@ import string
 class SurveyResponseSerializer(serializers.ModelSerializer):
     question_responses = QuestionResponseSerializer(many=True, required=False)
     #user_organisation = RelatedFieldAlternative(queryset=UserOrganisation.objects.all(), serializer=UserOrganisationSerializer)
-    user_organisation = UserOrganisationSerializer(read_only=True)
+    # surveyrespondent = SurveyRespondentSerializer(read_only=True)
+    # user_organisation = UserOrganisationSerializer(read_only=True)
 
     class Meta:
         model = SurveyResponse

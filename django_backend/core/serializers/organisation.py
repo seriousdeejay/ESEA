@@ -23,21 +23,21 @@ class SurveyResponseSerializer(serializers.ModelSerializer):
         model = SurveyResponse
         fields = ['id', 'finished', 'survey']
 
-class UserOrganisationSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
-    stakeholdergroups = serializers.StringRelatedField(many=True)
-    survey_responses = SurveyResponseSerializer(many=True, required=False, read_only=True)
+# class UserOrganisationSerializer(serializers.ModelSerializer):
+#     user = serializers.StringRelatedField()
+#     stakeholdergroups = serializers.StringRelatedField(many=True)
+#     survey_responses = SurveyResponseSerializer(many=True, required=False, read_only=True)
 
-    class Meta:
-        model = UserOrganisation
-        fields = ['id', 'user', 'organisation', 'stakeholdergroups', 'survey_responses']
+#     class Meta:
+#         model = UserOrganisation
+#         fields = ['id', 'user', 'organisation', 'stakeholdergroups', 'survey_responses']
 
 
 class OrganisationSerializer(serializers.ModelSerializer):
     created_by = serializers.StringRelatedField()
-    organisation_members = UserOrganisationSerializer(many=True, required=False, source="relevant_survey_responses", read_only=True)
+    # organisation_members = UserOrganisationSerializer(many=True, required=False, source="relevant_survey_responses", read_only=True)
 
     class Meta:
         model = Organisation
-        fields = ['id', 'ispublic', 'name', 'description', 'created_by', 'members', 'organisation_members', 'networks', 'methods']
+        fields = ['id', 'ispublic', 'name', 'description', 'created_by', 'networks', 'methods']
         extra_kwargs = {'networks': {'required': False}, 'methods': {'required': False}}

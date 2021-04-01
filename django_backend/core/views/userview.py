@@ -7,8 +7,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 
-from ..serializers import RegisterUserSerializer, UserSerializer, UserOrganisationSerializer
-from ..models import CustomUser, Organisation, UserOrganisation, StakeholderGroup
+from ..serializers import RegisterUserSerializer, UserSerializer
+from ..models import CustomUser, Organisation, UserOrganisation, StakeholderGroup, Respondent
 
 import os
 import csv
@@ -26,14 +26,14 @@ class UsersViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         currentuser = self.request.GET.get('currentuser', None)
         network = self.request.GET.get('network', None)
-        organisation = self.request.GET.get('organisation', None)
+        # organisation = self.request.GET.get('organisation', None)
         excludeorganisation = self.request.GET.get('excludeorganisation', None)
         if currentuser is not None:
             return CustomUser.objects.filter(id=self.request.user.id)
         if network is not None:
             return CustomUser.objects.filter(organisations__networks=network).distinct() # Should pass network id(s) in order to serve the participants of network(s)
-        if organisation is not None:
-            return CustomUser.objects.filter(organisations=organisation)
+        # if organisation is not None:
+        #     return CustomUser.objects.filter(organisations=organisation)
         if excludeorganisation is not None:
             return CustomUser.objects.exclude(organisations=excludeorganisation)
         return CustomUser.objects.all()
@@ -44,40 +44,60 @@ class UsersViewSet(viewsets.ReadOnlyModelViewSet):
 def import_employees(request, organisation_pk):
     if request.method == 'POST' and 'file' in request.FILES.keys():
         myfile = request.FILES['file']
-        print(myfile)
     organisation = get_object_or_404(Organisation, pk=organisation_pk)
-    cwd = os.getcwd()
-    output = []
-    with open(os.path.join(cwd, "core\\uploadedfiles\\uploadedemployees.csv")) as file:
-        newemployees = csv.reader(file, delimiter=",", quotechar="|")
+    colsdict = {}
+    requiredattributes = {'email', 'first_name', 'last_name', 'last_name_prefix'}
+    respondents = []
+
+    with open(os.path.join(os.getcwd(), "core\\uploadedfiles\\uploadedemployees.csv")) as file:
+        newemployees = csv.reader(file, delimiter=",", quotechar="|") #maybe quotechar should be , ?
         for i, row in enumerate(newemployees):
+            print(row)
             if (i == 0):
-                pass
+                missingattributes = requiredattributes.difference(set(row))
+                if missingattributes:
+                    responsestring = "Your csv file is missing the following attribute columns: " + ", ".join(missingattributes)
+                    return Response({responsestring})
+                for j, column in enumerate(row):
+                    colsdict[column] = j
+                print(colsdict)
+
             else:
                 try:
-                    email = row[1]
-                    firstname = row[2]
-                    lastnameprefix =row[3]
-                    lastname = row[4]
-                    # username = f"{firstname.lower()}{lastnameprefix.lower()}{lastname.lower()}"
-                    username = f"{firstname}{lastnameprefix}{lastname}".lower()
-                    password = "".join(random.choice(string.ascii_letters) for i in range(8))
-                    data = { "email": email, "first_name": firstname, "last_name_prefix": lastnameprefix, "last_name": lastname, "username": username, "password": password, "password2": password, "uniquetoken": password}
-                    serializer = RegisterUserSerializer(data=data)
-                    serializer.is_valid(raise_exception=True)
-                    print('d')
-                    serializer.save()
-                    newuser = get_object_or_404(CustomUser, username=serializer.data['username'])
-                    print(newuser)
-                    userorganisation = UserOrganisation.objects.create(user=newuser, organisation=organisation)
-                    stakeholdergroup = StakeholderGroup.objects.get(name="Employee")
-                    userorganisation.stakeholdergroups.add(stakeholdergroup)
-                    userorganisation.save()
-                    serializer = UserSerializer(newuser)
-                    output.append(serializer.data)      
-                    
+                    email = row[colsdict['email']]
+                    firstname = row[colsdict['first_name']]
+                    lastnameprefix = row[colsdict['last_name_prefix']]
+                    lastname = row[colsdict['last_name']]
+                    # token = "".join(random.choice(string.ascii_letters) for i in range(8))
+                    respondent = Respondent(organisation=organisation, email=email, first_name=firstname, last_name_prefix=lastnameprefix, last_name=lastname)
+                    print(i, '--------', respondent)
+                    respondents.append(respondent)
                 except:
-                    print(f"error in row {i}")
+                    return Response({f"error in row {i}"})
 
-    return Response(output)
+    Respondent.objects.all().delete()
+    created_respondents = Respondent.objects.bulk_create(respondents)
+    
+    for respondent in created_respondents:
+        new_survey_response = SurveyResponse.objects.create(survey=13, respondent=respondent)
+        subject = f"Survey for {surveyrespondent} regarding {surveyrespondent.organisation}"
+        message = f"Hi {respondent}!\nWe would like you to take a moment to fill in the following survey as employee of {respondent.organisation} to create a report about the organisation's position in the ethical, social and environmental fields.\n\nhttp://localhost:8080/{new_survey_response.token}/"
+        recepient = respondent.email
+        #recepient = "seriousdeejay@gmail.com"
+        # send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+    return Response({"The Survey has been succesfully deployed to the provided survey respondents."})
+
+                        # data = { "email": email, "first_name": firstname, "last_name_prefix": lastnameprefix, "last_name": lastname, "username": username, "password": password, "password2": password, "uniquetoken": password}
+                    # print(data)
+                    # serializer = RegisterUserSerializer(data=data)
+                    # serializer.is_valid(raise_exception=True)
+                    # print(serializer.data)
+                    # serializer.save()
+                    # newuser = get_object_or_404(CustomUser, username=serializer.data['username'])
+                    # print(newuser)
+                    # userorganisation = UserOrganisation.objects.create(user=newuser, organisation=organisation)
+                    # stakeholdergroup = StakeholderGroup.objects.get(name="Employee")
+                    # userorganisation.stakeholdergroups.add(stakeholdergroup)
+                    # userorganisation.save()
+                    # serializer = UserSerializer(newuser  
                 

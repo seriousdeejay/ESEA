@@ -133,8 +133,9 @@ export default {
             var formData = new FormData()
             formData.append('file', event.files[0])
             return new Promise((resolve, reject) => {
-                AxiosInstance.post(`/import-employees/${this.organisation?.id || 0}`, formData)
+                AxiosInstance.post(`/import-employees/${this.organisation?.id || 0}/`, formData)
                 .then(response => {
+                    console.log(response)
                     this.importDialog = false
                     this.$toast.add({ severity: 'success', summary: 'CSV uploaded', detail: 'Your csv was correctly uploaded.' })
                     this.initialize()
