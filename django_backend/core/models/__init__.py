@@ -11,8 +11,10 @@ from .topic import Topic
 from .question import Question
 from .question_option import QuestionOption
 from .direct_indicator import DirectIndicator
-#from .indirect_indicator import IndirectIndicator
+from .indirect_indicator import IndirectIndicator
 
+from .campaign import Campaign
+from .esea_account import EseaAccount
 from .survey_response import SurveyResponse
 from .question_response import QuestionResponse
 

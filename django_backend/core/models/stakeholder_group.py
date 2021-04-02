@@ -17,3 +17,4 @@ class StakeholderGroup(models.Model):
         self.name = name
         self.save()
         return self
+

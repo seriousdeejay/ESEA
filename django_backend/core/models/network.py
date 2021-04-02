@@ -17,3 +17,9 @@ class Network(models.Model):
 
     def __str__(self):
         return self.name
+
+'''
+- Should have a campaign?
+- Should have image?
+( - m2m network_methods class to add a campaign class to?)
+'''

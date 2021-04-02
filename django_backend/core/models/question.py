@@ -8,13 +8,12 @@ from .question_option import QuestionOption
 
 class questionManager(models.Manager):
     def create(self, isMandatory, name, topic, answertype, description=None, instruction=None, options=None):
-        # print("sssssss", options, 'dd')
-        question = self.model(isMandatory=isMandatory, name=name, topic=topic, answertype=answertype, description=description, instruction=instruction)
+        question = Question(isMandatory=isMandatory, name=name, topic=topic, answertype=answertype, description=description, instruction=instruction)
         question.save()
 
         if question.answertype in (question.QUESTION_TYPES_WITH_OPTIONS):
-            for option in options:
-                questionoption = QuestionOption.objects.create(text=option, value=1, question=question)
+            for index, option in options:
+                questionoption = QuestionOption.objects.create(text=option, value=index + 1, question=question)
                 question.options.add(questionoption)
             question.save()
         return question
@@ -33,8 +32,6 @@ class Question(models.Model):
     instruction = models.TextField(blank=True, null=True)
     topic = models.ForeignKey('Topic', related_name="questions_of_topic", on_delete=models.CASCADE)     # Needed, cause a many to many field can not be 'on_delete=models.CASCADE'
     topics = models.ManyToManyField("Topic", through="DirectIndicator")
-    options = models.ManyToManyField(QuestionOption, blank=True, related_name="ooo") 
-    # options: QuestionOption
 
     TEXT = "TEXT"
     NUMBER = "NUMBER"
@@ -55,7 +52,7 @@ class Question(models.Model):
         verbose_name_plural = _("questions")
 
     def __str__(self):
-        return f"{self.name}({self.id})"
+        return self.name
 
     def __repr__(self) -> str:  # -> str?
         return (
@@ -77,7 +74,6 @@ class Question(models.Model):
 
         return optionsExists
 
-    # TODO: Improve typing of this function
     def findQuestion(name, answertype, options, description=None) -> Any: # instruction = None
         questions = Question.objects.filter(name=name, answertype=answertype, description=description)
         for question in questions:
@@ -105,3 +101,5 @@ class Question(models.Model):
         return self
 
  
+    #options = models.ManyToManyField(QuestionOption, blank=True, related_name="ooo") 
+    # options: QuestionOption

@@ -6,9 +6,11 @@ def calculate_indicators(direct_indicators) -> Dict[str, Indicator]:
     indicators = {}
 
     for direct_indicator in direct_indicators:
-        indicators[direct_indicator.key] = direct_indicator.responses
+        indicators[direct_indicator.key] = direct_indicator.value
+        #for response in direct_indicator.responses:
+            # print(response.all())
+        #indicators[direct_indicator.key] = direct_indicator.responses
     print(indicators)
-    
     return indicators
 """
 def calculate_indicators(
@@ -41,7 +43,8 @@ def calculate_indicator(indicator, value_list) -> str:
 """
 def map_responses_by_indicator(direct_indicators, question_responses) -> None:
     for direct_indicator in direct_indicators:
-        direct_indicator.filter_responses(question_responses) 
+        direct_indicator.filter_responses(question_responses)
+
 
 """
 # TODO: Remove function when direct and indirect indicators are merged.

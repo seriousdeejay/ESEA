@@ -45,23 +45,19 @@ class SurveyResponseViewSet(BaseModelViewSet):
         'retrieve': (AllowAny,),
         'update': (AllowAny,),
         'destroy': (IsAuthenticated,),
-        'all': (IsAuthenticated,)
+        'all': (AllowAny,)
     }
     permission_classes = [AllowAny,]
     def get_queryset(self):
-        print('hi')
         organisation = self.request.GET.get('organisation', None)
+        uncompleted = self.request.GET.get('uncompleted', None)
         if organisation is not None:
             # could also get UserOrganisation and add it to the filter
             return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], user_organisation__organisation=organisation, finished=True)
+        if uncompleted is not None:
+            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], finished=False)
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], finished=True)
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'])
-
-    # def create(self, serializer, method_pk, survey_pk, organisation_pk):
-        
-    #     print('it exists!')
-    #     return Response('something')
-    
     
     def retrieve(self, request, method_pk, survey_pk, organisation_pk, token):
         print(self.request.user)
@@ -81,14 +77,11 @@ class SurveyResponseViewSet(BaseModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-        # direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method=method_pk)
-        # serializer = DirectIndicatorSerializer(direct_indicator, data=request.data)
-    
 
     @action(detail=False, methods=['get'])
-    # @permission_classes(AllowAny,)
+    #@permission_classes(AllowAny,)
     def all(self, request, method_pk, survey_pk, organisation_pk):
-        if self.request.user.is_authenticated:
+        if True: #self.request.user.is_authenticated:
             respondents = Respondent.objects.filter(organisation=organisation_pk, response__survey=survey_pk)
             responses = SurveyResponse.objects.filter(respondent__organisation=organisation_pk, survey = survey_pk, finished=True)
 
@@ -96,11 +89,12 @@ class SurveyResponseViewSet(BaseModelViewSet):
             # indirect_indicators = IndirectIndicator.objects.filter(topic__method=method_pk)
             direct_indicators = DirectIndicator.objects.filter(surveys=survey_pk)
             
-            for item in question_responses:
-                s = QuestionResponseSerializer(item)
+            # for item in question_responses:
+            #     s = QuestionResponseSerializer(item, many=True)
+          
             map_responses_by_indicator(direct_indicators, question_responses)
-            for di in direct_indicators:
-                print(di.key)
+            # for di in direct_indicators:
+            #     print(di.key)
             # serializer = SurveyResponseCalculationSerializer(direct_indicators, many=True)
             indicators = calculate_indicators(direct_indicators)
             #serializer = SurveyResponseCalculationSerializer(indicators.values(), many=True)
@@ -152,3 +146,6 @@ class SurveyResponseViewSet(BaseModelViewSet):
 #         token = self.request.query_params.get("token", token_urlsafe())
 #         survey = get_object_or_404(Survey, pk=self.kwargs["survey_pk"])
 #         serializer.save(survey=survey, token=token)
+
+        # direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method=method_pk)
+        # serializer = DirectIndicatorSerializer(direct_indicator, data=request.data)

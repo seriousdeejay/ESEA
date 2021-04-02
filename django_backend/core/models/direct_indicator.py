@@ -63,6 +63,8 @@ class DirectIndicator(models.Model):
             or self.question.answertype == self.question.CHECKBOX
         ):
             response_values = self.checkbox_values(responses)
+            return response_values
+
 
         return self.average_calculation(response_values)
 
@@ -71,12 +73,19 @@ class DirectIndicator(models.Model):
         return sum(numbers) / len(numbers)
 
     def checkbox_values(self, responses):
-        values = []
+        valuesdict = {}
+        for option in self.question.options.all():
+            valuesdict[option.text] = 0
+        #print(valuesdict['Fixed Salary'])
         for response in responses:
-            options = response.split(",") # Splits it on commas, should be changed!!!
-            for option in options:
+            # options = response.split(",") # Splits it on commas, should be changed!!!
+            for option in response.all():
                 if option:
-                    question_option = self.question.options.filter(text=option)
-                    if len(question_option):
-                        values.append(question_option[0].value)
-        return values
+                    question_option = self.question.options.filter(text=option).first()
+                    if question_option:
+                        valuesdict[question_option.text] += 1
+        return valuesdict
+
+'''
+- Should response_values not be returned to self.value (or self.values)?  [FIXED]
+'''

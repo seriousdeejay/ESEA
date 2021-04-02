@@ -5,7 +5,7 @@ from ..apps import AppConfig
 class QuestionOption(models.Model):
     text = models.CharField(max_length=140, blank=False)
     value = models.IntegerField(blank=False)
-    question = models.ForeignKey('Question', related_name="question_options", on_delete=models.CASCADE)
+    question = models.ForeignKey('Question', related_name="options", on_delete=models.CASCADE)
     question_responses = models.ManyToManyField('QuestionResponse', related_name='values', blank=True)
 
     class Meta:

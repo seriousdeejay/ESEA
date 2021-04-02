@@ -8,18 +8,12 @@
             <h1>{{survey.name}}</h1>
             <h3>{{survey.description}}</h3>
             <p>Respondents: {{ surveyResult.respondents }} of {{ surveyResult.all_respondents }} </p>
+            {{surveyResult}}
             </div>
         </div>
     <div class="p-grid p-col-6 p-p-3" style="min-width: 800px;">
             <div v-for="topic in survey.topics" :key="topic.id" class="p-grid p-col-12 p-p-5" style="background-color: #F5F5F5; border-radius: 10px;">
                 <div class="p-col-12 p-text-left"><h3>Topic: '{{topic.name}}</h3></div>
-                <!-- <survey-question
-                v-for="question in topic.questions"
-                :key="question.id"
-                :question="question"
-                :answer="answers[question.id]"
-                :readonly="true"
-                /> -->
                 <survey-question-results
 					v-for="question in topic.questions"
 					:key="`question-${question.id}`"
@@ -31,13 +25,6 @@
 
                 <div v-for="subtopic in topic.sub_topics" :key="subtopic.id" class="p-col-12 p-p-3 p-my-3" style="background-color: white; border-radius: 10px;">
                     <div class="p-col-12 p-text-left"><h3>Topic: '{{subtopic.name}}</h3></div>
-                     <!-- <survey-question
-                    v-for="question in subtopic.questions"
-                    :key="question.id"
-                    :question="question"
-                    :answer="answers[question.id]"
-                    :readonly="true"
-                /> -->
                     <survey-question-results
 						v-for="question in subtopic.questions"
 						:key="`question-${question.id}`"

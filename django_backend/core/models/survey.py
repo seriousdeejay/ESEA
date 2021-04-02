@@ -10,9 +10,8 @@ class SurveyManager(models.Manager):
         stakeholdergroup, _ = StakeholderGroup.objects.get_or_create(name="Employee")
         survey = Survey(name=name, description=description, rate=rate, anonymous=anonymous, method=method)
         survey.save()
-        print('<<>>', survey.id)
         survey.stakeholder_groups.add(stakeholdergroup)
-        print(survey.stakeholder_groups.all())
+
         # directindicators = DirectIndicator.objects.filter(topic__method=method.id)
         # print('---', directindicators)
         # for di in directindicators.iterator():
@@ -37,3 +36,6 @@ class Survey(models.Model):
     def __str__(self):
         return self.name
 
+'''
+- objects manager def create() should get parameter stakeholdergroup from yaml file
+'''
