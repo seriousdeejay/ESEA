@@ -44,8 +44,8 @@ class MethodViewSet(viewsets.ModelViewSet):
                     method_object.organisations.remove(organisation)
                 else:
                     method_object.organisations.add(organisation)
-            except:
-                return Response({"Error"})
+            except Exception as e:
+                print('%s (%s)' % (e.message, type(e)))
         serializer = MethodSerializer(method_object)
         return Response(serializer.data)
         
@@ -54,10 +54,6 @@ class MethodViewSet(viewsets.ModelViewSet):
 @api_view(['GET', 'POST'])
 @permission_classes((AllowAny, ))
 def upload_yaml(request):
-    # if request.method == 'POST':
-    #     print('>', request.FILES)
-    #     print(request.data)
-    #     return Response({"message": "data received!", "data": ""})
     if request.method == 'POST' and request.FILES['file']:
         myfile = request.FILES['file']
         ##Try/Except to catch YAML related errors
@@ -65,8 +61,8 @@ def upload_yaml(request):
             YAML_dict = yaml.safe_load(myfile)
             currentuser = CustomUser.objects.get(id=1)
             m = Method.objects.create(name="BIA", description="A Method description", created_by=currentuser)
-            print(m)
             topic_dict = {}
+
             ##Saving Topics
             for topic_key in YAML_dict['topics']:
                 topic=YAML_dict['topics'][topic_key]
@@ -77,11 +73,11 @@ def upload_yaml(request):
                 if not 'topic' in topic.keys():
                     supertopic = Topic.objects.create(name=name, description=description, parent_topic=None, method=m)
                     topic_dict[topic_key] = supertopic
-                    ## print(topic_key, supertopic)
                 else:            
                     subtopic = Topic.objects.create(name=name, description=description, parent_topic=topic_dict[topic['topic']], method=m)
                     topic_dict[topic_key] = subtopic
                     print(topic_key, subtopic)
+
             ##Saving Surveys
             for survey in YAML_dict['surveys']:
                 YAML_dict['surveys'][survey]
@@ -95,7 +91,6 @@ def upload_yaml(request):
                 if 'closingtext' in YAML_dict['surveys'][survey].keys():
                     closingText = YAML_dict['surveys'][survey]['closingtext']
                 s = Survey.objects.create(name=name, description=description, anonymous=False, method=m)
-                ## print(s)
                 ##Saving Questions
                 for question in YAML_dict['surveys'][survey]['questions']:
                     question = YAML_dict['surveys'][survey]['questions'][question]
@@ -116,11 +111,11 @@ def upload_yaml(request):
                             options = question['aggregatedqs']
                         q = DirectIndicator.objects.create(key=key, topic=topic, answertype=answertype, name=name, isMandatory=isMandatory, description=description, instruction=instruction, options=options)
                         s.questions.add(q)
-                        ## print('>>', q, 'TOPIC:', q.topic, q.question.options.all())
-                    except:
-                        continue
+                    except Exception as e:
+                        print('%s (%s)' % (e.message, type(e)))
             return Response({"Method Saved!"})
         except yaml.YAMLError as exc:
             print(exc)
             return Response({exc})
-    return Response({"Nothing uploaded"})
+
+## print('>>', q, 'TOPIC:', q.topic, q.question.options.all())

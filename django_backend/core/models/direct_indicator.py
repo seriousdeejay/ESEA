@@ -47,7 +47,7 @@ class DirectIndicator(models.Model):
 
     def filter_responses(self, responses):
         self.responses = [
-            response.value
+            response.values
             for response in responses
             if response.direct_indicator_id == self.id
         ]
@@ -73,7 +73,7 @@ class DirectIndicator(models.Model):
     def checkbox_values(self, responses):
         values = []
         for response in responses:
-            options = response.split(",")
+            options = response.split(",") # Splits it on commas, should be changed!!!
             for option in options:
                 if option:
                     question_option = self.question.options.filter(text=option)

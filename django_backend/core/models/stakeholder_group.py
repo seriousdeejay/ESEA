@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 class StakeholderGroup(models.Model):
     name= models.CharField(max_length=120, unique=True, blank=False)
     description=models.CharField(max_length=1000)
-    # method = models.ForeignKey('Method', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('stakeholder_group')

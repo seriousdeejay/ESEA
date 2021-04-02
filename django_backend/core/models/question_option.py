@@ -19,4 +19,4 @@ class QuestionOption(models.Model):
 
     def __repr__(self):
         return (f"text='{self.text} '")
-                # f"value='{self.value}' question='{self.question}'>")
+        

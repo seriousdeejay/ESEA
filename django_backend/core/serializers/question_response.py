@@ -1,10 +1,9 @@
 from rest_framework import serializers
 
 from ..models import QuestionResponse, QuestionOption
-from .question_option import QuestionOptionSerializer
+
 
 class QuestionResponseSerializer(serializers.ModelSerializer):
-    #values = QuestionOptionSerializer(many=True)
     values = serializers.SlugRelatedField(queryset=QuestionOption.objects.all(), many=True, slug_field='text')
 
     class Meta:

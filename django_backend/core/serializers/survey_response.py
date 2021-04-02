@@ -1,11 +1,53 @@
 from rest_framework import serializers
 
-from ..models import SurveyResponse, QuestionResponse, QuestionOption, DirectIndicator, UserOrganisation
+from ..models import SurveyResponse, QuestionResponse, QuestionOption, DirectIndicator
 from .question_response import QuestionResponseSerializer
-# from .user_organisation import UserOrganisationSerializer
 
 import random
 import string
+
+
+class SurveyResponseSerializer(serializers.ModelSerializer):
+    question_responses = QuestionResponseSerializer(many=True, required=False)
+    respondent = serializers.StringRelatedField()
+    organisation = serializers.StringRelatedField(source='respondent.organisation')
+    method = serializers.ReadOnlyField(source='survey.method.id')
+    class Meta:
+        model = SurveyResponse
+        fields = '__all__'
+        read_only_fields = ['respondent', 'survey', 'organisation', 'method', 'token']
+
+    def update(self, survey_response, validated_data):
+        print('check')
+        survey_response.finished = validated_data.get('finished', survey_response.finished)
+        question_responses = validated_data.pop('question_responses')
+        question_responses_dict = dict((i.id, i) for i in survey_response.question_responses.all())
+        for item_data in question_responses:
+            if 'id' in item_data:
+                question_response = QuestionResponse.objects.get(id=item_data['id']) #question_responses_dict.pop(item_data['id'])
+                for key in item_data.keys():
+                    if key == 'values':
+                        question_response.values.clear()
+                        for answer in item_data[key]:
+                            question_response.values.add(answer)
+                    else:
+                        setattr(question_response, key, item_data[key])
+                question_response.save()
+        survey_response.save()
+        return survey_response
+
+
+class SurveyResponseCalculationSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    topic = serializers.PrimaryKeyRelatedField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    key = serializers.CharField(read_only=True)
+    description = serializers.CharField(read_only=True)
+    formula = serializers.CharField(read_only=True)
+    calculation = serializers.CharField(read_only=True)
+    value = serializers.CharField(read_only=True)
+    responses = serializers.ListField(child=serializers.CharField(read_only=True))
+
 
 # class UserOrganisationField(serializers.RelatedField):
 #     def to_representation(self, obj):
@@ -46,27 +88,14 @@ import string
 #             return self.serializer(instance, context=self.context).data
 #         return super().to_representation(instance)
 
-
-class SurveyResponseSerializer(serializers.ModelSerializer):
-    question_responses = QuestionResponseSerializer(many=True, required=False)
-    #user_organisation = RelatedFieldAlternative(queryset=UserOrganisation.objects.all(), serializer=UserOrganisationSerializer)
-    # surveyrespondent = SurveyRespondentSerializer(read_only=True)
-    # user_organisation = UserOrganisationSerializer(read_only=True)
-
-    class Meta:
-        model = SurveyResponse
-        fields = '__all__'
-        # read_only_fields = ['survey', 'user_organisation', 'token']
-    
     # def to_representation(self, instance):
     #     response = super().to_representation(instance)
     #     response['user_organisation'] = UserOrganisationSerializer(instance.user_organisation).data
     #     return response
 
-    # def create(self, validated_data):
-    #     print(validated_data)
-    #     token = "".join(random.choice(string.ascii_letters) for i in range(8))
-    #     user_organisation = validated_data.pop('user_organisation')
+    def create(self, validated_data):
+        token = "".join(random.choice(string.ascii_letters) for i in range(8))
+    #     user_organisation = validated_data.pop('respondent')
     #     print(validated_data)
     #     # print(user_organisation.survey_responses)
     #     direct_indicators = DirectIndicator.objects.filter(surveys=validated_data.get('survey'))
@@ -78,26 +107,10 @@ class SurveyResponseSerializer(serializers.ModelSerializer):
     #     # survey_response.save_question_responses(question_responses)
     #     return survey_response
 
-    def update(self, survey_response, validated_data):
-        # print(validated_data, 'ddddddd')
-        print('check')
-        survey_response.finished = validated_data.get('finished', survey_response.finished)
-        question_responses = validated_data.pop('question_responses')
-        question_responses_dict = dict((i.id, i) for i in survey_response.question_responses.all())
-        for item_data in question_responses:
-            if 'id' in item_data:
-                question_response = QuestionResponse.objects.get(id=item_data['id']) #question_responses_dict.pop(item_data['id'])
-                for key in item_data.keys():
-                    if key == 'values':
-                        question_response.values.clear()
-                        for answer in item_data[key]:
-                            print(answer)
-                            question_response.values.add(answer)
-                    else:
-                        setattr(question_response, key, item_data[key])
-                question_response.save()
-        survey_response.save()
-        print('>>>>>>', survey_response.finished)
+    #user_organisation = RelatedFieldAlternative(queryset=UserOrganisation.objects.all(), serializer=UserOrganisationSerializer)
+    # surveyrespondent = SurveyRespondentSerializer(read_only=True)
+    # user_organisation = UserOrganisationSerializer(read_only=True)
+
         # raise_errors_on_nested_writes('update', self, validated_data)
         # print(validated_data)
         # survey_response.question_responses.set = validated_data.get('question_responses', survey_response.question_responses)
@@ -115,29 +128,10 @@ class SurveyResponseSerializer(serializers.ModelSerializer):
         #     # print('----', attr)
         #     else:
         #         setattr(survey_response, attr, value)
-        # survey_response.save()
         #print(survey_response.question_responses.all())
-        
 
-        return survey_response
-    #     survey_response.finished = validated_data.get('finished', survey_response.finished)
-    #     print('pppp', validated_data)
-    #     survey_response.save()
     #     print(vars(survey_response))
     #     print('zzzzz', validated_data.get('question_responses', survey_response.question_responses))
     #     #question_responses = validated_data.get('question_responses', [])
     #    # survey_response.save_question_responses(question_responses)
-    #     return survey_response
-
-class SurveyResponseCalculationSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    topic = serializers.PrimaryKeyRelatedField(read_only=True)
-    name = serializers.CharField(read_only=True)
-    key = serializers.CharField(read_only=True)
-    description = serializers.CharField(read_only=True)
-    formula = serializers.CharField(read_only=True)
-    calculation = serializers.CharField(read_only=True)
-    value = serializers.CharField(read_only=True)
-    responses = serializers.ListField(child=serializers.CharField(read_only=True))
-
     

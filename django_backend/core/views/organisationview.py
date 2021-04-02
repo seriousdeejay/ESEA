@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django_backend.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 
-from ..models import Organisation, CustomUser, UserOrganisation, StakeholderGroup, SurveyResponse
+from ..models import Organisation, CustomUser, StakeholderGroup, SurveyResponse
 from ..serializers import OrganisationSerializer, SurveyResponseSerializer
 
 
@@ -23,16 +23,15 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         excludemethod = self.request.GET.get('excludemethod', None)
         if network is not None:
             if method is not None:
-                print('It Works!')
                 return Organisation.objects.filter(networks=network, methods=method)
-                #serializer_class = OrganisationResponsesSerializer
                 #return Organisation.objects.prefetch_related(Prefetch('methods.surveys.responses', queryset=SurveyResponse.objects.filter(survey__method=method, survey__method__networks=network), to_attr='filtered_survey_responses'))
             if excludemethod is not None:
-                print('check')
                 return Organisation.objects.filter(networks=network).exclude(methods=excludemethod)
             return Organisation.objects.filter(networks=network)
         if excludenetwork is not None:
             return Organisation.objects.exclude(networks=excludenetwork)
+        print('dd')
+        return Organisation.objects.all()
         return Organisation.objects.filter(Q(created_by=self.request.user) | Q(ispublic = True))
     
     def create(self, serializer):
@@ -40,11 +39,6 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         serializer = OrganisationSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         organisation = serializer.save(created_by=self.request.user)
-        #userorganisation = UserOrganisation.objects.create(user=self.request.user, organisation=organisation)
-        #stakeholdergroup = StakeholderGroup.objects.get(name="Employee")
-        #userorganisation.stakeholdergroups.add(stakeholdergroup)
-        #userorganisation.save()
-        print('check')
         return Response(serializer.data)
 
     def partial_update(self, request, *args, **kwargs):
@@ -67,19 +61,18 @@ class OrganisationViewSet(viewsets.ModelViewSet):
 @api_view(['GET', 'POST'])
 @permission_classes((AllowAny, ))
 def send_surveys(request):
-    if request.method == 'POST':
-        for surveyrespondent in request.data:
-            print(surveyrespondent)
-            subject = f"Survey for {user['user_organisations'][0]['organisation']}"
-            message = f"Hi {user['first_name']} {user['last_name_prefix']} {user['last_name']}!\nWe would like you to take a moment to fill in the following survey as employee of {user['user_organisations'][0]['organisation']} to create a report about the organisation's position in the ethical, social and environmental fields.\n\nhttp://localhost:8080/{user['uniquetoken']}"
-            recepient = "seriousdeejay@gmail.com"
-            # send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
-            uo, _ = UserOrganisation.objects.get_or_create(user=user['id'], organisation=2)
-            print(uo)
-            #serializer = SurveyResponseSerializer(data = {survey: })
-            newSurveyResponse = SurveyResponse.objects.create(survey=13,  user_organisation=uo.id)
-            # newSurveyResponse.save()
-            print(newSurveyResponse.__dict__)
-        return Response({'Success'})
-    print('check')
-    return Response({'No Post Request'})
+    pass
+    # if request.method == 'POST':
+    #     for surveyrespondent in request.data:
+    #         print(surveyrespondent)
+    #         subject = f"Survey for {user['user_organisations'][0]['organisation']}"
+    #         message = f"Hi {user['first_name']} {user['last_name_prefix']} {user['last_name']}!\nWe would like you to take a moment to fill in the following survey as employee of {user['user_organisations'][0]['organisation']} to create a report about the organisation's position in the ethical, social and environmental fields.\n\nhttp://localhost:8080/{user['uniquetoken']}"
+    #         recepient = "seriousdeejay@gmail.com"
+    #         # send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+    #         print(uo)
+    #         #serializer = SurveyResponseSerializer(data = {survey: })
+    #         newSurveyResponse = SurveyResponse.objects.create(survey=13,  user_organisation=uo.id)
+    #         print(newSurveyResponse.__dict__)
+    #     return Response({'Success'})
+    # print('check')
+    # return Response({'No Post Request'})

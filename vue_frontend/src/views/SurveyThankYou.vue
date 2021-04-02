@@ -1,7 +1,7 @@
 <template>
     <div class="p-d-flex p-jc-center p-ai-center" style="height: 100vh; background-color: #e9ecef">
         <div class="p-p-5 p-shadow-5" style="width: 700px; border-radius: 5px">
-            <h3 class="p-text-left">Thank You very much for participating in this survey!</h3>
+            <h3 class="p-text-left">Thank You very much for participating in this survey, {{surveyResponse.respondent}}!</h3>
             <Divider />
             <div class="p-text-justify p-my-3">
                 This survey response, among others, will be used to examine how well your organisation is doing in the environmental, social and ethical fields.

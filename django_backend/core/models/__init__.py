@@ -1,5 +1,5 @@
 from .customuser import CustomUser
-from .user_organisation import UserOrganisation
+
 from .network import Network
 from .organisation import Organisation
 from .respondent import Respondent

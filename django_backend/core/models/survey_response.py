@@ -12,14 +12,12 @@ class SurveyResponseManager(models.Manager):
     def create(self, survey, respondent):
         token = "".join(random.choice(string.ascii_letters) for i in range(8))
         survey = get_object_or_404(Survey, id=survey)
-        #user_organisation = get_object_or_404(UserOrganisation, id = user_organisation)
         surveyresponse = SurveyResponse(survey=survey, respondent=respondent, token=token)
         surveyresponse.save()
-        
+
         direct_indicators = DirectIndicator.objects.filter(surveys=survey)
         for direct_indicator in direct_indicators.values():
             question_response = QuestionResponse.objects.create(survey_response=surveyresponse, direct_indicator_id=direct_indicator['id'])
-            print(question_response)
             question_response.save()
 
         return surveyresponse
@@ -27,8 +25,8 @@ class SurveyResponseManager(models.Manager):
 class SurveyResponse(models.Model):
     objects = SurveyResponseManager()
     survey = models.ForeignKey('Survey', related_name="responses", on_delete=models.CASCADE)
-    respondent = models.OneToOneField('Respondent', related_name="response", on_delete=models.CASCADE, primary_key=True) #primary_key=True
-    token = models.CharField(max_length=8, default="")
+    respondent = models.OneToOneField('Respondent', related_name="response", on_delete=models.CASCADE, primary_key=True)
+    token = models.CharField(max_length=8)
     finished = models.BooleanField(default=False)
 
     class Meta:
@@ -36,7 +34,7 @@ class SurveyResponse(models.Model):
         verbose_name_plural = _('survey_responses')
     
     def __str__(self):
-        return f"'{self.survey} ({self.surveyrespondent})'"
+        return f"'{self.survey} ({self.respondent})'"
 
     def filter_question_responses(self, question_responses):
         indicator_ids = self.survey.questions.values_list('id', flat=True,)
@@ -61,6 +59,7 @@ class SurveyResponse(models.Model):
         }
         print(question_response_mapping)
         print(data_mapping)
+
         # Perform creations and updates.
         question_response_list = []
         for id, data in data_mapping.items():

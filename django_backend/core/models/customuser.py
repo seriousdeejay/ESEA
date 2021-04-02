@@ -12,10 +12,10 @@ class CustomUser(AbstractUser):
     uniquetoken = models.CharField(max_length=8, blank=True)
 
     USERNAME_FIELD = 'username'
-    # REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.username
+        
         # if not self.last_name_prefix:
         #     return f"{self.first_name} {self.last_name}"
         # return f"{self.first_name} {self.last_name_prefix} {self.last_name}"

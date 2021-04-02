@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
 from django.shortcuts import get_object_or_404
 from secrets import token_urlsafe
 
-from ..models import (Survey, SurveyResponse, QuestionResponse, UserOrganisation, DirectIndicator)
+from ..models import (Survey, SurveyResponse, QuestionResponse, DirectIndicator, Respondent)
 from ..serializers import (SurveyResponseSerializer, QuestionResponseSerializer, SurveyResponseCalculationSerializer)
 from ..utils import map_responses_by_indicator, calculate_indicators
 
@@ -54,7 +54,7 @@ class SurveyResponseViewSet(BaseModelViewSet):
         if organisation is not None:
             # could also get UserOrganisation and add it to the filter
             return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], user_organisation__organisation=organisation, finished=True)
-        return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'])
+        return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], finished=True)
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'])
 
     # def create(self, serializer, method_pk, survey_pk, organisation_pk):
@@ -72,46 +72,29 @@ class SurveyResponseViewSet(BaseModelViewSet):
 
     def create(self, request, method_pk, survey_pk, organisation_pk):
         surveyresponse = SurveyResponse.objects.create(survey=request.data['survey'], user_organisation=request.data['user_organisation'])
-        # user_organisation = UserOrganisation.objects.filter(user__username=request.data['user_organisation']['user'], organisation=self.kwargs['organisation_pk']).first()
-        # print(user_organisation)
-        # #get_object_or_404(UserOrganisation, user=request.data['user_organisation']['user'], organisation=self.kwargs['organisation_pk']) # organisation=self.kwargs['organisation_pk']
-        # #print(user_organisation)
-        # survey = get_object_or_404(Survey, pk=self.kwargs['survey_pk'])
-        # serializer = SurveyResponseSerializer(data = request.data)
-        # serializer.is_valid(raise_exception=True)
-        
-        # serializer.save(user_organisation=167)
-        # print(serializer.data)
         serializer = SurveyResponseSerializer(surveyresponse)
         return Response(serializer.data)
     
     def update(self, request, organisation_pk, method_pk, survey_pk, token, **kwargs):
-        #print('>>>>>>>>>', request.data)
         surveyresponse = get_object_or_404(SurveyResponse, token=token)
         serializer = SurveyResponseSerializer(surveyresponse, data = request.data)
-        #print('llll', serializer.initial_data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        print('dd', serializer.data)
-        #print('>>>', serializer.data)
         return Response(serializer.data)
-        # request.data['method'] = int(method_pk)
         # direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method=method_pk)
         # serializer = DirectIndicatorSerializer(direct_indicator, data=request.data)
-        # serializer.is_valid(raise_exception=True)
-        # serializer.save()
     
 
     @action(detail=False, methods=['get'])
     # @permission_classes(AllowAny,)
     def all(self, request, method_pk, survey_pk, organisation_pk):
         if self.request.user.is_authenticated:
-            respondents = UserOrganisation.objects.filter(organisation=organisation_pk)
-            responses = SurveyResponse.objects.filter(user_organisation__organisation=organisation_pk, survey__method=method_pk, survey=survey_pk)
+            respondents = Respondent.objects.filter(organisation=organisation_pk, response__survey=survey_pk)
+            responses = SurveyResponse.objects.filter(respondent__organisation=organisation_pk, survey = survey_pk, finished=True)
 
-            question_responses = QuestionResponse.objects.filter(survey_response__user_organisation__organisation= organisation_pk, survey_response__survey__method=method_pk, survey_response__survey=survey_pk, survey_response__finished=True)
+            question_responses = QuestionResponse.objects.filter(survey_response__respondent__organisation= organisation_pk, survey_response__survey=survey_pk, survey_response__finished=True)
             # indirect_indicators = IndirectIndicator.objects.filter(topic__method=method_pk)
-            direct_indicators = DirectIndicator.objects.filter(survey=survey_pk)
+            direct_indicators = DirectIndicator.objects.filter(surveys=survey_pk)
             
             for item in question_responses:
                 s = QuestionResponseSerializer(item)

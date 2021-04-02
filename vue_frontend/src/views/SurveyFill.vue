@@ -3,7 +3,7 @@
         <div class="p-col-12 p-p-3" style="background-color: #dcedc8;">
             <h1>{{survey.name}}</h1>
             <h3>{{survey.description}}</h3>
-            <p><span class="p-text-bold">Respondent:</span> {{surveyResponse.user_organisation.user}} <br> <span class="p-text-bold">Organisation:</span>{{surveyResponse.user_organisation.organisation}} </p>
+            <p><span class="p-text-bold">Respondent:</span> {{surveyResponse.respondent}} <br> <span class="p-text-bold">Organisation:</span>{{surveyResponse.organisation}} </p>
         </div>
         <div class="p-grid p-col-6 p-p-3" style="background-color: white; border-radius: 10px;">
             <div class="p-col-6 p-text-left">Topic {{ topicNumber + 1}} of {{totalTopics}}</div>
@@ -106,7 +106,7 @@ export default {
     //   .then(response => (console.log(response)))
     //    AxiosInstance.get('/methods/27/surveys/13/organisations/1/responses/GhjrpoLc/', {}).then(response => (console.log(response)))
             await this.fetchSurveyResponse({ mId: 0, sId: 0, OrganisationId: 0, id: this.$route.params.uniquetoken })
-            await this.fetchSurvey({ mId: 27, id: 13 })
+            await this.fetchSurvey({ mId: this.surveyResponse.method, id: this.surveyResponse.survey })
             if (this.surveyResponse.finished) {
                 this.$router.push({ name: 'survey-thank-you' })
             }

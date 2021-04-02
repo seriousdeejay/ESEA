@@ -129,7 +129,7 @@
             this.initialize()
         },
         methods: {
-            ...mapActions('method', ['fethcMethod, patchMethod']),
+            ...mapActions('method', ['fetchMethod", "patchMethod']),
             ...mapActions('organisation', ['fetchOrganisations']),
             ...mapActions('survey', ['fetchSurveys']),
             async initialize () {

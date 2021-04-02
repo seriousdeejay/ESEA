@@ -2,7 +2,6 @@ from .user import RegisterUserSerializer, UserSerializer
 from .network import NetworkSerializer
 from .organisation import OrganisationSerializer
 from .respondent import RespondentSerializer
-# from .user_organisation import UserOrganisationSerializer
 
 from .method import MethodSerializer
 from .topic import TopicSerializer

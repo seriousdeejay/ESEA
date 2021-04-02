@@ -87,7 +87,7 @@ class Question(models.Model):
 
     def update(self, name, answertype, options, description=None, instruction=None) -> "Question":
         question: Question = Question.findQuestion(name, answertype, options, description)
-        if question and question.id != self.id: # Why self.delete in this case?
+        if question and question.id != self.id:
             self.delete()
             return question
 

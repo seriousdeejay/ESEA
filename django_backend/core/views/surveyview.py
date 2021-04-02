@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 
 
-from ..models import Survey, Method, UserOrganisation, Organisation, SurveyResponse
+from ..models import Survey, Method, Organisation, SurveyResponse
 from ..serializers import SurveyOverviewSerializer, SurveyDetailSerializer
 
 class BaseModelViewSet(viewsets.ModelViewSet):
@@ -54,9 +54,6 @@ class SurveyViewSet(BaseModelViewSet):
         if organisation or completedbyorganisation is not None:
             try:
                 org = Organisation.objects.get(id=organisation or completedbyorganisation)
-                print(org)
-                
-                #userorganisation = UserOrganisation.objects.get(user=self.request.user, organisation=org)
                 #print(userorganisation)
             except:
                 return Survey.objects.none()

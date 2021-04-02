@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 
 from ..serializers import RegisterUserSerializer, UserSerializer
-from ..models import CustomUser, Organisation, UserOrganisation, StakeholderGroup, Respondent
+from ..models import CustomUser, Organisation, StakeholderGroup, Respondent, SurveyResponse
 
 import os
 import csv
@@ -60,7 +60,6 @@ def import_employees(request, organisation_pk):
                     return Response({responsestring})
                 for j, column in enumerate(row):
                     colsdict[column] = j
-                print(colsdict)
 
             else:
                 try:
@@ -68,7 +67,6 @@ def import_employees(request, organisation_pk):
                     firstname = row[colsdict['first_name']]
                     lastnameprefix = row[colsdict['last_name_prefix']]
                     lastname = row[colsdict['last_name']]
-                    # token = "".join(random.choice(string.ascii_letters) for i in range(8))
                     respondent = Respondent(organisation=organisation, email=email, first_name=firstname, last_name_prefix=lastnameprefix, last_name=lastname)
                     print(i, '--------', respondent)
                     respondents.append(respondent)
@@ -76,14 +74,19 @@ def import_employees(request, organisation_pk):
                     return Response({f"error in row {i}"})
 
     Respondent.objects.all().delete()
-    created_respondents = Respondent.objects.bulk_create(respondents)
-    
-    for respondent in created_respondents:
-        new_survey_response = SurveyResponse.objects.create(survey=13, respondent=respondent)
-        subject = f"Survey for {surveyrespondent} regarding {surveyrespondent.organisation}"
+    # for respondent in respo
+    #Respondent.objects.create(respondents)
+    #respondentss = Respondent.objects.all().first()
+    print(respondents)
+    for respondent in respondents:
+        respondent.save()
+        print(respondent.id)
+        print(Respondent.objects.all().first().id)
+        new_survey_response = SurveyResponse.objects.create(survey=1, respondent=respondent)
+        subject = f"Survey for {respondent} regarding {respondent.organisation}"
         message = f"Hi {respondent}!\nWe would like you to take a moment to fill in the following survey as employee of {respondent.organisation} to create a report about the organisation's position in the ethical, social and environmental fields.\n\nhttp://localhost:8080/{new_survey_response.token}/"
-        recepient = respondent.email
-        #recepient = "seriousdeejay@gmail.com"
+        #recepient = respondent.email
+        recepient = "seriousdeejay@gmail.com"
         # send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
     return Response({"The Survey has been succesfully deployed to the provided survey respondents."})
 
