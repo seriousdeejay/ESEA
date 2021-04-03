@@ -100,6 +100,19 @@ const routes = [
         }
       },
       {
+        path: 'campaigns',
+        name: 'networkcampaigns',
+        component: () => import('../views/network/NetworkCampaigns'),
+        meta: {
+          requiresLogin: true,
+          breadcrumb: [
+            { label: 'Networks', to: '/networks' },
+            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
+            { label: 'Campaigns', to: { name: 'networkcampaigns' } }
+          ]
+        }
+      },
+      {
         path: 'methods',
         name: 'networkmethods',
         component: () => import('../views/network/NetworkMethods'),

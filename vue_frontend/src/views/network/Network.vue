@@ -24,6 +24,7 @@ export default {
         return {
             links: [
                 { label: 'Overview', icon: 'home' },
+                { label: 'Campaigns', icon: 'chart-bar' },
                 { label: 'Methods', icon: 'chart-bar' },
                 // { label: 'Stakeholders', icon: 'users' },
                 { label: 'Organisations', icon: 'cloud' },

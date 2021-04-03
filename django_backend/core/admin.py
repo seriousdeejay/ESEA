@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import (CustomUser, StakeholderGroup, Network, Organisation, Respondent, Method, Survey, 
-                     Topic, DirectIndicator, Question, QuestionOption, SurveyResponse, QuestionResponse)
+                     Topic, DirectIndicator, Question, QuestionOption, SurveyResponse, QuestionResponse, Campaign, EseaAccount)
 
 
 class NetworkAdmin(admin.ModelAdmin):
@@ -20,6 +20,7 @@ class NetworkAdmin(admin.ModelAdmin):
 admin.site.register(CustomUser, UserAdmin)
 admin.site.register(StakeholderGroup)
 admin.site.register(Network, NetworkAdmin)
+admin.site.register(EseaAccount)
 admin.site.register(Organisation)
 admin.site.register(Respondent)
 
@@ -31,5 +32,6 @@ admin.site.register(QuestionOption)
 admin.site.register(DirectIndicator)
 # admin.site.register(IndirectIndicator)
 
+admin.site.register(Campaign)
 admin.site.register(SurveyResponse)
 admin.site.register(QuestionResponse)

@@ -14,7 +14,7 @@
                         <div class="p-col-6 p-text-bold"> Email </div>
                         <div class="p-col-6"> {{ user.email }} </div>
                         <div class="p-col-6 p-text-bold"> Account Creation </div>
-                        <div class="p-col-6"> {{ user.registered_on.slice(0, 10) }} </div> <!-- Date should be fixed to DD-MM-YYYY! -->
+                        <div class="p-col-6"> {{ user.date_joined.slice(0, 10) }} </div> <!-- Date should be fixed to DD-MM-YYYY! -->
                         <div class="p-col-12" >
                             <div class="p-text-bold" >Bio</div>
                             <p class="p-text-justify">Hello this is my Bio! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -30,20 +30,33 @@
             </div>
             <Divider />
             <div v-if="currentuser === user.username" class="p-d-flex p-jc-start">
-                <Button label="Edit Profile" class="p-button-raised p-button-primary" @click="editProfile" /> <!-- If user profile belongs to logged in user-->
+                <Button label="Edit Profile" class="p-button-raised p-button-primary p-mr-2" @click="editProfile" />
+                <Button label="Delete Account" class="p-button-raised p-button-danger" @click="(deleteAccountDialog = true)" /> <!-- If user profile belongs to logged in user-->
             </div>
         </div>
     </div>
+
+    <Dialog v-if="user" v-model:visible="deleteAccountDialog" :style="{width: '450px'}" header="Confirm" :modal="true">
+        <div class="confirmation-content">
+            <i class="pi pi-exclamation-triangle p-mr-3" style="font-size:1.5rem" />
+            <span>Are you sure you want to delete the following account: '<b>{{user.username}}</b>'?</span>
+        </div>
+        <template #footer>
+            <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteAccountDialog = false"/>
+            <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteAccount()" />
+        </template>
+    </Dialog>
 
 </template>
 
 <script>
 // import store from '../store'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
     data () {
         return {
+            deleteAccountDialog: false
 
         }
     },
@@ -52,8 +65,16 @@ export default {
         ...mapState('authentication', ['currentuser', 'authenticatedUser'])
     },
     methods: {
+        ...mapActions('user', ['updateUser', 'deleteUser']),
         editProfile () {
             console.log('e')
+            // this updateUser({})
+        },
+        async deleteAccount () {
+            if (this.currentuser === this.user.username) {
+                // await this.deleteUser({ ...this.user })
+                this.$router.push({ name: 'logout' })
+            }
         }
     }
 }

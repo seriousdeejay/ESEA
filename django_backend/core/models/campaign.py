@@ -6,6 +6,7 @@ def defaultrespondingwindow():
         return now() + timedelta(days = 30)
 
 class Campaign(models.Model):
+    name = models.CharField(max_length=255, default="A New Campaign")
     network = models.ForeignKey('Network', on_delete=models.CASCADE)
     method = models.ForeignKey('method', on_delete=models.CASCADE) # If a method gets removed the network_method gets removed too, is this a good choice?
     created_by = models.ForeignKey('CustomUser', editable=False, on_delete=models.SET_NULL, null=True)
@@ -15,4 +16,10 @@ class Campaign(models.Model):
     close_survey_date = models.DateTimeField(default=defaultrespondingwindow)
     # close_validation_date = models.DateTimeField()
 
-    
+    def __str__(self):
+        return f'{self.name} (method: {self.method})'
+
+''' 
+- Should have name field
+- Should return self.name in __str__
+'''

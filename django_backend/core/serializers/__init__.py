@@ -4,11 +4,12 @@ from .organisation import OrganisationSerializer
 from .respondent import RespondentSerializer
 
 from .method import MethodSerializer
+from .survey import (SurveyOverviewSerializer, SurveyDetailSerializer)
 from .topic import TopicSerializer
 from .direct_indicator import DirectIndicatorSerializer
 #from .indirect_indicator import IndirectIndicatorSerializer
 from .question_option import QuestionOptionSerializer
 
-from .survey import (SurveyOverviewSerializer, SurveyDetailSerializer)
+from .campaign import CampaignSerializer
 from .survey_response import (SurveyResponseSerializer, SurveyResponseCalculationSerializer)
 from .question_response import QuestionResponseSerializer
