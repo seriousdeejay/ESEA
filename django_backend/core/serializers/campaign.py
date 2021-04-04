@@ -18,6 +18,5 @@ class CampaignSerializer(serializers.ModelSerializer):
         return campaign
     
     def update(self, instance, validated_data):
-        EseaAccount.objects.all().delete()
-        
+        print('check')
         return instance
