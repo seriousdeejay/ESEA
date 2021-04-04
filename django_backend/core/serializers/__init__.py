@@ -11,5 +11,6 @@ from .direct_indicator import DirectIndicatorSerializer
 from .question_option import QuestionOptionSerializer
 
 from .campaign import CampaignSerializer
+from .esea_account import EseaAccountSerializer
 from .survey_response import (SurveyResponseSerializer, SurveyResponseCalculationSerializer)
 from .question_response import QuestionResponseSerializer

@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from .survey import Survey
 from .direct_indicator import DirectIndicator
 from .question_response import QuestionResponse
+from .esea_account import EseaAccount
 import random
 import string
 
@@ -24,6 +25,7 @@ class SurveyResponseManager(models.Manager):
 
 class SurveyResponse(models.Model):
     objects = SurveyResponseManager()
+    esea_account = models.ForeignKey('EseaAccount', related_name="responses", on_delete=models.CASCADE, null=True)
     survey = models.ForeignKey('Survey', related_name="responses", on_delete=models.CASCADE)
     respondent = models.OneToOneField('Respondent', related_name="response", on_delete=models.CASCADE, primary_key=True)
     token = models.CharField(max_length=8)

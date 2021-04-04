@@ -2,7 +2,7 @@ from django.urls import path, include, re_path
 from rest_framework_nested import routers
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
-from .views import (respondentview, userview, networkview, organisationview, methodview, surveyview, topicview, direct_indicatorview, survey_responseview, campaignview)
+from .views import (respondentview, userview, networkview, organisationview, methodview, surveyview, topicview, direct_indicatorview, survey_responseview, campaignview, esea_accountview)
 
 
 router = routers.DefaultRouter()
@@ -14,6 +14,10 @@ router.register(r'methods', methodview.MethodViewSet, basename='methods')   ## /
 
 network_router = routers.NestedSimpleRouter(router, r'networks', lookup="network")
 network_router.register(r'campaigns', campaignview.CampaignViewSet, basename="network-campaigns" )
+
+campaign_router = routers.NestedSimpleRouter(network_router, r'campaigns', lookup="campaign")
+campaign_router.register(r'esea-accounts', esea_accountview.EseaAccountViewSet, basename="network-esea-accounts")
+
 method_router = routers.NestedSimpleRouter(router, r'methods', lookup="method")
 method_router.register(r'surveys', surveyview.SurveyViewSet, basename="method-surveys")
 method_router.register(r'topics', topicview.TopicViewSet, basename="method-topics")     ## /methods/{pk}/topics & /methods/{pk}/topics/{pk}/
@@ -41,6 +45,7 @@ urlpatterns = [
     path('send-surveys/', organisationview.send_surveys, name="send_surveys_to_emails"),
     path('', include(router.urls)),
     path('', include(network_router.urls)),
+    path('', include(campaign_router.urls)),
     path('', include(method_router.urls)),
     path('', include(survey_router.urls)),
     path('', include(organisation_router.urls)),

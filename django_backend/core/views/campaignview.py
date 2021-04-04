@@ -11,10 +11,10 @@ class CampaignViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Campaign.objects.all()
 
-    def create(self, serializer):
+    def create(self, serializer, network_pk):
         serializer = CampaignSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save() # goes to serializer def create()
         return Response(serializer.data)
 
     def update(self, request, network_pk, pk):

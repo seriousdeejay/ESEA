@@ -20,4 +20,4 @@ from .question_response import QuestionResponse
 
 #from .network_method import NetworkMethod
 #from .certification_grade import CertificationGrade
-#from .report import Report
+from .report import Report
