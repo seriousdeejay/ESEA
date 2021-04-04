@@ -89,7 +89,7 @@ export default {
             commit('setMethod', response.data)
         },
         async deleteMethod ({ commit, dispatch }, payload) {
-            const { response, error } = await MethodService.post(payload)
+            const { response, error } = await MethodService.delete(payload)
             if (error) {
                 commit('setError', { error })
                 return

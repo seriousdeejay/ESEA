@@ -9,6 +9,8 @@ import method from './modules/method/method'
 import survey from './modules/method/survey'
 import topic from './modules/method/topic'
 import question from './modules/method/question'
+import campaign from './modules/campaign'
+import eseaAccount from './modules/esea_account'
 import surveyResponse from './modules/method/survey/survey_response'
 import surveyResults from './modules/method/survey/survey_results'
 const vuexLocalStorage = new VuexPersistance({
@@ -27,6 +29,8 @@ export default createStore({
     survey,
     topic,
     question,
+    campaign,
+    eseaAccount,
     surveyResponse,
     surveyResults
   },
