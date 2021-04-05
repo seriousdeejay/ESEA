@@ -113,6 +113,33 @@ const routes = [
         }
       },
       {
+        path: 'campaigns/:CampaignId',
+        name: 'networkcampaign',
+        component: () => import('../views/network/NetworkCampaign'),
+        meta: {
+          requiresLogin: true,
+          breadcrumb: [
+            { label: 'Networks', to: '/networks' },
+            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
+            { label: 'campaign', to: { name: 'networkcampaign' } }
+          ]
+        }
+      },
+      {
+        path: 'campaigns/:CampaignId/esea-account/:EseaAccountId',
+        name: 'networkeseaaccount',
+        component: () => import('../views/network/NetworkEseaAccount'),
+        meta: {
+          requiresLogin: true,
+          breadcrumb: [
+            { label: 'Networks', to: '/networks' },
+            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
+            { label: 'campaign', to: { name: 'networkcampaign' } },
+            { label: 'EseaAccount', to: { name: 'networkeseaaccount' } }
+          ]
+        }
+      },
+      {
         path: 'methods',
         name: 'networkmethods',
         component: () => import('../views/network/NetworkMethods'),
@@ -220,6 +247,33 @@ const routes = [
               { label: '', to: { name: 'organisationoverview', params: { id: '' } } },
               { label: 'Methods', to: { name: 'organisationmethods' } },
               { label: 'BIA', to: { name: 'organisationmethod' } }
+            ]
+          }
+        },
+        {
+          path: 'esea-accounts',
+          name: 'organisationeseaaccounts',
+          component: () => import('../views/organisation/OrganisationEseaAccounts'),
+          meta: {
+            requiresLogin: true,
+            breadcrumb: [
+              { label: 'Organisations', to: '/organisations' },
+              { label: '', to: { name: 'organisationoverview', params: { id: '' } } },
+              { label: 'Esea Accounts', to: { name: 'organisationeseaaccounts' } }
+            ]
+          }
+        },
+        {
+          path: 'esea-accounts/:EseaAccountId',
+          name: 'organisationeseaaccount',
+          component: () => import('../views/organisation/OrganisationEseaAccount'),
+          meta: {
+            requiresLogin: true,
+            breadcrumb: [
+              { label: 'Organisations', to: '/organisations' },
+              { label: '', to: { name: 'organisationoverview', params: { id: '' } } },
+              { label: 'Esea Accounts', to: { name: 'organisationeseaaccounts' } },
+              { label: 'esea_account', to: { name: 'organisationeseaaccount' } }
             ]
           }
         },

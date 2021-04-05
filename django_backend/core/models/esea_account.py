@@ -22,11 +22,14 @@ class EseaAccount(models.Model):
     @property
     def response_rate(self):
         response_rate_dict = {}
+        overall_finished_responses = 0
         for survey in self.method.surveys.all():
             finished_responses = [response for response in self.responses.all() if (response.finished == True & response.survey == survey)]
+            overall_finished_responses += len(finished_responses)
             sum = (len(finished_responses)/(len(self.responses.all()) or 1) * 100) 
             sum = round(sum,2)
             response_rate_dict[survey.name] = {'rate': sum, 'required': survey.rate}
+        self.all_response_rate(overall_finished_responses)
         return response_rate_dict
 
     def sufficient_response_rate(self):
@@ -40,6 +43,9 @@ class EseaAccount(models.Model):
                 Bool = False
 
         self.sufficient_responses = Bool
+    
+    def all_response_rate(self, finished_responses):
+        self.all_response_rate = (finished_responses/(len(self.responses.all()) or 1)) * 100
             
 ''' 
 - Should change __str__ return

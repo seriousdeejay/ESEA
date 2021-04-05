@@ -159,12 +159,12 @@ export default {
             this.initialize()
         },
         async createNewOrganisation () {
-            this.submitted = true
+            this.submitted = false
             if (this.organisation.name.trim()) {
                 await this.createOrganisation({})
                 this.$toast.add({ severity: 'success', summary: 'Organisation created', detail: `organisation: ${this.organisation.name}`, life: 3000 })
             this.createDialog = false
-            this.submitted = false
+            this.submitted = true
             this.$router.push({ name: 'organisationoverview', params: { OrganisationId: this.organisation.id } })
             }
         },

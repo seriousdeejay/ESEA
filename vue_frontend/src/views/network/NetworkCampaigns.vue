@@ -10,9 +10,9 @@
                     <Button label="Export" icon="pi pi-upload" class="p-button-help" @click="exportCSV($event)"  />
                 </template>
     </Toolbar>
-    {{campaigns}}
+    {{campaign}}
     <div class="p-grid p-m-5">
-        <div v-for="campaign in campaigns" :key=campaign.name class="p-col-12 p-md-6 p-lg-4" style="width: 450px">
+        <div v-for="campaign in campaigns" :key="campaign.name" class="p-col-12 p-md-6 p-lg-4" style="width: 450px">
             <div class="p-p-3" :class="campaign.hover ? 'p-shadow-10 p-m-1' : 'p-shadow-5 p-m-2'" style="border-radius: 3px" :style="(campaign.hover ? styleObject : '')"  @mouseover="campaign.hover=true" @mouseleave="campaign.hover = false" @click="goToCampaign(campaign)">
                 <h3>{{campaign.name}}</h3>
                 <Divider />
@@ -30,42 +30,37 @@
         </div>
     </div>
 
-    <Dialog v-model:visible="createCampaignDialog" style="width: 600px" contentStyle="height:800px" header="Campaign Details" class="p-fluid p-text-left" baseZIndex="0">
+    <Dialog v-model:visible="createCampaignDialog" style="width: 600px" contentStyle="height: 400px" header="Campaign Details" class="p-fluid p-text-left" baseZIndex="0">
         <div class="p-field ">
             <label for="name">Name</label>
-            <InputText id="name" v-model.trim="something" required="true" autofocus :class="{'p-invalid': submitted && !something}" />
+            <InputText id="name" v-model.trim="campaignForm.name" required="true" autofocus :class="{'p-invalid': submitted && !campaignForm.name}" />
             <!-- @blur="updateCampaignForm({ name: $event.target.value })" /> -->
-            <small class="p-error" v-if="submitted && !network.name">Name is required.</small>
-        </div>
-        <div class="p-grid">
-        <div class="p-field p-col-7 p-m-0">
-            <label for="opendate">Opening Date</label>
-            <Calendar id="opendate" v-model="startdate" placeholder="Calendar" :showTime="true" :showIcon="true" />
-            <!-- <label for="ispublic">Should this network be public? </label> -->
-            <!-- <SelectButton id="ispublic" v-model="boolChoice" required="true" :options="ispublicbool"
-            @blur="updateCammpaignForm({ ispublic: boolChoice })" /> -->
-        </div>
-        <div class="p-field p-col-7">
-            <label for="enddate">Closing Date</label>
-            <Calendar id="enddate" v-model="enddate" placeholder="Calendar" :showTime="true" :showIcon="true" />
-            <!-- <label for="ispublic">Should this network be public? </label> -->
-            <!-- <SelectButton id="ispublic" v-model="boolChoice" required="true" :options="ispublicbool"
-            @blur="updateCammpaignForm({ ispublic: boolChoice })" /> -->
-        </div>
-        </div>
-        <div class="p-field">
-            <label for="description">Description</label>
-            <Textarea id="description" v-model="something" required="true" rows="3" cols="20" />
-            <!-- @blur="updateCampaignForm({ description: $event.target.value })" /> -->
+            <small class="p-error" v-if="submitted && !campaignForm.name">A name is required.</small>
+
         </div>
         <div class="p-field">
             <label for="method">Method</label>
-            <Dropdown id="method" v-model="campaignmethod" :options="methods" optionLabel="name" optionValue="id" placeholder="Select a Method" />
+            <Dropdown id="method" v-model="campaignForm.method" :options="methods" optionLabel="name" optionValue="name" placeholder="Select a Method" :class="{'p-invalid': submitted && !campaignForm.method}" />
+            <small class="p-error" v-if="submitted && !campaignForm.method">A method is required.</small>
         </div>
-        {{startdate}} {{campaignmethod}}
+        <div class="p-grid">
+        <div class="p-field p-col-6 p-m-0">
+            <label for="opendate">Opening Date</label>
+            <Calendar id="opendate" v-model="campaignForm.open_survey_date" placeholder="Calendar" appendTo="body" :showTime="true" :showIcon="true" />
+
+        </div>
+        <div class="p-field p-col-6">
+            <label for="enddate">Closing Date</label>
+            <Calendar id="enddate" v-model="campaignForm.close_survey_date" placeholder="Calendar" appendTo="body" showTime="true" :showIcon="true" />
+        </div>
+        </div>
+        <!-- <div class="p-field">
+            <label for="description">Description</label>
+            <Textarea id="description" v-model="something" required="true" rows="3" cols="20" />
+        </div> -->
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="createCampaignDialog = false"/>
-            <Button label="Save" icon="pi pi-check" class="p-button-text" @click="something" disabled="" />
+            <Button label="Save" icon="pi pi-check" class="p-button-text" @click="createNewCampaign" :disabled="submitted && (!campaignForm.name || !campaignForm.method)" />
         </template>
     </Dialog>
 </template>
@@ -75,6 +70,7 @@ import Calendar from 'primevue/calendar'
 import Dropdown from 'primevue/dropdown'
 import { mapActions, mapState } from 'vuex'
 import dateFixer from '../../utils/datefixer'
+
 export default {
     components: {
         Calendar,
@@ -88,30 +84,48 @@ export default {
             //     { name: 'BIA 2021', method: 'Method 1', required: true, open_survey_date: '04-15-2021', close_survey_date: '05-15-2021', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ', hover: false },
             //     { name: 'FTSF 2020', method: 'Method 1', required: true, open_survey_date: '04-15-2020', close_survey_date: '05-15-2020', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ', hover: false }
             // ],
+            campaignForm: {
+                name: null,
+                network: this.$route.params.NetworkId,
+                method: null,
+                open_survey_date: new Date(),
+                close_survey_date: new Date()
+            },
             hover: false,
             styleObject: { backgroundColor: '#EFEEEE' },
             createCampaignDialog: false,
-            startdate: null,
-            enddate: null,
-            campaignmethod: null
+            submitted: false
         }
     },
     computed: {
         ...mapState('method', ['methods']),
-        ...mapState('campaign', ['campaigns'])
+        ...mapState('campaign', ['campaigns', 'campaign'])
     },
     created () {
         this.initialize()
     },
     methods: {
         dateFixer,
-        ...mapActions('campaign', ['fetchCampaigns']),
+        ...mapActions('campaign', ['fetchCampaigns', 'createCampaign', 'setCampaign']),
         async initialize () {
-            console.log(this.$route.params.NetworkId)
+            this.campaignForm.close_survey_date = new Date(this.campaignForm.close_survey_date.setDate(this.campaignForm.open_survey_date.getDate() + 30))
             await this.fetchCampaigns({ nId: this.$route.params.NetworkId })
         },
-        goToCampaign (campaign) {
+        async createNewCampaign () {
+            this.submitted = false
+            console.log(typeof this.campaignForm.close_survey_date)
+            if (this.campaignForm.name && this.campaignForm.method) {
+                await this.createCampaign({ nId: this.$route.params.NetworkId, data: this.campaignForm })
+                console.log('saved')
+            }
+            this.createCampaignDialog = false
+            this.submitted = true
+            this.$router.push({ name: 'networkcampaign', params: { NetworkId: this.$route.params.NetworkId, CampaignId: this.campaign.id } })
+        },
+        async goToCampaign (campaign) {
+            await this.setCampaign(campaign)
             console.log(campaign)
+            this.$router.push({ name: 'networkcampaign', params: { CampaignId: campaign.id } })
         }
     }
 

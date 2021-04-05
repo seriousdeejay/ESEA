@@ -1,5 +1,5 @@
 <template>
-    <div class="-px-5" style="width: 500px">
+    <div class="p-px-5" style="width: 500px">
         <div class="p-fluid p-text-left p-my-5">
             <!-- <form id="networkeditingform" @submit="checkform"> -->
              <div class="p-field">
@@ -60,7 +60,6 @@ export default {
     },
     watch: {
         boolChoice () {
-            console.log('d')
             // this.boolChoice = { name: 'Public', value: this.network.ispublic }
             this.network.ispublic = this.boolChoice.value
         }

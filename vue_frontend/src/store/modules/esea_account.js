@@ -68,7 +68,7 @@ export default {
             commit('deleteEseaAccount', { payload })
             dispatch('setEseaAccount', {})
         },
-        setEseaAccounts ({ state, commit }, { id }) {
+        setEseaAccount ({ state, commit }, { id }) {
             if (id) {
                 const data = state.eseaAccounts.find(e => e.id === id)
                 commit('setEseaAccount', { data })
