@@ -1,6 +1,6 @@
 <template>
     <div class="card p-mx-5 p-mb-5">
-        <!-- <div class="p-d-flex p-jc-between p-m-2">
+        <div class="p-d-flex p-jc-between p-m-2">
             <div>
                 {{ dateFixer(campaign.open_survey_date, 'MMMM Do YYYY') }}
             </div>
@@ -11,20 +11,22 @@
         <ProgressBar :value="timeline" :showValue="true">
             <div v-if="campaigntimeleft > 0"> {{campaigntimeleft}} days left </div>
             <div v-else>This campaign has finished</div>
-        </ProgressBar> -->
+        </ProgressBar>
     </div>
-    <div v-for="value, key in eseaAccount.response_rate" :key="key" class="p-m-5">
-        <ProgressBar :value="value.rate + 1" :showValue="true">
-            '{{key}}' - Response Rate: {{value.rate}}%
+    <br>
+    <br>
+    <div v-for="survey in eseaAccount.survey_response_by_survey" :key="survey.id" class="p-m-5">
+        <ProgressBar :value="survey.current_response_rate" :showValue="true">
+            '{{survey.name}}' - Response Rate: {{survey.current_response_rate}}%
         </ProgressBar>
         <Divider />
-        <ProgressBar :value="value.rate + 30" :showValue="true">
-            '{{key}}' - Response Rate: {{value.rate + 30}}%
+        <ProgressBar :value="survey.current_response_rate + 30" :showValue="true">
+            '{{survey.name}}' - Response Rate: {{survey.current_response_rate + 30}}%
         </ProgressBar>
     </div>
     <TabView>
 
-        <TabPanel header="surveys 2">
+        <TabPanel header="Surveys">
             <DataTable :value="eseaAccount.survey_response_by_survey" datakey="id" :rows="10" :paginator="true" :rowHover="true" v-model:filters="filters" filterDisplay="Menu" selectionMode="single" @row-select="gotoSurvey"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[10,25,50]"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
@@ -35,6 +37,9 @@
                         <i class="pi pi-search" />
                         <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
                     </span>
+                    <div>
+                        <SplitButton label="Tools" :model="items"></SplitButton>
+                    </div>
                 </div>
             </template>
             <Column field="name" header="Name" sortable />
@@ -58,6 +63,9 @@
                 </template>
             </Column>
             </DataTable>
+        </TabPanel>
+        <TabPanel header="Report">
+            d
         </TabPanel>
         <TabPanel header="Settings">
             d
@@ -83,7 +91,7 @@
         </div>
         </div>
         <template #footer>
-            <Button label="Remove window" icon="pi pi-times" class="p-button-text" @click="(importDialog = false)"/>
+            <Button label="Remove window" icon="pi pi-times" class="p-button-text" @click="(importEmployeesDialog = false)"/>
         </template>
     </Dialog>
 </template>
@@ -94,11 +102,14 @@ import { AxiosInstance } from '../../plugins/axios'
 import { FilterMatchMode } from 'primevue/api'
 import ProgressBar from 'primevue/progressbar'
 import Listbox from 'primevue/listbox'
+import SplitButton from 'primevue/splitbutton'
+import dateFixer from '../../utils/datefixer'
 
 export default {
     components: {
         ProgressBar,
-        Listbox
+        Listbox,
+        SplitButton
     },
     data () {
         return {
@@ -113,20 +124,38 @@ export default {
                 { field: 'stakeholders', header: 'Stakeholder group' }
             ],
             importEmployeesDialog: false,
-            surveyy: null
+            surveyy: null,
+             items: [
+                {
+                    label: '- Send Message',
+                    command: () => {
+                        this.$toast.add({ severity: 'warn', summary: 'Delete', detail: 'Data Deleted', life: 3000 })
+                    }
+                },
+                {
+                    label: '- Send Reminder',
+                    command: () => {
+                        this.$toast.add({ severity: 'warn', summary: 'Delete', detail: 'Data Deleted', life: 3000 })
+                    }
+                }
+            ]
         }
     },
     computed: {
         ...mapState('eseaAccount', ['eseaAccount']),
-        ...mapState('survey', ['surveys'])
+        ...mapState('survey', ['surveys']),
+        ...mapState('campaign', ['campaign'])
     },
     created () {
         this.initialize()
     },
     methods: {
         ...mapActions('survey', ['fetchSurveys']),
+        ...mapActions('campaign', ['fetchCampaign']),
+        dateFixer,
         async initialize () {
             this.fetchSurveys({ mId: this.eseaAccount.method.id })
+            this.fetchCampaign({ nId: 0, id: this.eseaAccount.campaign })
         },
         addEmployees (data) {
             this.surveyy = data
@@ -192,3 +221,9 @@ export default {
         //     {{surveys}}
         // </TabPanel> -->
 </script>
+
+<style lang="scss" scoped>
+.p-splitbutton {
+    width: 200px;
+}
+</style>

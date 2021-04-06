@@ -30,9 +30,9 @@ class EseaAccount(models.Model):
             tempdict['current_response_rate'] = (tempdict['responses'])/(len((tempdict['respondees'])) or 1) * 100   
             tempdict['sufficient_responses'] = tempdict['current_response_rate'] >= tempdict['required_response_rate']
             arr.append(tempdict)
-        sumval = sum([len(item['respondees']) for item in arr])
-        # all_respondents = sum(v['respondees'] for v in arr)
-        self.all_respondents()
+        responserates = [item['current_response_rate'] for item in arr]
+        self.response_rate = (sum(responserates)/len(responserates))
+        
         for survey in arr:
             if (survey['sufficient_responses'] == False):
                 return arr

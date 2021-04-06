@@ -25,6 +25,9 @@
                             <i class="pi pi-search" />
                             <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
                         </span>
+                        <div>
+                            <SplitButton label="Tools" :model="items"></SplitButton>
+                        </div>
                     </div>
                 </template>
                 <Column field="organisation" header="Organisation" sortable>
@@ -35,9 +38,9 @@
                 <Column field="sufficient_responses" header="Sufficient Responses" sortable />
                 <Column field="all_respondents" header="Members" sortable />
                 <Column field="all_responses.length" header="Responses" sortable />
-                <Column field="all_response_rate" header="Response Rate" sortable :showFilterMatchModes="false" style="min-width: 10rem">
+                <Column field="response_rate" header="Response Rate" sortable :showFilterMatchModes="false" style="min-width: 10rem">
                         <template #body="{data}">
-                            <ProgressBar :value="data.activity" :showValue="true" />
+                            <ProgressBar :value="data.response_rate" :showValue="true" />
                         </template>
                         <template #filter="{filterModel}">
                             <Slider v-model="filterModel.value" range class="p-m-3"></Slider>
@@ -49,7 +52,7 @@
                 </Column>
                 <Column headerStyle="width: 4rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
                     <template #body>
-                        <Button type="button" icon="pi pi-file-pdf"></Button>
+                        <Button type="button" icon="pi pi-file-pdf" class="p-button-danger"></Button>
                     </template>
                 </Column>
             </DataTable>
@@ -59,7 +62,6 @@
                     <div class="p-field p-grid">
                         <label for="name" class="p-col-fixed" style="width: 200px">Name</label>
                         <InputText id="name" v-model.trim="campaign.name" required="true" autofocus :class="{'p-invalid': submitted && !campaign.name}" class="p-col"/>
-                        <!-- @blur="updateCampaignForm({ name: $event.target.value })" /> -->
                         <small class="p-error" v-if="submitted && !campaign.name">A name is required.</small>
 
                     </div>
@@ -76,6 +78,12 @@
                         <label for="enddate" class="p-col-fixed" style="width: 200px">Closing Date</label>
                         <Calendar id="enddate" v-model="campaign.close_survey_date" placeholder="Calendar" appendTo="body" showTime="true" :showIcon="true" class="p-col p-p-0" />
                     </div>
+
+                    <div class="p-field p-grid">
+                        <label for="description" class="p-col-fixed" style="width: 200px">Description</label>
+                        <Textarea id="description" v-model="something" required="true" rows="3" cols="20" class="p-col" />
+                    </div>
+
                     <div class="p-field p-grid">
                         <label for="reminder" class="p-col-fixed" style="width: 200px">Respondent reminder before deadline (in days)</label>
                         <InputNumber id="inputnumber" v-model="reminder" :min=1 class="p-col p-p-0"/>
@@ -88,6 +96,7 @@
         </TabPanel>
     </TabView>
 </template>
+
 <script>
 import { mapActions, mapState } from 'vuex'
 import { FilterMatchMode, FilterOperator } from 'primevue/api'
@@ -95,6 +104,7 @@ import ProgressBar from 'primevue/progressbar'
 import Slider from 'primevue/slider'
 import Calendar from 'primevue/calendar'
 import Dropdown from 'primevue/dropdown'
+import SplitButton from 'primevue/splitbutton'
 import dateFixer from '../../utils/datefixer'
 import moment from 'moment'
 
@@ -103,7 +113,8 @@ export default {
         Calendar,
         Dropdown,
         ProgressBar,
-        Slider
+        Slider,
+        SplitButton
     },
     data () {
         return {
@@ -119,7 +130,39 @@ export default {
                 all_response_rate: { value: null, matchMode: FilterMatchMode.BETWEEN },
                 verified: { value: null, matchMode: FilterMatchMode.EQUALS }
             },
-            reminder: 1
+            reminder: 1,
+            items: [
+                {
+                    label: '- Send Message',
+                    command: () => {
+                        this.$toast.add({ severity: 'warn', summary: 'Delete', detail: 'Data Deleted', life: 3000 })
+                    }
+                },
+                {
+                    label: '- Send Reminder',
+                    command: () => {
+                        this.$toast.add({ severity: 'warn', summary: 'Delete', detail: 'Data Deleted', life: 3000 })
+                    }
+                },
+                                {
+                    label: '- Sample Test',
+                    command: () => {
+                        this.$toast.add({ severity: 'warn', summary: 'Delete', detail: 'Data Deleted', life: 3000 })
+                    }
+                },
+                {
+                    label: '- Add Organisations',
+                    command: () => {
+                        this.$toast.add({ severity: 'success', summary: 'Updated', detail: 'Data Updated', life: 3000 })
+                    }
+                },
+                {
+                    label: '- Delete Organisations',
+                    command: () => {
+                        this.$toast.add({ severity: 'warn', summary: 'Delete', detail: 'Data Deleted', life: 3000 })
+                    }
+                }
+            ]
         }
     },
     computed: {
@@ -167,6 +210,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.p-splitbutton {
+    width: 200px;
+}
 .custom-marker {
     display: flex;
     width: 2rem;
