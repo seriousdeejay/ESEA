@@ -10,7 +10,6 @@
                     <Button label="Export" icon="pi pi-upload" class="p-button-help" @click="exportCSV($event)"  />
                 </template>
     </Toolbar>
-    {{campaign}}
     <div class="p-grid p-m-5">
         <div v-for="campaign in campaigns" :key="campaign.name" class="p-col-12 p-md-6 p-lg-4" style="width: 450px">
             <div class="p-p-3" :class="campaign.hover ? 'p-shadow-10 p-m-1' : 'p-shadow-5 p-m-2'" style="border-radius: 3px" :style="(campaign.hover ? styleObject : '')"  @mouseover="campaign.hover=true" @mouseleave="campaign.hover = false" @click="goToCampaign(campaign)">
@@ -78,12 +77,6 @@ export default {
     },
     data () {
         return {
-            // campaigns: [
-            //     { name: 'BIA 2019', method: 'Method 1', required: true, open_survey_date: '04-15-2019', close_survey_date: '05-15-2019', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ', hover: false },
-            //     { name: 'BIA 2020', method: 'Method 1', required: true, open_survey_date: '04-15-2020', close_survey_date: '05-15-2020', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ', hover: true },
-            //     { name: 'BIA 2021', method: 'Method 1', required: true, open_survey_date: '04-15-2021', close_survey_date: '05-15-2021', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ', hover: false },
-            //     { name: 'FTSF 2020', method: 'Method 1', required: true, open_survey_date: '04-15-2020', close_survey_date: '05-15-2020', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ', hover: false }
-            // ],
             campaignForm: {
                 name: null,
                 network: this.$route.params.NetworkId,

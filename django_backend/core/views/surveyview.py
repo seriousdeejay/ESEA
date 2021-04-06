@@ -51,6 +51,9 @@ class SurveyViewSet(BaseModelViewSet):
         print(self.request.user)
         organisation = self.request.GET.get('organisation', None)
         completedbyorganisation = self.request.GET.get('completedbyorganisation', None)
+        esea_account = self.request.GET.get('esea-account', None)
+        if esea_account is not None:
+            return Survey.objects.all()
         if organisation or completedbyorganisation is not None:
             try:
                 org = Organisation.objects.get(id=organisation or completedbyorganisation)

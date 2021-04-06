@@ -10,10 +10,10 @@ import random
 import string
 
 class SurveyResponseManager(models.Manager):
-    def create(self, survey, respondent):
+    def create(self, survey, respondent, esea_account):
         token = "".join(random.choice(string.ascii_letters) for i in range(8))
         survey = get_object_or_404(Survey, id=survey)
-        surveyresponse = SurveyResponse(survey=survey, respondent=respondent, token=token)
+        surveyresponse = SurveyResponse(survey=survey, respondent=respondent, esea_account=esea_account, token=token)
         surveyresponse.save()
 
         direct_indicators = DirectIndicator.objects.filter(surveys=survey)
@@ -37,6 +37,8 @@ class SurveyResponse(models.Model):
     
     def __str__(self):
         return f"'{self.survey} ({self.respondent})'"
+
+
 
     def filter_question_responses(self, question_responses):
         indicator_ids = self.survey.questions.values_list('id', flat=True,)

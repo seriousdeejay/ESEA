@@ -28,6 +28,7 @@ class Survey(models.Model):
     questions = models.ManyToManyField('DirectIndicator', related_name="surveys", blank=False)
     method =  models.ForeignKey('Method', related_name="surveys", on_delete=models.CASCADE) 
     stakeholder_groups = models.ManyToManyField('StakeholderGroup')
+    finished_responses = []
 
     class Meta:
         verbose_name = _('survey')
@@ -35,6 +36,15 @@ class Survey(models.Model):
 
     def __str__(self):
         return self.name
+
+    def finished_responses(self):
+        finishedresponses = [response for response in self.responses.all() if response.finished]
+        return finishedresponses
+    
+    def response_rate(self):
+        responserate = (len(self.finished_responses())/(len(self.responses.all()) or 1)) * 100
+        return responserate
+
 
 '''
 - objects manager def create() should get parameter stakeholdergroup from yaml file

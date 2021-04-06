@@ -66,12 +66,13 @@ class SurveyResponseViewSet(BaseModelViewSet):
         serializer = SurveyResponseSerializer(surveyresponse)
         return Response(serializer.data) 
 
-    def create(self, request, method_pk, survey_pk, organisation_pk):
-        surveyresponse = SurveyResponse.objects.create(survey=request.data['survey'], user_organisation=request.data['user_organisation'])
-        serializer = SurveyResponseSerializer(surveyresponse)
-        return Response(serializer.data)
+    # def create(self, request, method_pk, survey_pk, organisation_pk):
+    #     surveyresponse = SurveyResponse.objects.create(survey=request.data['survey'])
+    #     serializer = SurveyResponseSerializer(surveyresponse)
+    #     return Response(serializer.data)
     
     def update(self, request, organisation_pk, method_pk, survey_pk, token, **kwargs):
+        print(request.data)
         surveyresponse = get_object_or_404(SurveyResponse, token=token)
         serializer = SurveyResponseSerializer(surveyresponse, data = request.data)
         serializer.is_valid(raise_exception=True)

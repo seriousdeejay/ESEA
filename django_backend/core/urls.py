@@ -41,7 +41,7 @@ urlpatterns = [
     path('api-token/', TokenObtainPairView.as_view()),
     path('ap-refresh/', TokenRefreshView.as_view()),
     path('import-yaml/', methodview.upload_yaml),
-    path('import-employees/<int:organisation_pk>/', userview.import_employees, name="import_employees_of_organisation"),
+    path('import-employees/<int:eseaaccount_pk>/<int:survey_pk>/', esea_accountview.import_employees, name="import_employees_of_organisation"),
     path('send-surveys/', organisationview.send_surveys, name="send_surveys_to_emails"),
     path('', include(router.urls)),
     path('', include(network_router.urls)),

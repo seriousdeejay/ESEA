@@ -1,4 +1,5 @@
 from django.db import models
+from .respondent import Respondent
 
 # STATUS = (
 #     ('Complete', 'Complete'),
@@ -18,7 +19,24 @@ class EseaAccount(models.Model):
     def __str__(self):
         return f'organisation:{self.organisation} - campaign:{self.campaign}'
     
+    def survey_response_by_survey(self):
+        arr = []
+        for survey in self.method.surveys.all():
+            tempdict = {'id': survey.id, 'name': survey.name, 'questions': len(survey.questions.all()), 'stakeholdergroup': str(survey.stakeholder_groups.all().first())}
+            tempdict['respondees'] = [{'name':str(respondee)} for respondee in Respondent.objects.filter(response__esea_account=self).distinct()]
+            tempdict['responses'] = len(self.responses.filter(survey=survey, finished=True))
+            tempdict['required_response_rate'] = survey.rate
+            tempdict['current_response_rate'] = (tempdict['responses'])/(len((tempdict['respondees'])) or 1) * 100   
+            tempdict['sufficient_responses'] = tempdict['current_response_rate'] >= tempdict['required_response_rate']
+            arr.append(tempdict)
+            print(tempdict['respondees'])
+        for survey in arr:
+            if (survey['sufficient_responses'] == False):
+                return arr
+        self.sufficient_responses = True
+        return arr
 
+'''
     @property
     def response_rate(self):
         response_rate_dict = {}
@@ -46,7 +64,8 @@ class EseaAccount(models.Model):
     
     def all_response_rate(self, finished_responses):
         self.all_response_rate = (finished_responses/(len(self.responses.all()) or 1)) * 100
-            
+'''
+
 ''' 
 - Should change __str__ return
 '''

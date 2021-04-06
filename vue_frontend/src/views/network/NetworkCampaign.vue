@@ -15,49 +15,49 @@
         </div>
     <TabView>
         <TabPanel header="ESEA Accounts" style="background-color: black;">
-    <DataTable :value="eseaAccounts" datakey="id" :rows="10" :paginator="true" :rowHover="true" v-model:filters="filters" filterDisplay="menu" selectionMode="single" @row-select="goToEseaAccount"
-    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[10,25,50]"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-        <template #header>
-            <div class="p-d-flex p-jc-between p-ai-center">
-                <h5 class="p-m-0">ESEA Accounts</h5>
-                <span class="p-input-icon-left">
-                    <i class="pi pi-search" />
-                    <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
-                </span>
-            </div>
-        </template>
-        <Column field="organisation" header="Organisation" sortable>
-            <template #filter="{filterModel}">
-                <InputText type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search by name"/>
-            </template>
-        </Column>
-
-        <Column field="sufficient_responses" header="Sufficient Responses" sortable>
-            <!-- <template  #body="slotProps">
-                <i class="pi" :class="{'true-icon pi-check-circle': slotProps.data.sufficient_responses, 'false-icon pi-times-circle': !slotProps.data.sufficient_responses}"></i>
-            </template> -->
-        </Column>
-        <Column field="responses.length" header="Members" sortable />
-        <Column field="responses.length" header="Responses" sortable />
-        <Column field="all_response_rate" header="Response Rate" sortable :showFilterMatchModes="false" style="min-width: 10rem">
-                <template #body="{data}">
-                    <ProgressBar :value="data.activity" :showValue="true" />
-                </template>
-                <template #filter="{filterModel}">
-                    <Slider v-model="filterModel.value" range class="p-m-3"></Slider>
-                    <div class="p-d-flex p-ai-center p-jc-between p-px-2">
-                        <span>{{filterModel.value ? filterModel.value[0] : 0}}</span>
-                        <span>{{filterModel.value ? filterModel.value[1] : 100}}</span>
+            <DataTable :value="eseaAccounts" datakey="id" :rows="10" :paginator="true" :rowHover="true" v-model:filters="filters" filterDisplay="menu" selectionMode="single" @row-select="goToEseaAccount"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[10,25,50]"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                <template #header>
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        <h5 class="p-m-0">ESEA Accounts</h5>
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search" />
+                            <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
+                        </span>
                     </div>
                 </template>
-        </Column>
-        <Column headerStyle="width: 4rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
-            <template #body>
-                <Button type="button" icon="pi pi-file-pdf"></Button>
-            </template>
-        </Column>
-    </DataTable>
+                <Column field="organisation" header="Organisation" sortable>
+                    <template #filter="{filterModel}">
+                        <InputText type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search by name"/>
+                    </template>
+                </Column>
+
+                <Column field="sufficient_responses" header="Sufficient Responses" sortable>
+                    <!-- <template  #body="slotProps">
+                        <i class="pi" :class="{'true-icon pi-check-circle': slotProps.data.sufficient_responses, 'false-icon pi-times-circle': !slotProps.data.sufficient_responses}"></i>
+                    </template> -->
+                </Column>
+                <Column field="responses.length" header="Members" sortable />
+                <Column field="responses.length" header="Responses" sortable />
+                <Column field="all_response_rate" header="Response Rate" sortable :showFilterMatchModes="false" style="min-width: 10rem">
+                        <template #body="{data}">
+                            <ProgressBar :value="data.activity" :showValue="true" />
+                        </template>
+                        <template #filter="{filterModel}">
+                            <Slider v-model="filterModel.value" range class="p-m-3"></Slider>
+                            <div class="p-d-flex p-ai-center p-jc-between p-px-2">
+                                <span>{{filterModel.value ? filterModel.value[0] : 0}}</span>
+                                <span>{{filterModel.value ? filterModel.value[1] : 100}}</span>
+                            </div>
+                        </template>
+                </Column>
+                <Column headerStyle="width: 4rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
+                    <template #body>
+                        <Button type="button" icon="pi pi-file-pdf"></Button>
+                    </template>
+                </Column>
+            </DataTable>
         </TabPanel>
         <TabPanel header="Settings">
                 <div class="p-fluid p-text-left p-m-5" style="width: 600px">

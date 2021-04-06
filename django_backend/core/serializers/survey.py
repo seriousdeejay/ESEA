@@ -5,11 +5,12 @@ from .direct_indicator import DirectIndicatorSerializer
 
 
 class SurveyOverviewSerializer(serializers.ModelSerializer):
-    stakeholders = serializers.StringRelatedField( many=True)
-
+    stakeholders = serializers.StringRelatedField(many=True)
+    finished_responses = serializers.StringRelatedField(many=True)
+ 
     class Meta:
         model = Survey
-        fields = ['id', 'name', 'description', 'rate', 'anonymous', 'questions', 'method', 'stakeholders']
+        fields = ['id', 'name', 'description', 'rate', 'anonymous', 'questions', 'method', 'stakeholders', 'responses', 'finished_responses', 'response_rate']
         read_only_fields=['method']
 
     def update(self, instance, validated_data):
@@ -29,7 +30,10 @@ class SurveyOverviewSerializer(serializers.ModelSerializer):
             'anonymous': instance.anonymous,
             'questions': instance.questions,
             'method': instance.method,
-            'stakeholders': instance.stakeholder_groups
+            'stakeholders': instance.stakeholder_groups,
+            'responses': instance.responses,
+            'finished_responses': instance.finished_responses,
+            'response_rate': instance.response_rate
         }
         return super().to_representation(internal)
 

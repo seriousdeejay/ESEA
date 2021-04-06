@@ -3,6 +3,8 @@
         <div class="p-col-12 p-p-3" style="background-color: #dcedc8;">
             <h1>{{survey.name}}</h1>
             <h3>{{survey.description}}</h3>
+            {{surveyResponse.token}}
+            {{surveyResponse}}
             <p><span class="p-text-bold">Respondent:</span> {{surveyResponse.respondent}} <br> <span class="p-text-bold">Organisation:</span>{{surveyResponse.organisation}} </p>
         </div>
         <div class="p-grid p-col-6 p-p-3" style="background-color: white; border-radius: 10px;">
@@ -100,12 +102,13 @@ export default {
     },
     methods: {
         ...mapActions('survey', ['fetchSurvey']),
-        ...mapActions('surveyResponse', ['fetchSurveyResponse', 'setSurveyResponse', 'updateSurveyResponse', 'createSurveyResponse']),
+        ...mapActions('surveyResponse', ['fetchSurveyResponse', 'setSurveyResponse', 'updateSurveyResponse', 'createSurveyResponse', 'setSurveyResponse']),
         async initialize () {
     //   axios.get('http://127.0.0.1:8000/methods/27/surveys/13/organisations/1/responses/')
     //   .then(response => (console.log(response)))
     //    AxiosInstance.get('/methods/27/surveys/13/organisations/1/responses/GhjrpoLc/', {}).then(response => (console.log(response)))
-            await this.fetchSurveyResponse({ mId: 0, sId: 0, OrganisationId: 0, id: this.$route.params.uniquetoken })
+            await this.setSurveyResponse({})
+            await this.fetchSurveyResponse({ mId: 0, sId: 0, OrganisationId: 0, id: this.$route.params.uniquetoken }) // this.$route.params.uniquetoken
             await this.fetchSurvey({ mId: this.surveyResponse.method, id: this.surveyResponse.survey })
             if (this.surveyResponse.finished) {
                 this.$router.push({ name: 'survey-thank-you' })
@@ -150,17 +153,22 @@ export default {
                 // TODO // popup Dialog: You forgot to fill in the following required questions
             }
         },
-        updateAnswer (id, answer) {
+        async updateAnswer (id, answer) {
             // this.currentanswer = answer
-            console.log('ccccccccccc')
+            if (this.surveyResponse.token !== this.$route.params.uniquetoken) {
+                console.log('Not possible')
+                return
+            }
+            console.log('sss', this.surveyResponse)
             this.surveyResponse.question_responses.forEach(response => { if (response.direct_indicator_id === id) { if (answer[0] != null) { response.values = answer } } })
-            this.updateSurveyResponse({
+            await this.updateSurveyResponse({
                 mId: this.survey.method,
                 sId: this.survey.id,
                 surveyResponse: {
                     ...this.surveyResponse
                 }
             })
+            console.log('lll', this.surveyResponse)
         }
     }
 }
