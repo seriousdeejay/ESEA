@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import EseaAccount, Organisation, Method
+from ..models import EseaAccount, Organisation, Method, SurveyResponse
 
 class MethodSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,10 +12,12 @@ class EseaAccountSerializer(serializers.ModelSerializer):
     method = MethodSerializer(read_only=True)
     report = serializers.PrimaryKeyRelatedField(read_only=True)
     # response_rate = serializers.ReadOnlyField()
-    responses = serializers.StringRelatedField(many=True)
+    all_responses = serializers.StringRelatedField(many=True)
+    # responses = serializers.StringRelatedField(queryset=SurveyResponse.objects.filter(finished=True), many=True)
+    
     class Meta:
         model = EseaAccount
-        fields = ['id', 'organisation', 'method', 'campaign', 'report', 'responses', 'survey_response_by_survey', 'sufficient_responses']
+        fields = ['id', 'organisation', 'method', 'campaign', 'report', 'all_respondents', 'all_responses', 'survey_response_by_survey', 'sufficient_responses']
         # extra_kwargs = {'survey_response_by_survey':{'many': True}}
 
     def update(self, instance, validated_data):

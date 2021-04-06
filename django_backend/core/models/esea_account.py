@@ -1,5 +1,6 @@
 from django.db import models
 from .respondent import Respondent
+from .survey_response import SurveyResponse
 
 # STATUS = (
 #     ('Complete', 'Complete'),
@@ -12,7 +13,7 @@ class EseaAccount(models.Model):
     organisation = models.ForeignKey("Organisation", on_delete=models.CASCADE)
     method = models.ForeignKey("Method", on_delete=models.CASCADE)
     campaign = models.ForeignKey('Campaign', related_name="organisation_accounts", on_delete=models.CASCADE)
-    # 
+    response_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     # responses (Many to one Relationship with survey_response)
     #response_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
 
@@ -23,18 +24,28 @@ class EseaAccount(models.Model):
         arr = []
         for survey in self.method.surveys.all():
             tempdict = {'id': survey.id, 'name': survey.name, 'questions': len(survey.questions.all()), 'stakeholdergroup': str(survey.stakeholder_groups.all().first())}
-            tempdict['respondees'] = [{'name':str(respondee)} for respondee in Respondent.objects.filter(response__esea_account=self).distinct()]
+            tempdict['respondees'] = [{'name':str(respondee)} for respondee in Respondent.objects.filter(response__esea_account=self, response__survey=survey).distinct()]
             tempdict['responses'] = len(self.responses.filter(survey=survey, finished=True))
             tempdict['required_response_rate'] = survey.rate
             tempdict['current_response_rate'] = (tempdict['responses'])/(len((tempdict['respondees'])) or 1) * 100   
             tempdict['sufficient_responses'] = tempdict['current_response_rate'] >= tempdict['required_response_rate']
             arr.append(tempdict)
-            print(tempdict['respondees'])
+        sumval = sum([len(item['respondees']) for item in arr])
+        # all_respondents = sum(v['respondees'] for v in arr)
+        self.all_respondents()
         for survey in arr:
             if (survey['sufficient_responses'] == False):
                 return arr
         self.sufficient_responses = True
         return arr
+
+    def all_respondents(self):
+        respondents = len(Respondent.objects.filter(response__esea_account=self))            
+        return respondents
+
+    def all_responses(self):
+        responses = SurveyResponse.objects.filter(esea_account=self, finished=True)
+        return responses
 
 '''
     @property

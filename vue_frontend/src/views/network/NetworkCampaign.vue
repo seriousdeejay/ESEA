@@ -13,7 +13,7 @@
                 <div v-else>This campaign has finished</div>
             </ProgressBar>
         </div>
-    <TabView>
+    <TabView style="height: 1000px">
         <TabPanel header="ESEA Accounts" style="background-color: black;">
             <DataTable :value="eseaAccounts" datakey="id" :rows="10" :paginator="true" :rowHover="true" v-model:filters="filters" filterDisplay="menu" selectionMode="single" @row-select="goToEseaAccount"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[10,25,50]"
@@ -32,14 +32,9 @@
                         <InputText type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search by name"/>
                     </template>
                 </Column>
-
-                <Column field="sufficient_responses" header="Sufficient Responses" sortable>
-                    <!-- <template  #body="slotProps">
-                        <i class="pi" :class="{'true-icon pi-check-circle': slotProps.data.sufficient_responses, 'false-icon pi-times-circle': !slotProps.data.sufficient_responses}"></i>
-                    </template> -->
-                </Column>
-                <Column field="responses.length" header="Members" sortable />
-                <Column field="responses.length" header="Responses" sortable />
+                <Column field="sufficient_responses" header="Sufficient Responses" sortable />
+                <Column field="all_respondents" header="Members" sortable />
+                <Column field="all_responses.length" header="Responses" sortable />
                 <Column field="all_response_rate" header="Response Rate" sortable :showFilterMatchModes="false" style="min-width: 10rem">
                         <template #body="{data}">
                             <ProgressBar :value="data.activity" :showValue="true" />

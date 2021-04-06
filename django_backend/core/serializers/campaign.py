@@ -4,7 +4,7 @@ from ..models import Campaign, EseaAccount, Method, Network
 from .esea_account import EseaAccountSerializer
 
 class CampaignSerializer(serializers.ModelSerializer):
-    # organisation_accounts = EseaAccountSerializer(many=True, read_only=True)
+    organisation_accounts = EseaAccountSerializer(many=True, read_only=True)
     network = serializers.PrimaryKeyRelatedField(queryset=Network.objects.all())
     method = serializers.SlugRelatedField(queryset=Method.objects.all(), slug_field='name')
 

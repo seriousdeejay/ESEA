@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404
 from .survey import Survey
 from .direct_indicator import DirectIndicator
 from .question_response import QuestionResponse
-from .esea_account import EseaAccount
 import random
 import string
 

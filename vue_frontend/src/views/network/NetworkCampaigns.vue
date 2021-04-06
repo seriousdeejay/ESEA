@@ -1,15 +1,6 @@
 <template>
-    <Toolbar class="p-mb-4">
-                <template #left>
-                    <Button label="New" icon="pi pi-plus" class="p-button-success p-mr-2" @click="createCampaignDialog = true" />
-                    <Button label="Delete" icon="pi pi-trash" class="p-button-danger" @click="confirmDeleteSelected" :disabled="!selectedProducts || !selectedProducts.length" />
-                </template>
-
-                <template #right>
-                    <FileUpload mode="basic" accept="image/*" :maxFileSize="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block" />
-                    <Button label="Export" icon="pi pi-upload" class="p-button-help" @click="exportCSV($event)"  />
-                </template>
-    </Toolbar>
+    <Button label="New Campaign" icon="pi pi-plus" class="p-button-success p-d-flex p-mx-5" @click="createCampaignDialog = true" />
+    <Divider />
     <div class="p-grid p-m-5">
         <div v-for="campaign in campaigns" :key="campaign.name" class="p-col-12 p-md-6 p-lg-4" style="width: 450px">
             <div class="p-p-3" :class="campaign.hover ? 'p-shadow-10 p-m-1' : 'p-shadow-5 p-m-2'" style="border-radius: 3px" :style="(campaign.hover ? styleObject : '')"  @mouseover="campaign.hover=true" @mouseleave="campaign.hover = false" @click="goToCampaign(campaign)">
@@ -29,7 +20,7 @@
         </div>
     </div>
 
-    <Dialog v-model:visible="createCampaignDialog" style="width: 600px" contentStyle="height: 400px" header="Campaign Details" class="p-fluid p-text-left" baseZIndex="0">
+    <Dialog v-model:visible="createCampaignDialog" style="width: 600px" contentStyle="height: 350px" header="Campaign Details" class="p-fluid p-text-left" modal="false" dismissableMask="true">
         <div class="p-field ">
             <label for="name">Name</label>
             <InputText id="name" v-model.trim="campaignForm.name" required="true" autofocus :class="{'p-invalid': submitted && !campaignForm.name}" />
@@ -106,14 +97,12 @@ export default {
         },
         async createNewCampaign () {
             this.submitted = false
-            console.log(typeof this.campaignForm.close_survey_date)
             if (this.campaignForm.name && this.campaignForm.method) {
                 await this.createCampaign({ nId: this.$route.params.NetworkId, data: this.campaignForm })
-                console.log('saved')
+                this.$router.push({ name: 'networkcampaign', params: { NetworkId: this.$route.params.NetworkId, CampaignId: this.campaign.id } })
+                this.createCampaignDialog = false
             }
-            this.createCampaignDialog = false
             this.submitted = true
-            this.$router.push({ name: 'networkcampaign', params: { NetworkId: this.$route.params.NetworkId, CampaignId: this.campaign.id } })
         },
         async goToCampaign (campaign) {
             await this.setCampaign(campaign)
