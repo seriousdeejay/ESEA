@@ -15,7 +15,8 @@ class IndirectIndicator(models.Model):
     exception_detail = None
     responses = None
 
-    class Meta: unique_together = ['name', 'topic']
+    class Meta: 
+        unique_together = ['name', 'topic']
 
     def __init__(self, *args, **kwargs):
         super(IndirectIndicator, self).__init__(*args, **kwargs)
@@ -75,7 +76,11 @@ class IndirectIndicator(models.Model):
             cond = cond.replace("if", "")
 
             if eval(cond):
-                value = value.replace(" ", "").replace('"', "")
                 break
 
+        if '=' in value:
+                value = value.replace('”', '')
+                [var, value] = value.split('=')
+        value = value.replace(" ", "").replace('"', "")
+        
         self.value = value

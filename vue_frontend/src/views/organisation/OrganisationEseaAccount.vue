@@ -45,11 +45,11 @@
             <Column field="name" header="Name" sortable />
             <Column field="stakeholdergroup" header="Stakeholder Group" />
             <Column field="questions" header="Questions" sortable />
-            <Column field="respondees.length" header="Respondees" sortable />
+            <Column field="respondees.length" header="Stakeholders" sortable />
             <Column field="responses" header="Responses" sortable />
             <Column field="current_response_rate" header="Response Rate" sortable>
                 <template #body="{data}">
-                    <ProgressBar :value="(data.current_response_rate + 20)" :showValue="true" />
+                    <ProgressBar :value="(data.current_response_rate)" :showValue="true" />
                 </template>
             </Column>
             <Column field="required_response_rate" header="Response Rate Threshold" sortable>
@@ -158,6 +158,7 @@ export default {
             this.fetchCampaign({ nId: 0, id: this.eseaAccount.campaign })
         },
         addEmployees (data) {
+            this.importEmployeesDialog = true
             this.surveyy = data
             if (data.id) {
                 this.importEmployeesDialog = true

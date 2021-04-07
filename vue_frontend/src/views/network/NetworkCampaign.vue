@@ -15,7 +15,7 @@
         </div>
     <TabView style="height: 1000px">
         <TabPanel header="ESEA Accounts" style="background-color: black;">
-            <DataTable :value="eseaAccounts" datakey="id" :rows="10" :paginator="true" :rowHover="true" v-model:filters="filters" filterDisplay="menu" selectionMode="single" @row-select="goToEseaAccount"
+            <DataTable :value="eseaAccounts" datakey="id" :rows="10" :paginator="true" :rowHover="true" v-model:filters="filters" filterDisplay="menu" selectionMode="single" @row-select="goToEseaAccount" class="p-datatable-gridlines p-datatable-striped p-datatable-sm"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[10,25,50]"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
                 <template #header>
@@ -26,7 +26,7 @@
                             <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
                         </span>
                         <div>
-                            <SplitButton label="Tools" :model="items"></SplitButton>
+                            <SplitButton label="Toolmenu" :model="items"></SplitButton>
                         </div>
                     </div>
                 </template>
@@ -36,7 +36,7 @@
                     </template>
                 </Column>
                 <Column field="sufficient_responses" header="Sufficient Responses" sortable />
-                <Column field="all_respondents" header="Members" sortable />
+                <Column field="all_respondents" header="Stakeholders" sortable />
                 <Column field="all_responses.length" header="Responses" sortable />
                 <Column field="response_rate" header="Response Rate" sortable :showFilterMatchModes="false" style="min-width: 10rem">
                         <template #body="{data}">

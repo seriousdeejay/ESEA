@@ -3,8 +3,6 @@
         <div class="p-col-12 p-p-3" style="background-color: #dcedc8;">
             <h1>{{survey.name}}</h1>
             <h3>{{survey.description}}</h3>
-            {{surveyResponse.token}}
-            {{surveyResponse}}
             <p><span class="p-text-bold">Respondent:</span> {{surveyResponse.respondent}} <br> <span class="p-text-bold">Organisation:</span>{{surveyResponse.organisation}} </p>
         </div>
         <div class="p-grid p-col-6 p-p-3" style="background-color: white; border-radius: 10px;">
