@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Campaign, EseaAccount, Method, Network
+from ..models import Campaign, EseaAccount, Method, Network, Respondent, SurveyResponse, Survey
 from .esea_account import EseaAccountSerializer
 
 class CampaignSerializer(serializers.ModelSerializer):
@@ -18,7 +18,10 @@ class CampaignSerializer(serializers.ModelSerializer):
     def create(self, validated_data):    
         campaign = Campaign.objects.create(**validated_data)
         for organisation in campaign.network.organisations.all():
-            EseaAccount.objects.create(organisation=organisation, method=campaign.method, campaign=campaign)
+            eseaaccount = EseaAccount.objects.create(organisation=organisation, method=campaign.method, campaign=campaign)
+            r = Respondent.objects.create(organisation=organisation, email="accountant@localhost.com", first_name="accountant", last_name_prefix="of", last_name=organisation.name)
+            accountant_survey = Survey.objects.filter(method=campaign.method, stakeholder_groups__name="accountant").first()
+            SurveyResponse.objects.create(survey=accountant_survey.id, respondent=r, esea_account=eseaaccount)
         return campaign
     
     def update(self, instance, validated_data):

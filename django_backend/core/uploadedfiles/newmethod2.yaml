@@ -1,6 +1,6 @@
 topics:
-  PT1: 
-    name: >- 
+  PT1:
+    name: >-
       Root Topic
   T1:
     name: >-
@@ -22,31 +22,31 @@ topics:
 indicators:
   women_staff:
     name: >-
-      Women staff members   
+      Women staff members
     topic: T1
     unit: integer
     type: directindicator
   men_staff:
     name: >-
-      Men staff members     
+      Men staff members
     topic: T1
     unit: integer
     type: directindicator
   company_type:
     name: >-
-      Type of company    
+      Type of company
     topic: T1
     unit: list
     type: directindicator
 
-  total_staff: 
+  total_staff:
     name: >-
       Total staff
     topic: T1
     unit: integer
     type: indirectindicator
-    formula: woman_staff + men_staff 
-  company_size: 
+    formula: woman_staff + men_staff
+  company_size:
     name: >-
       Company size
     topic: T1
@@ -83,7 +83,7 @@ indicators:
     formula: women_staff / total_staff
   gender_pay_gap:
     name: >-
-      Gender pay gap 
+      Gender pay gap
     topic: T2
     unit: float
     type: indirectindicator
@@ -117,12 +117,12 @@ indicators:
     type: indirectindicator
     formula: IF ((gender_decision_making_ratio < 0.30) OR (gender_decision_making_ratio > 0.70)) THEN gender_decision_making_ratio_score = 0 ELSE gender_decision_making_ratio_score = 10
   gender_equity_score:
-  name: >-
-    Gender equity score
-  topic: T2
-  unit: float
-  type: indirectindicator
-  formula: (0.35 * gender_ratio_score + 0.45 gender_pay_gap_score + 0.20 gender_decision_making_ratio_score)
+    name: >-
+      Gender equity score
+    topic: T2
+    unit: float
+    type: indirectindicator
+    formula: (0.35 * gender_ratio_score + 0.45 gender_pay_gap_score + 0.20 gender_decision_making_ratio_score)
 
   recycled_waste_kg:
     name: >-
@@ -177,7 +177,7 @@ indicators:
     unit: float
     type: indirectindicator
     formula: IF recycling_ratio = 0 THEN recycling_ratio_score = 0 ELSE IF (recycling_ratio >= 0.1 AND recycling_ratio < 0.5) THEN recycling_ratio_score = 4 ELSE IF (recycling_ratio >= 0.5 AND recycling_ratio < 0.9) THEN recycling_ratio_score = 8 ELSE recycling_ratio_score = 10
-  environmental_impact_score: 
+  environmental_impact_score:
     name: >-
       Environmental impact score
     topic: T3
@@ -185,7 +185,7 @@ indicators:
     type: indirectindicator
     formula: (renewable_ratio_score + recycling_ratio_score) / 2
 
-environmental_impact_score
+environmental_impact_score:
   public_salaries:
     name: >-
       Salaries publicly available
@@ -217,21 +217,21 @@ environmental_impact_score
     unit: list
     type: directindicator
 
-  decision_making_ratio: 
+  decision_making_ratio:
     name: >-
       Decision making ratio
     topic: T4
     unit: float
     type: indirectindicator
     formula: (women_staff_deciding + men_staff_deciding) / (men_staff + women_staff)
-  average_employee_satisfaction: 
+  average_employee_satisfaction:
     name: >-
       Average employee satisfaction
     topic: T4
     unit: integer
     type: indirectindicator
     formula: average(employee_satisfaction)
-  public_salaries_score: 
+  public_salaries_score:
     name: >-
       Public salaries score
     topic: T4
@@ -258,10 +258,10 @@ environmental_impact_score
     topic: T4
     unit: float
     type: indirectindicator
-    formula: IF (company_size = “micro”) OR (company_size = “small”) THEN 
+    formula: IF (company_size = “micro”) OR (company_size = “small”) THEN
         workplace_quality_score = (0.3 * public_salaries_score + 0.3 * decision_making_ratio_score + 0.4 * average_employee_satisfaction_score)
         ELSE IF (company_size = “medium”) OR (company_size = “large”) THEN workplace_quality_score = (0.4 * public_salaries_score + 0.2 * decision_making_ratio_score + 0.4 * average_employee_satisfaction_score)
-    
+
 surveys:
   Management_Survey:
     name: NewMethod Accountant Survey
@@ -400,7 +400,7 @@ surveys:
     stakeholdergroup: employee
     responserate: 0.6
     questions:
-    Q1:
+      Q1:
         isMandatory: Y
         topic: T4
         indicator: employee_satisfaction
@@ -409,8 +409,19 @@ surveys:
         description: >-
           description for employee_satisfaction
         answertype: SCALE
+        options:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
         others: N
-    Q2:
+      Q2:
         isMandatory: Y
         topic: T4
         indicator: employee_opinion_on_inclusiveness 
@@ -419,4 +430,15 @@ surveys:
         description: >-
           description for employee_opinion_on_inclusiveness
         answertype: SCALE
+        options:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
         others: N

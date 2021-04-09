@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
 from django.shortcuts import get_object_or_404
 from secrets import token_urlsafe
 
-from ..models import (Survey, SurveyResponse, QuestionResponse, DirectIndicator, Respondent)
+from ..models import (Survey, SurveyResponse, QuestionResponse, DirectIndicator, Respondent, StakeholderGroup)
 from ..serializers import (SurveyResponseSerializer, QuestionResponseSerializer, SurveyResponseCalculationSerializer)
 from ..utils import map_responses_by_indicator, calculate_indicators
 
@@ -49,22 +49,22 @@ class SurveyResponseViewSet(BaseModelViewSet):
     }
     permission_classes = [AllowAny,]
     def get_queryset(self):
-        organisation = self.request.GET.get('organisation', None)
-        uncompleted = self.request.GET.get('uncompleted', None)
-        if organisation is not None:
-            # could also get UserOrganisation and add it to the filter
-            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], user_organisation__organisation=organisation, finished=True)
-        if uncompleted is not None:
-            return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], finished=False)
+        esea_account = self.request.GET.get('esea_account', None)
+        if esea_account is not None:
+            return SurveyResponse.objects.filter(esea_account=organisation, finished=True)
         return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], finished=True)
-        return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], survey=self.kwargs['survey_pk'])
-    
+        
     def retrieve(self, request, method_pk, survey_pk, organisation_pk, token):
-        print(self.request.user)
+        if self.request.user.is_authenticated:
+            accountantstakeholdergroup = get_object_or_create(StakeholderGroup, name='accountant')
+            # surveyresponse = get_object_or_404(SurveyResponse, survey=__stakeholder_groups__in=accountantstakeholdergroup)
+            surveyresponse = get_object_or_404(SurveyResponse, survey=survey_pk, esea_account__organisation__created_by=self.request.user)
+            print(self.request.user)
         surveyresponse = get_object_or_404(SurveyResponse, token=token)
-        print(surveyresponse)
+        # print(surveyresponse)
         serializer = SurveyResponseSerializer(surveyresponse)
-        return Response(serializer.data) 
+        return Response(serializer.data)
+        return Response({'Hello'})
 
     # def create(self, request, method_pk, survey_pk, organisation_pk):
     #     surveyresponse = SurveyResponse.objects.create(survey=request.data['survey'])
@@ -109,25 +109,18 @@ class SurveyResponseViewSet(BaseModelViewSet):
         return Response({})
         
 
-#     @action(detail=True, methods=["get"])
-#     def calculations(self, request, organization_pk, method_pk, survey_pk, pk):
-#         survey_response = get_object_or_404(self.get_queryset(), pk=pk)
-#         indirect_indicators = IndirectIndicator.objects.filter(
-#             topic__method=method_pk,
-#         )
-#         direct_indicators = survey_response.survey.questions.all()
-#         question_responses = survey_response.question_responses.all()
+    @action(detail=True, methods=["get"])
+    def calculations(self, request, organization_pk, method_pk, survey_pk, pk):
+        survey_response = get_object_or_404(self.get_queryset(), pk=pk)
+        indirect_indicators = IndirectIndicator.objects.filter(topic__method=method_pk)
+        direct_indicators = survey_response.survey.questions.all()
+        question_responses = survey_response.question_responses.all()
+        
+        map_responses_by_indicator(direct_indicators, question_responses)
+        indicators = calculate_indicators(indirect_indicators, direct_indicators)
+        serializer = SurveyResponseCalculationSerializer(indicators.values(), many=True)
 
-#         map_responses_by_indicator(
-#             direct_indicators, question_responses,
-#         )
-#         indicators = calculate_indicators(
-#             indirect_indicators, direct_indicators,
-#         )
-#         serializer = SurveyResponseCalculationSerializer(
-#             indicators.values(), many=True
-#         )
-#         return Response(serializer.data)
+        return Response(serializer.data)
 
 
 # class PublicSurveyResponseViewset(viewsets.ModelViewSet):

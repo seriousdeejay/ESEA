@@ -1,5 +1,5 @@
 from typing import Dict, List
-from ..models import DirectIndicator # IndirectIndicator,
+from ..models import DirectIndicator, IndirectIndicator
 from ..classes import Indicator
 
 def calculate_indicators(direct_indicators) -> Dict[str, Indicator]:
@@ -13,10 +13,7 @@ def calculate_indicators(direct_indicators) -> Dict[str, Indicator]:
     print(indicators)
     return indicators
 """
-def calculate_indicators(
-    indirect_indicators: List[IndirectIndicator],
-    direct_indicators: List[DirectIndicator],
-) -> Dict[str, Indicator]:
+def calculate_indicators(indirect_indicators: List[IndirectIndicator], direct_indicators: List[DirectIndicator],) -> Dict[str, Indicator]:
     indicators = merge_indicators(indirect_indicators, direct_indicators)
 
     for indicator in indicators.values():

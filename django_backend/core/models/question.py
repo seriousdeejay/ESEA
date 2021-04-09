@@ -12,7 +12,8 @@ class questionManager(models.Manager):
         question.save()
 
         if question.answertype in (question.QUESTION_TYPES_WITH_OPTIONS):
-            for index, option in options:
+            print(question, answertype, options)
+            for index, option in enumerate(options):
                 questionoption = QuestionOption.objects.create(text=option, value=index + 1, question=question)
                 question.options.add(questionoption)
             question.save()

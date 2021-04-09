@@ -5,11 +5,13 @@ from .question import Question
 
 
 class directIndicatorManager(models.Manager):
-    def create(self, isMandatory, key, topic, name, answertype,
+    def create(self, isMandatory, key, topic, name, answertype, survey,
         description=None, instruction=None, max_number=None, min_number=None, options=None):
         question = Question.objects.create(name=name, isMandatory=isMandatory, answertype=answertype, topic=topic, description=description, instruction=instruction, options=options)
         direct_indicator = DirectIndicator(key=key, max_number=max_number, min_number=min_number, question=question, topic=topic)
         direct_indicator.save()
+        survey.questions.add(direct_indicator)
+
         return direct_indicator
 
 

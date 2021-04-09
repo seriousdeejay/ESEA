@@ -12,6 +12,7 @@ class CampaignViewSet(viewsets.ModelViewSet):
         return Campaign.objects.all()
 
     def create(self, serializer, network_pk):
+        print('d')
         serializer = CampaignSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save() # goes to serializer def create()

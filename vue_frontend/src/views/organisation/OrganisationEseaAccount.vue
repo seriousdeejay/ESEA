@@ -16,8 +16,8 @@
     <br>
     <br>
     <div v-for="survey in eseaAccount.survey_response_by_survey" :key="survey.id" class="p-m-5">
-        <ProgressBar :value="survey.current_response_rate" :showValue="true">
-            '{{survey.name}}' - Response Rate: {{survey.current_response_rate}}%
+        <ProgressBar :value="survey.current_response_rate + 10" :showValue="true">
+            '{{survey.name}}' - Response Rate: {{survey.current_response_rate + 10}}%
         </ProgressBar>
         <Divider />
         <ProgressBar :value="survey.current_response_rate + 30" :showValue="true">
@@ -57,9 +57,10 @@
                     {{data.required_response_rate+40}}%
                 </template>
             </Column>
-            <Column headerStyle="width: 20rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
+            <Column headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
                 <template #body="{data}">
-                    <Button label="Import Employees" type="button" icon="pi pi-user-plus" @click="addEmployees(data)"></Button>
+                    <Button v-if="(data.stakeholdergroup === 'accountant')" label="Fill in Survey" type="button" icon="pi pi-user-plus" class="p-button-success" @click="goToSurveyFill(data)"  style="width: 200px" />
+                    <Button v-else label="Import Employees" type="button" icon="pi pi-user-plus" @click="addEmployees(data)" style="width: 200px" />
                 </template>
             </Column>
             </DataTable>
@@ -71,10 +72,10 @@
             d
         </TabPanel>
     </TabView>
-
+    {{surveyy}}
     <Dialog v-model:visible="importEmployeesDialog" :style="{width: '900px'}" header="Import your stakeholders" :modal="true" class="p-fluid">
         <div class="p-d-flex p-jc-between p-ai-start p-p-5" style="border: 1px solid lightgrey;">
-        <Listbox v-model="s" :options="this.surveyy.respondees" :multiple="false"  optionLabel="name" :filter="true" listStyle="max-height:250px" style="width:15rem" filterPlaceholder="Search">
+        <Listbox v-if="surveyy.respondees.length" v-model="s" :options="surveyy.respondees" :multiple="false"  optionLabel="name" :filter="true" listStyle="max-height:250px" style="width:15rem" filterPlaceholder="Search">
             <template #option="slotProps">
                 <div class="country-item">
                     <div>{{slotProps.option.name}}</div>
@@ -158,8 +159,8 @@ export default {
             this.fetchCampaign({ nId: 0, id: this.eseaAccount.campaign })
         },
         addEmployees (data) {
-            this.importEmployeesDialog = true
             this.surveyy = data
+            this.importEmployeesDialog = true
             if (data.id) {
                 this.importEmployeesDialog = true
             }
@@ -177,9 +178,17 @@ export default {
                 })
                 .catch(err => { reject(err) })
             })
+        },
+        async goToSurveyFill (data) {
+            console.log(data)
+        },
+        goToSurvey (methodid, surveyid) {
+            console.log(methodid)
+            this.$router.push({ name: 'survey-fill-page', params: { uniquetoken: 0 } })
         }
     }
 }
+
         // <!-- <TabPanel header="surveys">
         //     <DataTable ref="dt" autoLayout="false" :value="surveys" v-model:selection="selectedRows" selectionMode="single" dataKey="id" :loading="loading" @row-select="goToSurvey"
         //     :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"

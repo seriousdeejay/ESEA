@@ -8,10 +8,13 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+
+import os
 import yaml
 
 from ..models import Method, Organisation, CustomUser, Topic, DirectIndicator, Survey
 from ..serializers import MethodSerializer
+from ..utils import process_yaml_method
 
 
 class MethodViewSet(viewsets.ModelViewSet):
@@ -54,11 +57,28 @@ class MethodViewSet(viewsets.ModelViewSet):
 @api_view(['GET', 'POST'])
 @permission_classes((AllowAny, ))
 def upload_yaml(request):
+    if request.method == 'POST':
+        with open(os.path.join(os.getcwd(), "core\\uploadedfiles\\newmethod2.yaml"), encoding='utf-8') as file:
+            YAML_dict = yaml.safe_load(file)
+            method_instance, errors = process_yaml_method(YAML_dict)
+            print('>>>', method_instance.id)
+            print(':::', errors)
+            if len(errors):
+               return Response({'errors': errors})
+            
+            serializer = MethodSerializer(method_instance)
+            return Response(serializer.data)
+    # return Response({'No File was uploaded'})
+    '''
     if request.method == 'POST' and request.FILES['file']:
         myfile = request.FILES['file']
         ##Try/Except to catch YAML related errors
         try:
             YAML_dict = yaml.safe_load(myfile)
+            print(YAML_dict)
+        except:
+            pass
+            
             currentuser = CustomUser.objects.get(id=1)
             m = Method.objects.create(name="BIA", description="A Method description", created_by=currentuser)
             topic_dict = {}
@@ -117,5 +137,5 @@ def upload_yaml(request):
         except yaml.YAMLError as exc:
             print(exc)
             return Response({exc})
-
-## print('>>', q, 'TOPIC:', q.topic, q.question.options.all())
+            ## print('>>', q, 'TOPIC:', q.topic, q.question.options.all())
+        '''

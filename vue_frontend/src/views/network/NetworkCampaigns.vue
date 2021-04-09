@@ -138,8 +138,8 @@ export default {
                 for (var index in this.selectedOrganisations) {
                     this.campaignForm.organisations.push(this.selectedOrganisations[index].name)
                 }
-                // await this.createCampaign({ nId: this.$route.params.NetworkId, data: this.campaignForm })
-                // this.$router.push({ name: 'networkcampaign', params: { NetworkId: this.$route.params.NetworkId, CampaignId: this.campaign.id } })
+                await this.createCampaign({ nId: this.$route.params.NetworkId, data: this.campaignForm })
+                this.$router.push({ name: 'networkcampaign', params: { NetworkId: this.$route.params.NetworkId, CampaignId: this.campaign.id } })
                 this.createCampaignDialog = false
             }
             this.submitted = true

@@ -4,10 +4,11 @@ import re
 find_square_bracket_keys = re.compile(r"\[(.*?)\]")
 
 class IndirectIndicator(models.Model):
+    key = models.CharField(max_length=255, blank=False)
     name = models.CharField(max_length=255, unique=False, blank=False)
     formula = models.CharField(max_length=255, unique=False, blank=False)
     description = models.TextField(blank=True, null=True)
-    topic = models.ForeignKey('Topic', related_name='indirect_indicators', on_delete=models.PROTECT)
+    topic = models.ForeignKey('Topic', related_name='indirect_indicators', on_delete=models.CASCADE)
     calculation = ''
     value = None
     has_conditionals = False
@@ -16,7 +17,7 @@ class IndirectIndicator(models.Model):
     responses = None
 
     class Meta: 
-        unique_together = ['name', 'topic']
+        unique_together = ['key', 'topic']
 
     def __init__(self, *args, **kwargs):
         super(IndirectIndicator, self).__init__(*args, **kwargs)
@@ -24,9 +25,9 @@ class IndirectIndicator(models.Model):
         if self.calculation.startswith("if"):
             self.has_conditionals = True
     
-    @property
-    def key(self):
-        return self.name
+    # @property
+    # def key(self):
+    #     return self.name
     
     @property
     def calculation_keys(self):
@@ -35,11 +36,9 @@ class IndirectIndicator(models.Model):
     def find_values(self, key_value_list):
         calculation = self.calculation
         for calculation_key in self.calculation_keys:
-            if calculation_key in key_value_list:
+            if calculation_key in key_value_list:   # import to see how key_value_list works!
                 value = key_value_list[calculation_key]
-                calculation = calculation.replace(
-                    f"[{calculation_key}]", f"{value}",
-                )
+                calculation = calculation.replace(f"[{calculation_key}]", f"{value}")
 
         self.calculation = calculation
 
@@ -65,11 +64,11 @@ class IndirectIndicator(models.Model):
     def calculate_conditionals(self):
         conditions = self.calculation.split("else")
         for condition in conditions:
+            # Checks if all required indicators have values
             if len(re.findall(find_square_bracket_keys, condition)):
                 raise Exception("invalid partial condition")
 
             if condition == conditions[-1]:
-                value = condition.replace(" ", "").replace('"', "")
                 break
 
             [cond, value] = condition.split("then")
@@ -82,5 +81,5 @@ class IndirectIndicator(models.Model):
                 value = value.replace('”', '')
                 [var, value] = value.split('=')
         value = value.replace(" ", "").replace('"', "")
-        
+
         self.value = value
