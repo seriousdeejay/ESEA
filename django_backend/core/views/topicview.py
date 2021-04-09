@@ -12,13 +12,17 @@ class TopicViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Topic.objects.filter(method=self.kwargs['method_pk']) 
 
-    def create(self, serializer, **kwargs):
+    def create(self, serializer):
         method = get_object_or_404(Method, pk=self.kwargs['method_pk'])
         serializer = TopicSerializer(data=self.request.data)
         if serializer.is_valid():
             serializer.save(method=method)
             return Response(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+
+
+    # return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     # {
     #     "name": "Topic 9",

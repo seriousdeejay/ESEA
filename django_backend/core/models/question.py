@@ -38,14 +38,16 @@ class Question(models.Model):
     NUMBER = "NUMBER"
     RADIO = "RADIO"
     CHECKBOX = "CHECKBOX"
+    SCALE = "SCALE"
     # DROPDOWN = "DROPDOWN"
     QUESTION_TYPES = (
         (TEXT, "text"),
         (NUMBER, "number"),
         (RADIO, "radio"),
-        (CHECKBOX, "checkbox")
+        (CHECKBOX, "checkbox"),
+        (SCALE, "scale")
     )
-    QUESTION_TYPES_WITH_OPTIONS = [RADIO, CHECKBOX]
+    QUESTION_TYPES_WITH_OPTIONS = [RADIO, CHECKBOX, SCALE]
     answertype = models.CharField(max_length=100, blank=False, choices=QUESTION_TYPES, default="TEXT")
 
     class Meta:

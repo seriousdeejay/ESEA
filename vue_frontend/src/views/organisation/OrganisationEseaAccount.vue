@@ -156,7 +156,7 @@ export default {
         dateFixer,
         async initialize () {
             this.fetchSurveys({ mId: this.eseaAccount.method.id })
-            this.fetchCampaign({ nId: 0, id: this.eseaAccount.campaign })
+            this.fetchCampaign({ nId: this.eseaAccount.network, id: this.eseaAccount.campaign })
         },
         addEmployees (data) {
             this.surveyy = data
@@ -180,7 +180,7 @@ export default {
             })
         },
         async goToSurveyFill (data) {
-            console.log(data)
+            this.$router.push({ name: 'survey-fill-page', params: { uniquetoken: 'accountant' } })
         },
         goToSurvey (methodid, surveyid) {
             console.log(methodid)

@@ -26,18 +26,17 @@ class UsersViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         currentuser = self.request.GET.get('currentuser', None)
         network = self.request.GET.get('network', None)
-        # organisation = self.request.GET.get('organisation', None)
-        excludeorganisation = self.request.GET.get('excludeorganisation', None)
+        organisation = self.request.GET.get('organisation', None)
+
         if currentuser is not None:
             return CustomUser.objects.filter(id=self.request.user.id)
         if network is not None:
-            return CustomUser.objects.filter(organisations__networks=network).distinct() # Should pass network id(s) in order to serve the participants of network(s)
-        # if organisation is not None:
-        #     return CustomUser.objects.filter(organisations=organisation)
-        if excludeorganisation is not None:
-            return CustomUser.objects.exclude(organisations=excludeorganisation)
+            return CustomUser.objects.filter(organisation__networks=network).distinct() # Should pass network id(s) in order to serve the participants of network(s)
+        if organisation is not None:
+            return CustomUser.objects.filter(organisation=organisation)
         return CustomUser.objects.all()
 
+'''
 @method_decorator(csrf_exempt, name='dispatch')
 @api_view(['GET', 'POST'])
 @permission_classes((AllowAny, ))
@@ -104,3 +103,4 @@ def import_employees(request, organisation_pk):
                     # userorganisation.save()
                     # serializer = UserSerializer(newuser  
                 
+'''

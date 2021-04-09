@@ -8,5 +8,5 @@ class QuestionResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = QuestionResponse
-        fields = ['id', 'direct_indicator_id', 'values']
+        fields = ['id', 'direct_indicator_id', 'values', 'value']
         extra_kwargs = {'id': {'read_only': False, 'required': True}}

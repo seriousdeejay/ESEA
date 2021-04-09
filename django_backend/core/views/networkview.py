@@ -50,3 +50,7 @@ class NetworkViewSet(viewsets.ModelViewSet):
                     print('%s (%s)' % (e.message, type(e)))
         serializer = NetworkSerializer(networkobject)
         return Response(serializer.data)
+
+'''
+Shouldn't i change partial update with update?
+'''

@@ -18,18 +18,26 @@ class SurveyResponseSerializer(serializers.ModelSerializer):
         read_only_fields = ['respondent', 'survey', 'organisation', 'method', 'token']
 
     def update(self, survey_response, validated_data):
-        print('check')
         survey_response.finished = validated_data.get('finished', survey_response.finished)
         question_responses = validated_data.pop('question_responses')
-        question_responses_dict = dict((i.id, i) for i in survey_response.question_responses.all())
+        print(question_responses)
+        # question_responses_dict = dict((i.id, i) for i in survey_response.question_responses.all())
         for item_data in question_responses:
+            print(item_data)
             if 'id' in item_data:
                 question_response = QuestionResponse.objects.get(id=item_data['id']) #question_responses_dict.pop(item_data['id'])
                 for key in item_data.keys():
                     if key == 'values':
                         question_response.values.clear()
-                        for answer in item_data[key]:
-                            question_response.values.add(answer)
+                        for answer in item_data['values']:
+                            print(QuestionOption.objects.filter(text='ddd').exists())
+                            try:
+                                question_response.values.add(answer)
+                                print('bb')
+                            except: 
+                                print('cc')
+                    elif key == 'value':
+                        question_response.value = str(item_data['value'])
                     else:
                         setattr(question_response, key, item_data[key])
                 question_response.save()

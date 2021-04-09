@@ -49,33 +49,26 @@ class SurveyResponseViewSet(BaseModelViewSet):
     }
     permission_classes = [AllowAny,]
     def get_queryset(self):
-        esea_account = self.request.GET.get('esea_account', None)
-        if esea_account is not None:
-            return SurveyResponse.objects.filter(esea_account=organisation, finished=True)
-        return SurveyResponse.objects.filter(survey__method=self.kwargs['method_pk'], finished=True)
+        ## Gets responses of esea-account
+        return SurveyResponse.objects.filter(esea_account=self.kwargs['esea_account_pk'], finished=False)
         
-    def retrieve(self, request, method_pk, survey_pk, organisation_pk, token):
-        if self.request.user.is_authenticated:
-            accountantstakeholdergroup = get_object_or_create(StakeholderGroup, name='accountant')
-            # surveyresponse = get_object_or_404(SurveyResponse, survey=__stakeholder_groups__in=accountantstakeholdergroup)
-            surveyresponse = get_object_or_404(SurveyResponse, survey=survey_pk, esea_account__organisation__created_by=self.request.user)
-            print(self.request.user)
-        surveyresponse = get_object_or_404(SurveyResponse, token=token)
-        # print(surveyresponse)
+    def retrieve(self, request, network_pk, campaign_pk, esea_account_pk, token):
+        if token == 'accountant':
+            surveyresponse = get_object_or_404(SurveyResponse, survey__stakeholder_groups__name='accountant', esea_account=esea_account_pk)
+        else:
+            surveyresponse = get_object_or_404(SurveyResponse, token=token)
+        print(surveyresponse)
         serializer = SurveyResponseSerializer(surveyresponse)
         return Response(serializer.data)
-        return Response({'Hello'})
-
-    # def create(self, request, method_pk, survey_pk, organisation_pk):
-    #     surveyresponse = SurveyResponse.objects.create(survey=request.data['survey'])
-    #     serializer = SurveyResponseSerializer(surveyresponse)
-    #     return Response(serializer.data)
     
-    def update(self, request, organisation_pk, method_pk, survey_pk, token, **kwargs):
-        print(request.data)
+    def update(self, request, network_pk, campaign_pk, esea_account_pk, token):
+        print('>>>>>', request.data)
+        print(token)
         surveyresponse = get_object_or_404(SurveyResponse, token=token)
         serializer = SurveyResponseSerializer(surveyresponse, data = request.data)
+        print('cc')
         serializer.is_valid(raise_exception=True)
+        print('ss')
         serializer.save()
         return Response(serializer.data)
 
@@ -143,3 +136,8 @@ class SurveyResponseViewSet(BaseModelViewSet):
 
         # direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method=method_pk)
         # serializer = DirectIndicatorSerializer(direct_indicator, data=request.data)
+
+    # def create(self, request, method_pk, survey_pk, organisation_pk):
+    #     surveyresponse = SurveyResponse.objects.create(survey=request.data['survey'])
+    #     serializer = SurveyResponseSerializer(surveyresponse)
+    #     return Response(serializer.data)

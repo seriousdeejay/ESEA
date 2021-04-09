@@ -21,21 +21,18 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         excludenetwork = self.request.GET.get('excludenetwork', None)
         method = self.request.GET.get('method', None)
         excludemethod = self.request.GET.get('excludemethod', None)
+
         if network is not None:
             if method is not None:
-                return Organisation.objects.filter(networks=network, methods=method)
-                #return Organisation.objects.prefetch_related(Prefetch('methods.surveys.responses', queryset=SurveyResponse.objects.filter(survey__method=method, survey__method__networks=network), to_attr='filtered_survey_responses'))
+                return Organisation.objects.filter(networks=network, esea_accounts=method).distinct()
             if excludemethod is not None:
-                return Organisation.objects.filter(networks=network).exclude(methods=excludemethod)
+                return Organisation.objects.filter(networks=network).exclude(esea_accounts=excludemethod)
             return Organisation.objects.filter(networks=network)
         if excludenetwork is not None:
             return Organisation.objects.exclude(networks=excludenetwork)
-        print('dd')
-        return Organisation.objects.all()
         return Organisation.objects.filter(Q(created_by=self.request.user) | Q(ispublic = True))
     
     def create(self, serializer):
-        print('yeha')
         serializer = OrganisationSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         organisation = serializer.save(created_by=self.request.user)
@@ -76,3 +73,5 @@ def send_surveys(request):
     #     return Response({'Success'})
     # print('check')
     # return Response({'No Post Request'})
+
+     #return Organisation.objects.prefetch_related(Prefetch('methods.surveys.responses', queryset=SurveyResponse.objects.filter(survey__method=method, survey__method__networks=network), to_attr='filtered_survey_responses'))

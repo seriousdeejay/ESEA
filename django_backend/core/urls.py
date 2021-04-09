@@ -16,7 +16,10 @@ network_router = routers.NestedSimpleRouter(router, r'networks', lookup="network
 network_router.register(r'campaigns', campaignview.CampaignViewSet, basename="network-campaigns" )
 
 campaign_router = routers.NestedSimpleRouter(network_router, r'campaigns', lookup="campaign")
-campaign_router.register(r'esea-accounts', esea_accountview.EseaAccountViewSet, basename="network-esea-accounts")
+campaign_router.register(r'esea-accounts', esea_accountview.EseaAccountViewSet, basename="campaign-esea-accounts")
+
+esea_account_router = routers.NestedSimpleRouter(campaign_router, r'esea-accounts', lookup="esea_account")
+esea_account_router.register(r'responses', survey_responseview.SurveyResponseViewSet, basename='esea-account-responses')
 
 method_router = routers.NestedSimpleRouter(router, r'methods', lookup="method")
 method_router.register(r'surveys', surveyview.SurveyViewSet, basename="method-surveys")
@@ -26,8 +29,8 @@ method_router.register(r'questions', direct_indicatorview.DirectIndicatorViewSet
 survey_router = routers.NestedSimpleRouter(method_router, r'surveys', lookup="survey")
 survey_router.register(r'organisations', organisationview.OrganisationViewSet, basename="survey-organisations")
 
-organisation_router = routers.NestedSimpleRouter(survey_router, r'organisations', lookup="organisation")
-organisation_router.register(r'responses', survey_responseview.SurveyResponseViewSet, basename="organisation-responses")
+#organisation_router = routers.NestedSimpleRouter(survey_router, r'organisations', lookup="organisation")
+#organisation_router.register(r'responses', survey_responseview.SurveyResponseViewSet, basename="organisation-responses")
 
 # router.register(r'topics', topicview.TopicViewSet, basename='topics')
 # router.register(r'questions', direct_indicatorview.DirectIndicatorViewSet, basename='questions')
@@ -48,7 +51,8 @@ urlpatterns = [
     path('', include(campaign_router.urls)),
     path('', include(method_router.urls)),
     path('', include(survey_router.urls)),
-    path('', include(organisation_router.urls)),
+    path('', include(esea_account_router.urls))
+    #path('', include(organisation_router.urls)),
 ]
 
 

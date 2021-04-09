@@ -3,6 +3,7 @@
         <div class="p-col-12 p-p-3" style="background-color: #dcedc8;">
             <h1>{{survey.name}}</h1>
             <h3>{{survey.description}}</h3>
+            {{survey}}
             <p><span class="p-text-bold">Respondent:</span> {{surveyResponse.respondent}} <br> <span class="p-text-bold">Organisation:</span>{{surveyResponse.organisation}} </p>
         </div>
         <div class="p-grid p-col-6 p-p-3" style="background-color: white; border-radius: 10px;">
@@ -68,6 +69,7 @@ export default {
     computed: {
         ...mapState('survey', ['survey']),
         ...mapState('surveyResponse', ['surveyResponse', 'surveyResponses']),
+        ...mapState('eseaAccount', ['eseaAccount']),
         currentTopic () {
             return this.survey?.topics[0].sub_topics[this.topicNumber]
         },
@@ -82,7 +84,7 @@ export default {
             const answers = {}
             if (this.surveyResponse?.id !== this.survey.id && this.surveyResponse.question_responses) {
                 this.surveyResponse.question_responses.forEach((answer) => {
-                    answers[answer.direct_indicator_id] = answer.values
+                    answers[answer.direct_indicator_id] = [answer.values, answer.value]
                 })
             }
             console.log(answers)
@@ -106,7 +108,7 @@ export default {
     //   .then(response => (console.log(response)))
     //    AxiosInstance.get('/methods/27/surveys/13/organisations/1/responses/GhjrpoLc/', {}).then(response => (console.log(response)))
             await this.setSurveyResponse({})
-            await this.fetchSurveyResponse({ mId: 0, sId: 0, OrganisationId: 0, id: this.$route.params.uniquetoken }) // this.$route.params.uniquetoken
+            await this.fetchSurveyResponse({ nId: 0, cId: 0, eaId: this.eseaAccount.id || 0, id: this.$route.params.uniquetoken }) // this.$route.params.uniquetoken
             await this.fetchSurvey({ mId: this.surveyResponse.method, id: this.surveyResponse.survey })
             if (this.surveyResponse.finished) {
                 this.$router.push({ name: 'survey-thank-you' })
@@ -139,12 +141,13 @@ export default {
             const mandatorydict = {}
             this.missedQuestions = []
             this.survey.topics[0].sub_topics.forEach(SubTopic => { mandatorydict[SubTopic.questions[0].id] = SubTopic.questions[0].isMandatory })
-            this.surveyResponse.question_responses.forEach(response => { if (mandatorydict[response.direct_indicator_id]) { if (!response.values.length) { this.missedQuestions.push(response.direct_indicator_id) } } })
+            this.surveyResponse.question_responses.forEach(response => { if (mandatorydict[response.direct_indicator_id]) { if (!response.values.length && !response.value) { this.missedQuestions.push(response.direct_indicator_id) } } })
 
             if (!this.missedQuestions.length) {
             this.surveyResponse.finished = true
             console.log('kkk', this.surveyResponse)
-            this.updateSurveyResponse({ mId: this.survey.method, sId: this.survey.id, surveyResponse: { ...this.surveyResponse } })
+            this.updateSurveyResponse({ nId: 1, cId: 1, eaId: 1, surveyResponse: { ...this.surveyResponse } })
+            console.log(this.surveyResponse.finished)
             this.$router.push({ name: 'survey-thank-you' })
             } else {
                 this.missedQuestionsDialog = true
@@ -153,15 +156,17 @@ export default {
         },
         async updateAnswer (id, answer) {
             // this.currentanswer = answer
-            if (this.surveyResponse.token !== this.$route.params.uniquetoken) {
+            console.log('rrrrrrrrrr', answer)
+            if ((this.$route.params.uniquetoken !== this.surveyResponse.token) && (this.$route.params.uniquetoken !== 'accountant')) {
                 console.log('Not possible')
                 return
             }
             console.log('sss', this.surveyResponse)
-            this.surveyResponse.question_responses.forEach(response => { if (response.direct_indicator_id === id) { if (answer[0] != null) { response.values = answer } } })
+            this.surveyResponse.question_responses.forEach(response => { if (response.direct_indicator_id === id) { if (answer.answer[0] != null) { if (answer.answertype === ('RADIO' || 'CHECKBOX')) { response.values = answer.answer } else { response.value = answer.answer[0] } } } })
             await this.updateSurveyResponse({
-                mId: this.survey.method,
-                sId: this.survey.id,
+                nId: 1,
+                cId: 1,
+                eaId: 1,
                 surveyResponse: {
                     ...this.surveyResponse
                 }

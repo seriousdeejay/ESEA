@@ -26,10 +26,11 @@ class MethodViewSet(viewsets.ModelViewSet):
         excludenetwork = self.request.GET.get('excludenetwork', None)
         if network is not None:
             return Method.objects.filter(networks=network)
-        if organisation is not None:
-            return Method.objects.filter(organisations=organisation).distinct()
         if excludenetwork is not None:
             return Method.objects.exclude(networks=excludenetwork)
+        if organisation is not None:
+            return Method.objects.filter(organisations=organisation).distinct()
+
         return Method.objects.filter(Q(created_by=self.request.user) | Q(ispublic = True))
 
     def create(self, serializer):
@@ -58,17 +59,18 @@ class MethodViewSet(viewsets.ModelViewSet):
 @permission_classes((AllowAny, ))
 def upload_yaml(request):
     if request.method == 'POST':
+    # if request.method == 'POST' and 'file' in request.FILES.keys():
+        # with open(request.FILES['file'], encoding='utf-8') as file:
         with open(os.path.join(os.getcwd(), "core\\uploadedfiles\\newmethod2.yaml"), encoding='utf-8') as file:
             YAML_dict = yaml.safe_load(file)
             method_instance, errors = process_yaml_method(YAML_dict)
-            print('>>>', method_instance.id)
-            print(':::', errors)
             if len(errors):
                return Response({'errors': errors})
             
             serializer = MethodSerializer(method_instance)
             return Response(serializer.data)
-    # return Response({'No File was uploaded'})
+
+
     '''
     if request.method == 'POST' and request.FILES['file']:
         myfile = request.FILES['file']

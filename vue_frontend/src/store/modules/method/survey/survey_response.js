@@ -63,9 +63,10 @@ export default {
 		setDebouncer (state, { id, token, commit }) {
 			console.log(id)
 			state.debouncers[id] = debounce(
-				async ({ mId, sId, surveyResponse }) => {
+				async ({ nId, cId, eaId, surveyResponse }) => {
+					console.log('-----------', surveyResponse)
 					const { response, error } = await SurveyResponseService.put(
-						{ mId, sId, id: token, data: surveyResponse }
+						{ nId, cId, eaId, id: token, data: surveyResponse }
 					)
 					if (error) {
 						commit('setError', { error, id: surveyResponse.id })
@@ -92,7 +93,7 @@ export default {
 		}
 	},
 	actions: {
-		async fetchSurveyResponses ({ commit, dispatch }, payload) {
+		async fetchSurveyResponses ({ commit }, payload) {
 			const { response, error } = await SurveyResponseService.get(payload)
 			console.log(response)
 			if (error) {
@@ -126,10 +127,9 @@ export default {
 			}
 			commit('deleteSurveyResponse', payload)
 		},
-		async createSurveyResponse ({ commit }, { mId, sId, OrganisationId }) {
-			console.log(mId, sId, OrganisationId)
+		async createSurveyResponse ({ commit }, { nId, cId, eaId }) {
 			const { response, error } = await SurveyResponseService.post({
-				mId, sId, OrganisationId, data: baseSurveyResponse
+				nId, cId, eaId, data: baseSurveyResponse
 			})
 			if (error) {
 				commit('setError', { error })
@@ -139,19 +139,23 @@ export default {
 			// commit('setSurveyResponse', response)
 			return { response }
 		},
-		updateSurveyResponse ({ state, commit }, { mId, sId, surveyResponse }) {
-			console.log('llllllllllllll')
+		updateSurveyResponse ({ state, commit }, { nId, cId, eaId, id, surveyResponse }) {
+			console.log('llllllllllllll', surveyResponse)
 			if (surveyResponse.token !== state.surveyResponse.token) {
 				console.log('errrorrr')
 				return
 			}
-			if (!surveyResponse || !mId || !sId) return
+			console.log('check')
+			if (!surveyResponse || !nId || !cId || !eaId) return
+			console.log('yeet')
 			if (!state.debouncers[surveyResponse.id]) {
+				console.log('-------')
 				commit('setDebouncer', { id: surveyResponse.id, token: state.surveyResponse.token, commit })
 			}
 			commit('updateList', { id: surveyResponse.id, data: surveyResponse })
 			commit('setIsSaved', { id: surveyResponse.id })
-			state.debouncers[surveyResponse.id]({ mId, sId, surveyResponse })
+			console.log('???')
+			state.debouncers[surveyResponse.id]({ nId, cId, eaId, surveyResponse })
 		},
 		setSurveyResponse ({ state, commit }, { id } = {}) {
 			console.log('//', id)

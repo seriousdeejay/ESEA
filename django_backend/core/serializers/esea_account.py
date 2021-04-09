@@ -17,7 +17,7 @@ class EseaAccountSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = EseaAccount
-        fields = ['id', 'organisation', 'method', 'campaign', 'report', 'all_respondents', 'all_responses', 'survey_response_by_survey', 'sufficient_responses', 'response_rate',]
+        fields = ['id', 'organisation', 'method', 'campaign', 'network', 'report', 'all_respondents', 'all_responses', 'survey_response_by_survey', 'sufficient_responses', 'response_rate',]
         # extra_kwargs = {'survey_response_by_survey':{'many': True}}
 
     def update(self, instance, validated_data):

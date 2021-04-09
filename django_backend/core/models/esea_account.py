@@ -20,6 +20,10 @@ class EseaAccount(models.Model):
     def __str__(self):
         return f'organisation:{self.organisation} - campaign:{self.campaign}'
     
+    @property
+    def network(self):
+        return self.campaign.network.id
+
     def survey_response_by_survey(self):
         arr = []
         for survey in self.method.surveys.all():

@@ -3,7 +3,7 @@
             <p class="p-text-left"><span v-if="checkanswerrequired" style="color: red; font-size: 25px">*</span>{{question.name}}</p>
             <Divider />
             <answer-input
-            :value="answer || question.default"
+            :value="goodanswer || question.default"
             :type="question.answertype"
             :options="question.options"
             :readonly="readonly"
@@ -50,11 +50,17 @@ export default {
     computed: {
         primaryBorder () {
             return { 'border-color': '#00008B' }
+        },
+        goodanswer () {
+            if (this.question.answertype === ('RADIO' || 'CHECKBOX')) {
+                return this.answer[0]
+            }
+            return this.answer[1]
         }
     },
     methods: {
         changeAnswer (answer) {
-            this.$emit('input', answer)
+            this.$emit('input', { answer: answer, answertype: this.question.answertype })
         }
     }
 }

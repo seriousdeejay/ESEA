@@ -48,10 +48,11 @@ class SurveyViewSet(BaseModelViewSet):
     permission_classes = [AllowAny,]
 
     def get_queryset(self):
-        print(self.request.user)
+        '''
         organisation = self.request.GET.get('organisation', None)
         completedbyorganisation = self.request.GET.get('completedbyorganisation', None)
         esea_account = self.request.GET.get('esea-account', None)
+        
         if esea_account is not None:
             return Survey.objects.all()
         if organisation or completedbyorganisation is not None:
@@ -68,12 +69,12 @@ class SurveyViewSet(BaseModelViewSet):
             if completedbyorganisation:
                 print('ch')
                 return Survey.objects.filter(method__networks__organisations=org) #, stakeholder_groups__pk__in=ids, responses__user_organisation=userorganisation).distinct() #responses__finished=True
+        '''
         return Survey.objects.filter(method=self.kwargs['method_pk'])
     
 
     def retrieve(self, request, method_pk, pk):
         survey = get_object_or_404(Survey, pk=pk)
-        print(survey)
         serializer = SurveyDetailSerializer(survey)
         return Response(serializer.data) 
 
