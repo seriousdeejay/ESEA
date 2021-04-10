@@ -48,11 +48,23 @@ class DirectIndicator(models.Model):
         return self
 
     def filter_responses(self, responses):
-        self.responses = [
-            response.values
-            for response in responses
-            if response.direct_indicator_id == self.id
-        ]
+        self.responses = []
+        print(self.id)
+        for response in responses:
+            
+            if response.direct_indicator_id == self.id:
+                print(response.values.all(), response.value)
+                print(response.direct_indicator_id, self.id)
+                print(self.question, self.question.answertype)
+                if len(response.values.all()):
+                    self.responses.append(response.values.all())
+                else: 
+                    self.responses.append(response.value)
+        # self.responses = [
+        #     response.values
+        #     for response in responses
+        #     if response.direct_indicator_id == self.id
+        # ]
         self.value = self.get_average(self.responses)
 
     def get_average(self, responses=[]):
@@ -63,7 +75,9 @@ class DirectIndicator(models.Model):
         if (
             self.question.answertype == self.question.RADIO
             or self.question.answertype == self.question.CHECKBOX
+            or self.question.answertype == self.question.SCALE
         ):
+            print(self.question.answertype)
             response_values = self.checkbox_values(responses)
             return response_values
 
@@ -71,6 +85,7 @@ class DirectIndicator(models.Model):
         return self.average_calculation(response_values)
 
     def average_calculation(self, responses):
+        print(responses)
         numbers = [int(r) for r in responses]
         return sum(numbers) / len(numbers)
 
@@ -79,9 +94,13 @@ class DirectIndicator(models.Model):
         for option in self.question.options.all():
             valuesdict[option.text] = 0
         #print(valuesdict['Fixed Salary'])
+        print(responses[0])
+        print('c')
         for response in responses:
             # options = response.split(",") # Splits it on commas, should be changed!!!
-            for option in response.all():
+            print('>>>', self.question, self.question.answertype)
+            for option in response:
+                print(option)
                 if option:
                     question_option = self.question.options.filter(text=option).first()
                     if question_option:

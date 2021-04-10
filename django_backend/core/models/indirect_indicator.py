@@ -54,7 +54,13 @@ class IndirectIndicator(models.Model):
         self.error = None
         try:
             if self.has_conditionals:
-                self.calculate_conditionals()
+                value = self.calculate_conditionals()
+
+                if '=' in value:
+                    value = value.replace('”', '')
+                    [var, value] = value.split('=')
+                value = value.replace(" ", "").replace('"', "")
+                self.value = value
             else:
                 self.value = eval(self.calculation)
         except Exception as e:
@@ -74,12 +80,17 @@ class IndirectIndicator(models.Model):
             [cond, value] = condition.split("then")
             cond = cond.replace("if", "")
 
+            if 'AND' in cond:
+                conds = [eval(n) for n in condition.split("AND")]
+                if not False in conds:
+                    return value
+
+            if 'OR' in cond:
+                conds = [eval(n) for n in condition.split("OR")]
+                if True in conds:
+                    return value
+
             if eval(cond):
-                break
+                return value
 
-        if '=' in value:
-                value = value.replace('”', '')
-                [var, value] = value.split('=')
-        value = value.replace(" ", "").replace('"', "")
-
-        self.value = value
+# TODO: Accept ((cond AND cond) OR cond), instead of (cond AND cond) on itself and (cond OR cond) 

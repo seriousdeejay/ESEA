@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
 from django.shortcuts import get_object_or_404
 from secrets import token_urlsafe
 
-from ..models import (Survey, SurveyResponse, QuestionResponse, DirectIndicator, Respondent, StakeholderGroup)
+from ..models import (Survey, SurveyResponse, QuestionResponse, DirectIndicator, IndirectIndicator, Respondent, StakeholderGroup, EseaAccount)
 from ..serializers import (SurveyResponseSerializer, QuestionResponseSerializer, SurveyResponseCalculationSerializer)
 from ..utils import map_responses_by_indicator, calculate_indicators
 
@@ -74,14 +74,18 @@ class SurveyResponseViewSet(BaseModelViewSet):
 
     @action(detail=False, methods=['get'])
     #@permission_classes(AllowAny,)
-    def all(self, request, method_pk, survey_pk, organisation_pk):
+    def all(self, request, network_pk, campaign_pk, esea_account_pk):
         if True: #self.request.user.is_authenticated:
-            respondents = Respondent.objects.filter(organisation=organisation_pk, response__survey=survey_pk)
-            responses = SurveyResponse.objects.filter(respondent__organisation=organisation_pk, survey = survey_pk, finished=True)
+            eseaaccount = get_object_or_404(EseaAccount, pk=esea_account_pk)
+            respondents = SurveyResponse.objects.filter(esea_account=esea_account_pk) #Respondent.objects.filter(organisation__esea_accounts=74)
+            print(respondents)
+            responses = SurveyResponse.objects.filter(esea_account=esea_account_pk, finished=True)
 
-            question_responses = QuestionResponse.objects.filter(survey_response__respondent__organisation= organisation_pk, survey_response__survey=survey_pk, survey_response__finished=True)
-            # indirect_indicators = IndirectIndicator.objects.filter(topic__method=method_pk)
-            direct_indicators = DirectIndicator.objects.filter(surveys=survey_pk)
+            question_responses = QuestionResponse.objects.filter(survey_response__esea_account=esea_account_pk, survey_response__finished=True)
+            print(question_responses)
+
+            indirect_indicators = IndirectIndicator.objects.filter(topic__method=eseaaccount.method)
+            direct_indicators = DirectIndicator.objects.filter(topic__method=eseaaccount.method)
             
             # for item in question_responses:
             #     s = QuestionResponseSerializer(item, many=True)
@@ -89,14 +93,15 @@ class SurveyResponseViewSet(BaseModelViewSet):
             map_responses_by_indicator(direct_indicators, question_responses)
             # for di in direct_indicators:
             #     print(di.key)
-            # serializer = SurveyResponseCalculationSerializer(direct_indicators, many=True)
-            indicators = calculate_indicators(direct_indicators)
-            #serializer = SurveyResponseCalculationSerializer(indicators.values(), many=True)
+            #serializer = SurveyResponseCalculationSerializer(direct_indicators, many=True)
+            indicators = calculate_indicators(indirect_indicators, direct_indicators)
+            print(indicators)
+            serializer = SurveyResponseCalculationSerializer(indicators.values(), many=True)
             return Response(
                 {
                     "respondents": len(respondents),
                     "responses": len(responses.filter(finished=True)),
-                    "indicators": indicators,
+                    "indicators": serializer.data,
                 }
             )
         return Response({})

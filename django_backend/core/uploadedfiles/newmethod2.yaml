@@ -45,21 +45,21 @@ indicators:
     topic: T1
     unit: integer
     type: indirectindicator
-    formula: woman_staff + men_staff
+    formula: '[woman_staff] + [men_staff]'
   company_size:
     name: >-
       Company size
     topic: T1
     unit: string
     type: indirectindicator
-    formula: IF (total_staff < 10) THEN company_size=”micro” ELSE IF (total_staff < 49) THEN company_size=”small” ELSE IF (total_staff < 249) THEN company_size=”medium” ELSE company_size=”large”
+    formula: 'IF ([total_staff] < 10) THEN company_size=”micro” ELSE IF ([total_staff] < 49) THEN company_size=”small” ELSE IF ([total_staff] < 249) THEN company_size=”medium” ELSE company_size=”large”'
   total_organisation_score:
     name: >-
       Total organisation score
     topic: T1
     unit: string
     type: indirectindicator
-    formula: 0.30 * gender_equity_score + 0.40 * environmental_impact_score + 0.30 * workplace_quality_score
+    formula: '0.30 * [gender_equity_score] + 0.40 * [environmental_impact_score] + 0.30 * [workplace_quality_score]'
 
   average_salary_women:
     name: >-
@@ -80,49 +80,49 @@ indicators:
     topic: T2
     unit: float
     type: indirectindicator
-    formula: women_staff / total_staff
+    formula: '[women_staff] / [total_staff]'
   gender_pay_gap:
     name: >-
       Gender pay gap
     topic: T2
     unit: float
     type: indirectindicator
-    formula: average_salary_women / average_salary_men
+    formula: '[average_salary_women] / [average_salary_men]'
   gender_decision_making_ratio:
     name: >-
       Gender decision making ratio
     topic: T2
     unit: float
     type: indirectindicator
-    formula: women_staff_deciding / (women_staff_deciding + men_staff_deciding)
+    formula: '[women_staff_deciding] / ([women_staff_deciding] + [men_staff_deciding])'
   gender_ratio_score:
     name: >-
       Gender pay gap score
     topic: T2
     unit: float
     type: indirectindicator
-    formula: IF gender_ratio < 0.15 THEN gender_ratio_score = 0 ELSE IF gender_ratio < 0.85 THEN gender_ratio_score = 10* (gender_ratio - 0.15 ) / (0.85 - 0.15) ELSE gender_ratio_score = 10
+    formula: 'IF [gender_ratio] < 0.15 THEN gender_ratio_score = 0 ELSE IF [gender_ratio] < 0.85 THEN gender_ratio_score = 10 * ([gender_ratio] - 0.15 ) / (0.85 - 0.15) ELSE gender_ratio_score = 10'
   gender_pay_gap_score:
     name: >-
       Gender pay gap score
     topic: T2
     unit: float
     type: indirectindicator
-    formula: 10 / gender_pay_gap
+    formula: '10 / [gender_pay_gap]'
   gender_decision_making_ratio_score:
     name: >-
       Gender decision making score
     topic: T2
     unit: float
     type: indirectindicator
-    formula: IF ((gender_decision_making_ratio < 0.30) OR (gender_decision_making_ratio > 0.70)) THEN gender_decision_making_ratio_score = 0 ELSE gender_decision_making_ratio_score = 10
+    formula: 'IF (([gender_decision_making_ratio] < 0.30) OR ([gender_decision_making_ratio] > 0.70)) THEN gender_decision_making_ratio_score = 0 ELSE gender_decision_making_ratio_score = 10'
   gender_equity_score:
     name: >-
       Gender equity score
     topic: T2
     unit: float
     type: indirectindicator
-    formula: (0.35 * gender_ratio_score + 0.45 gender_pay_gap_score + 0.20 gender_decision_making_ratio_score)
+    formula: '(0.35 * [gender_ratio_score] + 0.45 * [gender_pay_gap_score] + 0.20 * [gender_decision_making_ratio_score])'
 
   recycled_waste_kg:
     name: >-
@@ -155,37 +155,36 @@ indicators:
     topic: T3
     unit: float
     type: indirectindicator
-    formula: recycled_waste_kg / total_waste_kg
+    formula: '[recycled_waste_kg] / [total_waste_kg]'
   renewable_ratio:
     name: >-
       Renewable energy ratio
     topic: T3
     unit: float
     type: indirectindicator
-    formula: renewable_energy_consumption / total_energy_consumption
+    formula: '[renewable_energy_consumption] / [total_energy_consumption]'
   renewable_ratio_score:
     name: >-
       Renewable energy ratio score
     topic: T3
     unit: float
     type: indirectindicator
-    formula: renewable_ratio * 10
+    formula: '[renewable_ratio] * 10'
   recycling_ratio_score:
     name: >-
       Recycled waste ratio score
     topic: T3
     unit: float
     type: indirectindicator
-    formula: IF recycling_ratio = 0 THEN recycling_ratio_score = 0 ELSE IF (recycling_ratio >= 0.1 AND recycling_ratio < 0.5) THEN recycling_ratio_score = 4 ELSE IF (recycling_ratio >= 0.5 AND recycling_ratio < 0.9) THEN recycling_ratio_score = 8 ELSE recycling_ratio_score = 10
+    formula: 'IF [recycling_ratio] == 0 THEN recycling_ratio_score = 0 ELSE IF ([recycling_ratio] >= 0.1 AND [recycling_ratio] < 0.5) THEN recycling_ratio_score = 4 ELSE IF ([recycling_ratio] >= 0.5 AND [recycling_ratio] < 0.9) THEN recycling_ratio_score = 8 ELSE recycling_ratio_score = 10'
   environmental_impact_score:
     name: >-
       Environmental impact score
     topic: T3
     unit: float
     type: indirectindicator
-    formula: (renewable_ratio_score + recycling_ratio_score) / 2
+    formula: '([renewable_ratio_score] + [recycling_ratio_score]) / 2'
 
-environmental_impact_score:
   public_salaries:
     name: >-
       Salaries publicly available
@@ -223,44 +222,51 @@ environmental_impact_score:
     topic: T4
     unit: float
     type: indirectindicator
-    formula: (women_staff_deciding + men_staff_deciding) / (men_staff + women_staff)
+    formula: '([women_staff_deciding] + [men_staff_deciding]) / ([men_staff] + [women_staff])'
   average_employee_satisfaction:
     name: >-
       Average employee satisfaction
     topic: T4
     unit: integer
     type: indirectindicator
-    formula: average(employee_satisfaction)
+    formula: 'average([employee_satisfaction])'
   public_salaries_score:
     name: >-
       Public salaries score
     topic: T4
     unit: float
     type: indirectindicator
-    formula: average(employee_satisfaction)
+    formula: 'average([employee_satisfaction])'
   decision_making_ratio_score:
     name: >-
       Decision making ratio score
     topic: T4
     unit: float
     type: indirectindicator
-    formula:
+    formula: "IF [company_type]==”workers cooperative” THEN IF ([decision_making_ratio] < 0.60) 
+THEN decision_making_ratio_score = 0 
+ELSE decision_making_ratio_score = 10
+ELSE
+        IF ([decision_making_ratio] < 0.30) 
+THEN decision_making_ratio_score = 0 
+ELSE decision_making_ratio_score = 10
+"
   average_employee_satisfaction_score:
     name: >-
       Average employee satisfaction score
     topic: T4
     unit: float
     type: indirectindicator
-    formula: average_employee_satisfaction
+    formula: '[average_employee_satisfaction]'
   workplace_quality_score:
     name: >-
       Workplace quality score
     topic: T4
     unit: float
     type: indirectindicator
-    formula: IF (company_size = “micro”) OR (company_size = “small”) THEN
-        workplace_quality_score = (0.3 * public_salaries_score + 0.3 * decision_making_ratio_score + 0.4 * average_employee_satisfaction_score)
-        ELSE IF (company_size = “medium”) OR (company_size = “large”) THEN workplace_quality_score = (0.4 * public_salaries_score + 0.2 * decision_making_ratio_score + 0.4 * average_employee_satisfaction_score)
+    formula: 'IF ([company_size] == “micro”) OR ([company_size] = “small”) THEN
+        workplace_quality_score = (0.3 * [public_salaries_score] + 0.3 * [decision_making_ratio_score] + 0.4 * [average_employee_satisfaction_score])
+        ELSE IF ([company_size] == “medium”) OR ([company_size] == “large”) THEN workplace_quality_score = (0.4 * [public_salaries_score] + 0.2 * [decision_making_ratio_score] + 0.4 * [average_employee_satisfaction_score])'
 
 surveys:
   Management_Survey:
