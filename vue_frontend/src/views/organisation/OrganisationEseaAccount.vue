@@ -59,7 +59,7 @@
             </Column>
             <Column headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
                 <template #body="{data}">
-                    <Button v-if="(data.stakeholdergroup === 'accountant')" label="Fill in Survey" type="button" icon="pi pi-user-plus" class="p-button-success" @click="goToSurveyFill(data)"  style="width: 200px" />
+                    <Button v-if="(data.stakeholdergroup === 'accountant')" :label="data.responses? 'Survey Results' : 'Fill in Survey'" type="button" icon="" class="p-button-success" @click="data.responses? goToResults(data) : goToSurveyFill(data)"  style="width: 200px" />
                     <Button v-else label="Import Employees" type="button" icon="pi pi-user-plus" @click="addEmployees(data)" style="width: 200px" />
                 </template>
             </Column>
@@ -185,6 +185,10 @@ export default {
         goToSurvey (methodid, surveyid) {
             console.log(methodid)
             this.$router.push({ name: 'survey-fill-page', params: { uniquetoken: 0 } })
+        },
+        goToResults (data) {
+            console.log(data)
+            this.$router.push({ name: 'esea-account-report', params: { OrganisationId: this.$route.params.OrganisationId, EseaAccountId: this.eseaAccount.id } })
         }
     }
 }

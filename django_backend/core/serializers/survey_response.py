@@ -47,7 +47,7 @@ class SurveyResponseSerializer(serializers.ModelSerializer):
 
 class SurveyResponseCalculationSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    topic = serializers.PrimaryKeyRelatedField(read_only=True)
+    topic = serializers.StringRelatedField(read_only=True)
     name = serializers.CharField(read_only=True)
     key = serializers.CharField(read_only=True)
     description = serializers.CharField(read_only=True)

@@ -7,11 +7,12 @@
             <div class="p-col-8 p-text-left">
             <h1>{{survey.name}}</h1>
             <h3>{{survey.description}}</h3>
-            <p>Respondents: {{ surveyResult.respondents }} of {{ surveyResult.all_respondents }} </p>
-            {{surveyResult}}
+            <p>Respondents: {{ surveyResult.respondents }} of {{ surveyResult.responses }} </p>
+            <!-- {{surveyResult}} -->
+            <!-- {{survey.topics[0].sub_topics[0].questions}} -->
             </div>
         </div>
-    <div class="p-grid p-col-6 p-p-3" style="min-width: 800px;">
+        <div class="p-grid p-col-6 p-p-3" style="min-width: 800px;">
             <div v-for="topic in survey.topics" :key="topic.id" class="p-grid p-col-12 p-p-5" style="background-color: #F5F5F5; border-radius: 10px;">
                 <div class="p-col-12 p-text-left"><h3>Topic: '{{topic.name}}</h3></div>
                 <survey-question-results
@@ -59,6 +60,7 @@ export default {
     },
     computed: {
         ...mapState('organisation', ['organisation']),
+        ...mapState('eseaAccount', ['eseaAccount']),
         ...mapState('survey', ['survey']),
         ...mapState('surveyResults', ['surveyResult']),
         answers () {
@@ -91,11 +93,11 @@ export default {
         ...mapActions('surveyResults', ['fetchSurveyResults']),
         async initialize () {
             const surveyId = parseInt(this.$route.params.surveyId, 10)
-            await this.fetchSurvey({ mId: this.methodId, id: surveyId })
-            if (this.survey.method !== this.methodId) {
-                this.$router.push({ name: 'methods' })
-            }
-            this.fetchSurveyResults({ mId: this.methodId, sId: surveyId, oId: 1 })
+            await this.fetchSurvey({ mId: this.eseaAccount.method?.id, id: surveyId })
+            // if (this.survey.method !== this.methodId) {
+            //     this.$router.push({ name: 'methods' })
+            // }
+            this.fetchSurveyResults({ eaId: this.eseaAccount?.id })
         }
     }
 }

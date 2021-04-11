@@ -461,9 +461,17 @@ const routes = [
     }
   },
   {
-    path: '/organisations/:OrganisationId/methods/:methodId/surveys/:surveyId/results',
-    name: 'method-survey-results',
+    path: '/organisations/:OrganisationId/esea-accounts/:EseaAccountId/surveys/:surveyId/results',
+    name: 'survey-results',
     component: () => import('../views/SurveyResults'),
+    meta: {
+      requiresLogin: true
+    }
+  },
+  {
+    path: '/organisations/:OrganisationId/esea-accounts/:EseaAccountId/report',
+    name: 'esea-account-report',
+    component: () => import('../views/EseaAccountReport.vue'),
     meta: {
       requiresLogin: true
     }
