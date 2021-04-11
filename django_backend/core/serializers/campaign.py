@@ -6,7 +6,8 @@ from .esea_account import EseaAccountSerializer
 class CampaignSerializer(serializers.ModelSerializer):
     organisation_accounts = EseaAccountSerializer(many=True, read_only=True)
     network = serializers.PrimaryKeyRelatedField(queryset=Network.objects.all())
-    method = serializers.SlugRelatedField(queryset=Method.objects.all(), slug_field='name')
+    method = serializers.PrimaryKeyRelatedField(queryset=Method.objects.all())
+    # method = serializers.SlugRelatedField(queryset=Method.objects.all(), slug_field='name')
 
     # method = serializers.StringRelatedField()
     class Meta:
@@ -15,7 +16,7 @@ class CampaignSerializer(serializers.ModelSerializer):
         depth = 1
 
     
-    def create(self, validated_data):    
+    def create(self, validated_data):
         campaign = Campaign.objects.create(**validated_data)
         for organisation in campaign.network.organisations.all():
             eseaaccount = EseaAccount.objects.create(organisation=organisation, method=campaign.method, campaign=campaign)

@@ -1,36 +1,10 @@
 import NetworkService from '../../services/NetworkService'
-// import { mapMutations } from 'vuex'
-// import { mapState } from 'vuex'
-// import axios from 'axios'
-// import axios from 'axios'
-// import { AxiosInstance } from '../../plugins/axios'
-// import { getRequestData } from '../../utils/helpers'
-
-//  var config = { headers: { 'Authorization': 'Bearer ' +this.accessToken }
-// axios({ method: 'get', url: 'http://localhost:8000/networks/', headers: { Authorization: 'Bearer ' + this.accessToken } })
-// axios.get('http://localhost:8000/networks/', config)
-// .then(response => (console.log(response.data)))
-
-// const { response, error } = axios({ method: 'get', url: 'http://localhost:8000/networkorganisations/1/', headers: { Authorization: 'Bearer ' + this.accessToken } })
-// if (error) {
-// 	commit('setError', { error })
-//     return
-// }
-//
-// response.data.forEach(item => console.log(item.organisations))
-// console.log(response.data[all nested dicts].organisations)
-
 export default {
     namespaced: true,
     state: {
         networks: [],
         network: {},
-        networkorganisations: [],
-        networkform: {
-            name: null,
-            description: null,
-            ispublic: null
-        },
+        // networkorganisations: [],
         error: []
     },
     mutations: {
@@ -38,11 +12,7 @@ export default {
             state.networks = data
         },
         setNetwork (state, { data }) {
-            console.log('>>', data)
             state.network = data || {}
-        },
-        addNetworkToList (state, { data }) {
-            state.networks.push(data)
         },
         updateNetwork (state, { id, data }) {
             state.networks = state.networks.map((item) => {
@@ -53,20 +23,14 @@ export default {
         deleteNetwork (state, { id }) {
             state.networks = state.networks.filter(n => n.id !== id)
         },
-        setNetworkOrganisations (state, { data }) {
-            state.networkorganisations = data.organisations || {}
-        },
-        setNetworkUsers (state, { data }) {
-            state.networkparticipants = data || {}
-        },
-        deleteNetworkOrganisations (state, { id }) {
-            state.networkorganisations = state.networkorganisations.filter(o => o.id !== id)
-        },
+        // setNetworkOrganisations (state, { data }) {
+        //     state.networkorganisations = data.organisations || {}
+        // },
+        // deleteNetworkOrganisations (state, { id }) {
+        //     state.networkorganisations = state.networkorganisations.filter(o => o.id !== id)
+        // },
         setError (state, { error }) {
             state.error = error
-        },
-        updateNetworkForm (state, data) {
-            state.networkform = { ...state.networkform, ...data }
         }
     },
     actions: {
@@ -85,32 +49,25 @@ export default {
                 return
             }
             commit('setNetwork', response)
-            commit('setNetworkOrganisations', response)
+            // commit('setNetworkOrganisations', response)
         },
-        async createNetwork ({ state, commit, dispatch }) {
-            console.log(state.networkform)
-            const data = state.networkform // getRequestData(state.form)
-            const { response, error } = await NetworkService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } })
+        async createNetwork ({ commit, dispatch }, { data }) {
+            const { response, error } = await NetworkService.post({ data: data, headers: { 'Content-Type': 'multipart/form-data' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
             await dispatch('fetchNetworks', {})
-            // commit('addNetworkToList', response)
             dispatch('setNetwork', response.data)
-            // commit('resetOrganisationForm')
         },
         async updateNetwork ({ state, commit }) {
             const id = state.network.id
-            console.log(id)
             const data = state.network
-            console.log(data)
             const { response, error } = await NetworkService.put({ id, data, headers: { 'Content-Type': 'multipart/form-data' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
-            console.log(response)
             commit('updateNetwork', { ...response, id })
             commit('setNetwork', response)
         },
@@ -124,20 +81,15 @@ export default {
             dispatch('setNetwork', {})
         },
         async patchNetwork ({ state, commit }, payload) {
-            console.log(payload.id)
-            const id = parseInt(payload.id || state.network.id)
-            console.log(id)
-            const data = payload.data
-            console.log(data)
-            const { response, error } = await NetworkService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
+            const id = parseInt(state.network.id)
+            const { response, error } = await NetworkService.patch({ id, data: payload, headers: { 'Content-Type': 'application/json' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
-            console.log(response)
             commit('updateNetwork', { ...response, id })
-            commit('setNetwork', response.data)
-            commit('deleteNetworkOrganisations', data)
+            commit('setNetwork', response)
+            // commit('deleteNetworkOrganisations', payload)
         },
         setNetwork ({ state, commit }, { id }) {
             if (id) {
@@ -146,10 +98,7 @@ export default {
             } else {
                 commit('setNetwork', {})
             }
-        },
-        updateNetworkForm ({ commit }, payload) {
-			commit('updateNetworkForm', payload)
-		}
+        }
     }
 }
         // if (!data) {
@@ -172,3 +121,28 @@ export default {
     //        return rootGetters['authentication/AuthenticationToken']
     //      }
     // },
+
+    // import { mapMutations } from 'vuex'
+// import { mapState } from 'vuex'
+// import axios from 'axios'
+// import axios from 'axios'
+// import { AxiosInstance } from '../../plugins/axios'
+// import { getRequestData } from '../../utils/helpers'
+
+//  var config = { headers: { 'Authorization': 'Bearer ' +this.accessToken }
+// axios({ method: 'get', url: 'http://localhost:8000/networks/', headers: { Authorization: 'Bearer ' + this.accessToken } })
+// axios.get('http://localhost:8000/networks/', config)
+// .then(response => (console.log(response.data)))
+
+// const { response, error } = axios({ method: 'get', url: 'http://localhost:8000/networkorganisations/1/', headers: { Authorization: 'Bearer ' + this.accessToken } })
+// if (error) {
+// 	commit('setError', { error })
+//     return
+// }
+//
+// response.data.forEach(item => console.log(item.organisations))
+// console.log(response.data[all nested dicts].organisations)
+
+// setNetworkUsers (state, { data }) {
+//     state.networkparticipants = data || {}
+// },

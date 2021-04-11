@@ -31,7 +31,7 @@
         <div class="p-grid">
         <div class="p-field p-col-6">
             <label for="method">Method<span style="color:red">*</span></label>
-            <Dropdown id="method" v-model="campaignForm.method" :options="methods" optionLabel="name" optionValue="name" placeholder="Select a Method" :class="{'p-invalid': submitted && !campaignForm.method}" />
+            <Dropdown id="method" v-model="campaignForm.method" :options="methods" optionLabel="name" optionValue="id" placeholder="Select a Method" :class="{'p-invalid': submitted && !campaignForm.method}" />
             <small class="p-error" v-if="submitted && !campaignForm.method">A method is required.</small>
         </div>
 
@@ -139,6 +139,7 @@ export default {
                     this.campaignForm.organisations.push(this.selectedOrganisations[index].name)
                 }
                 await this.createCampaign({ nId: this.$route.params.NetworkId, data: this.campaignForm })
+                console.log(this.campaign)
                 this.$router.push({ name: 'networkcampaign', params: { NetworkId: this.$route.params.NetworkId, CampaignId: this.campaign.id } })
                 this.createCampaignDialog = false
             }

@@ -37,7 +37,6 @@
         </Datatable>
     </div>
     <div v-else class="p-p-3 p-text-bold"> {{addingProcess? 'There are no organisations to add!' : 'This network has no organisations, add some!'}}</div>
-
     <Dialog v-model:visible="confirmationDialog" :style="{width: '450px'}" header="Confirm" :modal="true">
       <div class="confirmation-content">
           <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
@@ -58,23 +57,20 @@
     <Dialog v-model:visible="createDialog" :style="{width: '450px'}" header="Organisation Details" :modal="true" class="p-fluid">
         <div class="p-field">
             <label for="name">Name</label>
-            <InputText id="name" v-model.trim="organisation.name" required="true" autofocus :class="{'p-invalid': submitted && !organisation.name}"
-            @blur="updateOrganisationForm({ name: $event.target.value })" />
-            <small class="p-error" v-if="submitted && !organisation.name">Name is required.</small>
+            <InputText id="name" v-model.trim="organisationForm.name" required="true" autofocus :class="{'p-invalid': submitted && !organisationForm.name}" />
+            <small class="p-error" v-if="submitted && !organisationForm.name">Name is required.</small>
         </div>
         <div class="p-field">
             <label for="description">Description</label>
-            <Textarea id="description" v-model="organisation.description" required="true" rows="3" cols="20"
-            @blur="updateOrganisationForm({ description: $event.target.value })" />
+            <Textarea id="description" v-model="organisationForm.description" required="true" rows="3" cols="20" />
         </div>
         <div class="p-field">
             <label for="ispublic">Should this organisation be public? </label>
-            <SelectButton id="ispublic" v-model="boolChoice" required="true" :options="ispublicbool"
-            @blur="updateOrganisationForm({ ispublic: boolChoice })" />
+            <SelectButton id="ispublic" v-model="organisationForm.ispublic" required="true" :options="ispublicbool" />
         </div>
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="createDialog = false" />
-            <Button label="Save" icon="pi pi-check" class="p-button-text" @click="createNewOrganisation" :disabled="!organisation.name" />
+            <Button label="Save" icon="pi pi-check" class="p-button-text" @click="createNewOrganisation" :disabled="!organisationForm.name" />
         </template>
     </Dialog>
 
@@ -90,7 +86,7 @@ export default {
                     { field: 'ispublic', header: 'Public' },
                     { field: 'name', header: 'Name' },
                     { field: 'description', header: 'Description' },
-                    { field: 'members.length', header: 'Members' },
+                    { field: 'networks.length', header: 'Networks' },
                     { field: 'created_by', header: 'Created by' }
                 ]
             }
@@ -114,8 +110,12 @@ export default {
             createDialog: false,
             submitted: false,
             ispublicbool: [true, false],
-            boolChoice: null
-
+            boolChoice: null,
+            organisationForm: {
+                name: null,
+                description: '',
+                ispublic: true
+            }
         }
     },
     computed: {
@@ -126,7 +126,7 @@ export default {
         this.initialize()
     },
     methods: {
-        ...mapActions('organisation', ['fetchOrganisations', 'setOrganisation', 'createOrganisation', 'deleteOrganisation', 'updateOrganisationForm']),
+        ...mapActions('organisation', ['fetchOrganisations', 'setOrganisation', 'createOrganisation', 'deleteOrganisation']),
         ...mapActions('network', ['patchNetwork']),
         async initialize () {
             if (this.networkOrganisations) {
@@ -144,11 +144,11 @@ export default {
             this.selectionToggle = true
         },
         async addOrganisations () {
-            await this.patchNetwork({ data: this.selectedRows })
+            await this.patchNetwork(this.selectedRows)
             this.initialize()
         },
         async removeOrganisations () {
-            await this.patchNetwork({ data: this.selectedRows })
+            await this.patchNetwork(this.selectedRows)
             this.initialize()
         },
         async deleteOrganisations () {
@@ -158,10 +158,15 @@ export default {
             this.$toast.add({ severity: 'success', summary: 'success', detail: 'organisations deleted', life: 3000 })
             this.initialize()
         },
+        // async openCreateNetworkDialog () {
+        //     await this.setOrganisation({})
+        //     this.submitted = false
+        //     this.createDialog = true
+        // },
         async createNewOrganisation () {
             this.submitted = false
-            if (this.organisation.name.trim()) {
-                await this.createOrganisation({})
+            if (this.organisationForm.name.trim()) {
+                await this.createOrganisation({ data: this.organisationForm })
                 this.$toast.add({ severity: 'success', summary: 'Organisation created', detail: `organisation: ${this.organisation.name}`, life: 3000 })
             this.createDialog = false
             this.submitted = true

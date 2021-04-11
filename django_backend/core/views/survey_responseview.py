@@ -78,11 +78,11 @@ class SurveyResponseViewSet(BaseModelViewSet):
         if True: #self.request.user.is_authenticated:
             eseaaccount = get_object_or_404(EseaAccount, pk=esea_account_pk)
             respondents = SurveyResponse.objects.filter(esea_account=esea_account_pk) #Respondent.objects.filter(organisation__esea_accounts=74)
-            print(respondents)
+            # print(respondents)
             responses = SurveyResponse.objects.filter(esea_account=esea_account_pk, finished=True)
 
             question_responses = QuestionResponse.objects.filter(survey_response__esea_account=esea_account_pk, survey_response__finished=True)
-            print(question_responses)
+            # print(question_responses)
 
             indirect_indicators = IndirectIndicator.objects.filter(topic__method=eseaaccount.method)
             direct_indicators = DirectIndicator.objects.filter(topic__method=eseaaccount.method)
@@ -95,13 +95,19 @@ class SurveyResponseViewSet(BaseModelViewSet):
             #     print(di.key)
             #serializer = SurveyResponseCalculationSerializer(direct_indicators, many=True)
             indicators = calculate_indicators(indirect_indicators, direct_indicators)
-            print(indicators)
+
+            for indicator in indicators.values():
+                #print(indicator.key, '---', indicator.value)
+                if indicator.value is None:
+                    print(indicator.key)                        
             serializer = SurveyResponseCalculationSerializer(indicators.values(), many=True)
             return Response(
                 {
                     "respondents": len(respondents),
                     "responses": len(responses.filter(finished=True)),
+                    "indics": [i.value for i in indicators.values()],
                     "indicators": serializer.data,
+                    
                 }
             )
         return Response({})

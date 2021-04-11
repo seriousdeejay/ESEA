@@ -13,8 +13,7 @@ export default {
             [
                 { field: 'name', header: 'Name' },
                 { field: 'description', header: 'Description' },
-                { field: 'surveys.length', header: 'Surveys' },
-                { field: 'organisations.length', header: 'Organisations' }
+                { field: 'surveys.length', header: 'Surveys' }
             ]
         }
     }

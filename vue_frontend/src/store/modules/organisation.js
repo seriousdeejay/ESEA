@@ -1,22 +1,11 @@
-// import { AxiosInstance } from '../../plugins/axios'
-// import TestService from '../../services/TestService'
 import OrganisationService from '../../services/OrganisationService'
-// import UserService from '../../services/UserService'
-// import { getRequestData } from '../../utils/helpers'
 
 export default {
     namespaced: true,
     state: {
-        organisations: [], // { name: '1' }, { name: '2' }, { name: '3' }
+        organisations: [],
         organisation: {},
-        organisationParticipants: [],
-        form: {
-            name: 'Organisation N',
-            description: 'Description of Organisation N',
-            ispublic: true,
-            participants: [
-            ]
-        },
+        // organisationParticipants: [],
         error: []
     },
     mutations: {
@@ -38,21 +27,18 @@ export default {
         deleteOrganisation (state, { id }) {
             state.organisations = state.organisations.filter(o => o.id !== id)
         },
-        setOrganisationParticipants (state, { data }) {
-            state.organisationParticipants = data.participants || {}
-        },
-        deleteOrganisationUsers (state, { id }) {
-            state.organisationParticipants = state.organisationParticipants.filter(o => o.id !== id)
-        },
+        // setOrganisationParticipants (state, { data }) {
+        //     state.organisationParticipants = data.participants || {}
+        // },
+        // deleteOrganisationUsers (state, { id }) {
+        //     state.organisationParticipants = state.organisationParticipants.filter(o => o.id !== id)
+        // },
         setError (state, { error }) {
             state.error = error
-        },
-        updateOrganisationForm (state, data) {
-            state.form = { ...state.form, ...data }
         }
     },
     actions: {
-        async fetchOrganisations ({ commit }, payload) { // Working function
+        async fetchOrganisations ({ commit }, payload) {
             const { response, error } = await OrganisationService.get(payload)
             if (error) {
                 commit('setError', { error })
@@ -67,17 +53,15 @@ export default {
                 return
             }
             commit('setOrganisation', response)
-            commit('setOrganisationParticipants', response)
+            // commit('setOrganisationParticipants', response)
         },
-        async createOrganisation ({ state, commit, dispatch }) {
-            const data = state.form // getRequestData(state.form)
-            const { response, error } = await OrganisationService.post({ data, headers: { 'Content-Type': 'multipart/form-data' } })
+        async createOrganisation ({ state, commit, dispatch }, { data }) {
+            const { response, error } = await OrganisationService.post({ data: data, headers: { 'Content-Type': 'multipart/form-data' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
             await dispatch('fetchOrganisations', {})
-            // commit('addOrganisationToList', response)
             dispatch('setOrganisation', response.data)
         },
         async updateOrganisation ({ state, commit }) {
@@ -102,12 +86,13 @@ export default {
         async patchOrganisation ({ state, commit }, payload) {
             const id = state.organisation.id
             const data = payload.data
-            const { error } = await OrganisationService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
+            const { response, error } = await OrganisationService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
             if (error) {
                 commit('setError', { error })
                 return
             }
-            commit('deleteOrganisationUsers', data)
+            commit('updateNetwork', { ...response, id })
+            commit('setNetwork', response)
         },
         setOrganisation ({ state, commit }, { id }) {
             if (id) {
@@ -116,11 +101,7 @@ export default {
             } else {
                 commit('setOrganisation', {})
             }
-        },
-        updateOrganisationForm ({ commit }, payload) {
-            commit('updateOrganisationForm', payload)
         }
-
     }
 }
         // resetError ({ commit }) {

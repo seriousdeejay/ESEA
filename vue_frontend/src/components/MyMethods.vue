@@ -129,12 +129,12 @@ export default {
             this.selectionToggle = true
         },
         async addMethods () {
-            await this.patchNetwork({ data: this.selectedRows })
+            await this.patchNetwork(this.selectedRows)
             this.initialize()
         },
 
         async removeMethods () {
-            await this.patchNetwork({ data: this.selectedRows })
+            await this.patchNetwork(this.selectedRows)
             this.selectedRows.forEach((method, i) => {
                 this.$toast.add({ severity: 'success', summary: 'The following method was removed', detail: `${method.name}`, life: 3000 })
             })

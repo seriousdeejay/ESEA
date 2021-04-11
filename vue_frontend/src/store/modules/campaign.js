@@ -49,15 +49,14 @@ export default {
             commit('setCampaign', response)
         },
         async createCampaign ({ commit, dispatch }, { nId, data }) {
-            console.log(data)
             const { response, error } = await CampaignService.post({ nId, data: data })
             if (error) {
                 commit('setError', { error })
                 return
             }
-            await dispatch('fetchCampaigns', {})
-            console.log(response.data)
-            dispatch('setCampaign', response.data)
+            console.log('ddddd', response.data)
+            await dispatch('fetchCampaigns', { nId: nId })
+            await dispatch('setCampaign', response.data)
         },
         async updateCampaign ({ state, commit }) {
             const id = state.campaign.id
@@ -79,10 +78,9 @@ export default {
             dispatch('setCampaign', {})
         },
         setCampaign ({ state, commit }, { id }) {
-            console.log(id)
             if (id) {
-                const data = state.campaigns.find(m => m.id === id)
-                console.log(data)
+                console.log(id)
+                const data = state.campaigns.find(c => c.id === id)
                 commit('setCampaign', { data })
             } else {
                 commit('setCampaign', {})

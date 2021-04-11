@@ -49,13 +49,13 @@ class DirectIndicator(models.Model):
 
     def filter_responses(self, responses):
         self.responses = []
-        print(self.id)
+        # print(self.id)
         for response in responses:
             
             if response.direct_indicator_id == self.id:
-                print(response.values.all(), response.value)
-                print(response.direct_indicator_id, self.id)
-                print(self.question, self.question.answertype)
+                # print(response.values.all(), response.value)
+                # print(response.direct_indicator_id, self.id)
+                # print(self.question, self.question.answertype)
                 if len(response.values.all()):
                     self.responses.append(response.values.all())
                 else: 
@@ -77,7 +77,7 @@ class DirectIndicator(models.Model):
             or self.question.answertype == self.question.CHECKBOX
             or self.question.answertype == self.question.SCALE
         ):
-            print(self.question.answertype)
+            #print(self.question.answertype)
             response_values = self.checkbox_values(responses)
             return response_values
 
@@ -85,7 +85,7 @@ class DirectIndicator(models.Model):
         return self.average_calculation(response_values)
 
     def average_calculation(self, responses):
-        print(responses)
+        #print(responses)
         numbers = [int(r) for r in responses]
         return sum(numbers) / len(numbers)
 
@@ -94,13 +94,13 @@ class DirectIndicator(models.Model):
         for option in self.question.options.all():
             valuesdict[option.text] = 0
         #print(valuesdict['Fixed Salary'])
-        print(responses[0])
-        print('c')
+        #print(responses[0])
+        #print('c')
         for response in responses:
             # options = response.split(",") # Splits it on commas, should be changed!!!
-            print('>>>', self.question, self.question.answertype)
+            # print('>>>', self.question, self.question.answertype)
             for option in response:
-                print(option)
+                # print(option)
                 if option:
                     question_option = self.question.options.filter(text=option).first()
                     if question_option:

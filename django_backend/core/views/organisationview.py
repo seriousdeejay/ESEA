@@ -39,20 +39,23 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def partial_update(self, request, *args, **kwargs):
-        organisation_object = get_object_or_404(Organisation, pk=self.get_object().id)
-        data = request.data
-        try:
-            for user in data:
-                user = CustomUser.objects.get(id = user['id'])
-                if organisation_object.members.filter(pk=user.pk).exists():                    
-                    organisation_object.members.remove(user)
-                else:
-                    organisation_object.members.add(user)
-        except KeyError:
-            pass
-        organisation_object.save()
-        serializer = OrganisationSerializer(organisation_object)
-        return Response(serializer.data)
+        pass
+        # Should be reworked
+
+        # organisation_object = get_object_or_404(Organisation, pk=self.get_object().id)
+        # data = request.data
+        # try:
+        #     for user in data:
+        #         user = CustomUser.objects.get(id = user['id'])
+        #         if organisation_object.members.filter(pk=user.pk).exists():                    
+        #             organisation_object.members.remove(user)
+        #         else:
+        #             organisation_object.members.add(user)
+        # except KeyError:
+        #     pass
+        # organisation_object.save()
+        # serializer = OrganisationSerializer(organisation_object)
+        # return Response(serializer.data)
 
 @method_decorator(csrf_exempt, name='dispatch')
 @api_view(['GET', 'POST'])

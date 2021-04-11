@@ -45,7 +45,7 @@ indicators:
     topic: T1
     unit: integer
     type: indirectindicator
-    formula: '[woman_staff] + [men_staff]'
+    formula: '[women_staff] + [men_staff]'
   company_size:
     name: >-
       Company size
@@ -109,14 +109,16 @@ indicators:
     unit: float
     type: indirectindicator
     formula: '10 / [gender_pay_gap]'
-  gender_decision_making_ratio_score:
+  
+    gender_decision_making_ratio_score:
     name: >-
       Gender decision making score
     topic: T2
     unit: float
     type: indirectindicator
     formula: 'IF (([gender_decision_making_ratio] < 0.30) OR ([gender_decision_making_ratio] > 0.70)) THEN gender_decision_making_ratio_score = 0 ELSE gender_decision_making_ratio_score = 10'
-  gender_equity_score:
+  
+    gender_equity_score:
     name: >-
       Gender equity score
     topic: T2
@@ -236,7 +238,7 @@ indicators:
     topic: T4
     unit: float
     type: indirectindicator
-    formula: 'average([employee_satisfaction])'
+    formula: 'IF public_salaries = yes THEN public_salaries_score = 10 ELSE public_salaries_score = 0'
   decision_making_ratio_score:
     name: >-
       Decision making ratio score

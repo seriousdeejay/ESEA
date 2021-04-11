@@ -52,6 +52,7 @@ export default {
             return { 'border-color': '#00008B' }
         },
         goodanswer () {
+            console.log(this.answer)
             if (this.question.answertype === ('RADIO' || 'CHECKBOX')) {
                 return this.answer[0]
             }

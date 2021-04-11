@@ -27,8 +27,7 @@ class NetworkViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, pk):
         networkobject = get_object_or_404(Network, pk=pk)
-        print(request.data)
-        if 'methods' in request.data[0].keys():
+        if not 'surveys' in request.data[0].keys():
             for instance in request.data:
                 try: 
                     organisation = get_object_or_404(Organisation, name=instance['name'])
@@ -37,17 +36,21 @@ class NetworkViewSet(viewsets.ModelViewSet):
                     else:
                         networkobject.organisations.add(organisation)
                 except Exception as e:
-                    print('%s (%s)' % (e.message, type(e)))
+                    return Response({'error': f'{e}'})
+                    # print('%s (%s)' % (type(e)))
         else:
             for instance in request.data:
+                print('>>>', instance)
                 try: 
-                    method = get_object_or_404(Method, name=instance['name'])
+                    method = get_object_or_404(Method, pk=instance['id'])
+                    print(method)
                     if networkobject.methods.filter(name=method.name).exists():
                         networkobject.methods.remove(method)
                     else:
                         networkobject.methods.add(method)
                 except Exception as e:
-                    print('%s (%s)' % (e.message, type(e)))
+                    return Response({'error': f'{e}'})
+                    print(f'{type(e)}') #print('%s (%s)' % (e.message, type(e)))
         serializer = NetworkSerializer(networkobject)
         return Response(serializer.data)
 

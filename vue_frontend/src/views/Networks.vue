@@ -18,27 +18,23 @@
             :custom-data="networks" @item-redirect="goToNetwork"/>
         </div>
     </div>
-
     <Dialog v-model:visible="networkDialog" :style="{width: '450px'}" header="Network Details" :modal="true" class="p-fluid">
         <div class="p-field">
             <label for="name">Name</label>
-            <InputText id="name" v-model.trim="network.name" required="true" autofocus :class="{'p-invalid': submitted && !network.name}"
-            @blur="updateNetworkForm({ name: $event.target.value })" />
-            <small class="p-error" v-if="submitted && !network.name">Name is required.</small>
+            <InputText id="name" v-model.trim="networkForm.name" required="true" autofocus :class="{'p-invalid': submitted && !networkForm.name}" />
+            <small class="p-error" v-if="submitted && !networkForm.name">Name is required.</small>
         </div>
         <div class="p-field">
             <label for="description">Description</label>
-            <Textarea id="description" v-model="network.description" required="true" rows="3" cols="20"
-            @blur="updateNetworkForm({ description: $event.target.value })" />
+            <Textarea id="description" v-model="networkForm.description" required="true" rows="3" cols="20" />
         </div>
         <div class="p-field">
             <label for="ispublic">Should this network be public? </label>
-            <SelectButton id="ispublic" v-model="boolChoice" required="true" :options="ispublicbool"
-            @blur="updateNetworkForm({ ispublic: boolChoice })" />
+            <SelectButton id="ispublic" v-model="networkForm.ispublic" required="true" :options="ispublicbool" />
         </div>
         <template #footer>
             <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
-            <Button label="Save" icon="pi pi-check" class="p-button-text" @click="saveNetwork" :disabled="!network.name" />
+            <Button label="Save" icon="pi pi-check" class="p-button-text" @click="saveNetwork" :disabled="!networkForm.name" />
         </template>
     </Dialog>
 
@@ -65,9 +61,13 @@ export default {
             selectedNetworks: null,
             filters: {},
             ispublicbool: [true, false],
-            boolChoice: null,
             networkDialog: false,
-            submitted: false
+            submitted: false,
+            networkForm: {
+                name: null,
+                description: '',
+                ispublic: true
+            }
         }
     },
     computed: {
@@ -77,22 +77,22 @@ export default {
         this.initialize()
     },
     methods: {
-        ...mapActions('network', ['fetchNetworks', 'setNetwork', 'createNetwork', 'updateNetworkForm']),
+        ...mapActions('network', ['fetchNetworks', 'setNetwork', 'createNetwork']),
         async initialize () {
             await this.fetchNetworks({})
         },
         async openCreateNetworkDialog () {
-            this.setNetwork({})
+            await this.setNetwork({})
             this.submitted = false
             this.networkDialog = true
         },
         async saveNetwork () {
             this.submitted = true
-            if (this.network.name.trim()) {
-                await this.createNetwork({})
+            if (this.networkForm.name.trim()) {
+                await this.createNetwork({ data: this.networkForm })
                 this.$toast.add({ severity: 'success', summary: 'Succesful', detail: 'Network created', life: 3000 })
             this.networkDialog = false
-            this.$router.push({ name: 'networkdetails', params: { id: this.network.id } })
+            this.$router.push({ name: 'networkoverview', params: { NetworkId: this.network.id } })
             }
         },
         hideDialog () {

@@ -1,7 +1,7 @@
 from ..models import Method, Survey, Topic, DirectIndicator, IndirectIndicator
 
 def process_yaml_method(yaml_file):
-    method_instance = Method.objects.create(name='newmethod', description='A Method Description')
+    method_instance = Method.objects.create(name='newmethod 3.0', description='A Method Description')
  
     topic_dict, topic_errors = process_topics(yaml_file['topics'], method_instance)
     indicator_errors = process_indicators(yaml_file['indicators'], topic_dict)

@@ -1,5 +1,4 @@
 import EseaAccountService from '../../services/EseaAccountService'
-// import { AxiosInstance } from '../../plugins/axios'
 
 export default {
     namespaced: true,
@@ -56,7 +55,7 @@ export default {
                 commit('setError', { error })
                 return
             }
-            commit('updateEseaAccount', response) // { ...response, id }
+            commit('updateEseaAccount', response)
             commit('setEseaAccount', response)
         },
         async deleteEseaAccount ({ commit, dispatch }, payload) {

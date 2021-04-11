@@ -29,7 +29,6 @@ export default {
                 commit('setError', { error })
                 return
             }
-            console.log(response.data)
             commit('setTopics', response)
         }
     }

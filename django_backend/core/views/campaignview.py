@@ -14,6 +14,7 @@ class CampaignViewSet(viewsets.ModelViewSet):
         return Campaign.objects.filter(network=self.kwargs['network_pk'])
 
     def create(self, serializer, network_pk):
+        print(self.request.data)
         serializer = CampaignSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save() # goes to serializer def create()

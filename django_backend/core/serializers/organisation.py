@@ -14,7 +14,7 @@ class OrganisationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Organisation
-        fields = ['id', 'ispublic', 'name', 'description', 'created_by', 'networks']
+        fields = ['id', 'ispublic', 'name', 'description', 'created_by', 'networks', 'esea_accounts']
         extra_kwargs = {'networks': {'required': False}, 'methods': {'required': False}}
 
 

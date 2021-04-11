@@ -116,9 +116,7 @@ export default {
 			state.debouncers[survey.id]({ mId, survey })
 		},
 		setSurvey ({ state, commit }, { id }) {
-			console.log(id)
 			const data = state.surveys.find(surveys => surveys.id === id)
-			console.log(data)
 			if (data && data.id === state.survey.id) return
 			commit('setSurvey', { data })
 		},

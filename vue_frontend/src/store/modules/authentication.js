@@ -1,7 +1,6 @@
 import { AxiosInstance } from '../../plugins/axios'
 import { STATUS } from '../../utils/constants'
 import UserService from '../../services/UserService'
-// import axios from 'axios'
 
 export default {
     namespaced: true,
@@ -11,15 +10,6 @@ export default {
         authenticatedUser: null,
         currentuser: 'Username here',
         status: ''
-
-        // APIData: '',
-        // networks: '',
-        // network: '',
-        // networkorganisations: '',
-        // organisations: '',
-        // organisation: '',
-        // organisationparticipants: '',
-        // users: '',
     },
     mutations: {
         updateStorage (state, { access, refresh }) {

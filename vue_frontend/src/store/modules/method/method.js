@@ -73,21 +73,21 @@ export default {
             }
             commit('updateMethod', { response })
         },
-        async patchMethod ({ state, commit }, payload) {
-            console.log(state.method.id)
-            const id = payload.id || state.method.id
-            console.log(id)
-            const data = payload.data
-            console.log(data)
-            const { response, error } = await MethodService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
-            console.log(response)
-            if (error) {
-                commit('setError', { error })
-                return
-            }
-            commit('updateMethod', { ...response, id })
-            commit('setMethod', response.data)
-        },
+        // async patchMethod ({ state, commit }, payload) {
+        //     console.log(state.method.id)
+        //     const id = payload.id || state.method.id
+        //     console.log(id)
+        //     const data = payload.data
+        //     console.log(data)
+        //     const { response, error } = await MethodService.patch({ id, data, headers: { 'Content-Type': 'application/json' } })
+        //     console.log(response)
+        //     if (error) {
+        //         commit('setError', { error })
+        //         return
+        //     }
+        //     commit('updateMethod', { ...response, id })
+        //     commit('setMethod', response.data)
+        // },
         async deleteMethod ({ commit, dispatch }, payload) {
             const { response, error } = await MethodService.delete(payload)
             if (error) {
