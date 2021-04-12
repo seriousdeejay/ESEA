@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
 from ..models import Method, Survey, SurveyResponse
-
+from .survey import SurveyDetailSerializer
 
 class MethodSerializer(serializers.ModelSerializer):
     created_by = serializers.StringRelatedField()
     #surveyresponses = SurveyResponseSerializer(source='responses', read_only=True)
     # surveys = SurveySerializer(many=True, read_only=True)
+    surveys = SurveyDetailSerializer(many=True)
     class Meta:
         model = Method
         fields = ['id', 'ispublic', 'name', 'description', 'created_by', 'networks', 'organisations', 'surveys']

@@ -24,7 +24,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import PersonalisedDatatable from '../components/PersonalisedDatatable'
+import PersonalisedDatatable from '../../components/PersonalisedDatatable'
 
 export default {
     name: 'Users',

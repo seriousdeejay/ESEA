@@ -77,10 +77,6 @@ export default {
           label: 'Users',
           icon: 'pi pi-users',
           to: '/users'
-        },
-        {
-          label: 'Log out',
-          to: '/logout'
         }
       ],
       profile: [

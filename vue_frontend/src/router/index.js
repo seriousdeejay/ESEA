@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import SurveyFill from '../views/SurveyFill'
-import surveyThankYou from '../views/SurveyThankYou'
+import SurveyFill from '../views/survey/SurveyFill'
+import surveyThankYou from '../views/survey/SurveyThankYou'
 
 const routes = [
   {
@@ -27,23 +27,23 @@ const routes = [
     path: '/register',
     name: 'register',
     components: {
-      a: () => import('../views/Register.vue')
+      a: () => import('../views/user/Register.vue')
     }
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/Login.vue')
+    component: () => import('../views/user/Login.vue')
   },
   {
     path: '/logout',
     name: 'logout',
-    component: () => import('../views/Logout.vue')
+    component: () => import('../views/user/Logout.vue')
   },
   {
     path: '/',
     name: 'home',
-    component: () => import('../views/Home.vue'),
+    component: () => import('../views/user/Home.vue'),
     meta: {
       requiresLogin: true
     }
@@ -51,7 +51,7 @@ const routes = [
   {
     path: '/users',
     name: 'users',
-    component: () => import('../views/Users.vue'),
+    component: () => import('../views/user/Users.vue'),
     meta: {
       requiresLogin: true
     }
@@ -59,7 +59,7 @@ const routes = [
   {
     path: '/users/:id',
     name: 'userdetails',
-    component: () => import('../views/UserDetails.vue'),
+    component: () => import('../views/user/UserDetails.vue'),
     meta: {
       requiresLogin: true
     }
@@ -67,7 +67,7 @@ const routes = [
   {
     path: '/userprofile',
     name: 'userprofile',
-    component: () => import('../views/UserProfile.vue'),
+    component: () => import('../views/user/UserProfile.vue'),
     meta: {
       requiresLogin: true
     }
@@ -75,7 +75,7 @@ const routes = [
   {
     path: '/networks',
     name: 'networks',
-    component: () => import('../views/Networks.vue'),
+    component: () => import('../views/network/Networks.vue'),
     meta: {
       requiresLogin: true,
       breadcrumb: [{ label: 'networks', to: '/networks' }]
@@ -152,20 +152,20 @@ const routes = [
           ]
         }
       },
-      {
-        path: 'method/:MethodId',
-        name: 'networkmethod',
-        component: () => import('../views/network/NetworkMethod'),
-        meta: {
-          requiresLogin: true,
-          breadcrumb: [
-            { label: 'Networks', to: '/networks' },
-            { label: '', to: { name: 'networkoverview', params: { id: '' } } },
-            { label: 'Methods', to: { name: 'networkmethods' } },
-            { label: 'BIA', to: { name: 'networkmethod' } }
-          ]
-        }
-      },
+      // {
+      //   path: 'method/:MethodId',
+      //   name: 'networkmethod',
+      //   component: () => import('../views/network/NetworkMethod'),
+      //   meta: {
+      //     requiresLogin: true,
+      //     breadcrumb: [
+      //       { label: 'Networks', to: '/networks' },
+      //       { label: '', to: { name: 'networkoverview', params: { id: '' } } },
+      //       { label: 'Methods', to: { name: 'networkmethods' } },
+      //       { label: 'BIA', to: { name: 'networkmethod' } }
+      //     ]
+      //   }
+      // },
       {
         path: 'organisations',
         name: 'networkorganisations',
@@ -348,7 +348,7 @@ const routes = [
   {
     path: '/organisations',
     name: 'organisations',
-    component: () => import('../views/Organisations.vue'),
+    component: () => import('../views/organisation/Organisations.vue'),
     meta: {
       requiresLogin: true,
       breadcrumb: [
@@ -423,7 +423,7 @@ const routes = [
   {
     path: '/methods',
     name: 'methods',
-    component: () => import('../views/Methods.vue'),
+    component: () => import('../views/method/Methods'),
     meta: {
       requiresLogin: true
     }
@@ -431,23 +431,23 @@ const routes = [
   {
     path: '/methods/:id',
     name: 'methoddetails',
-    component: () => import('../views/MethodDetails.vue'),
+    component: () => import('../views/method/MethodDetails.vue'),
     meta: {
       requiresLogin: true
     }
   },
-  {
-    path: '/methods/:id/surveys',
-    name: 'methodsurveys',
-    component: () => import('../views/MethodSurveys.vue'),
-    meta: {
-      requiresLogin: true
-    }
-  },
+  // {
+  //   path: '/methods/:id/surveys',
+  //   name: 'methodsurveys',
+  //   component: () => import('../views/MethodSurveys.vue'),
+  //   meta: {
+  //     requiresLogin: true
+  //   }
+  // },
   {
     path: '/organisations/:OrganisationId/methods/:id/surveys/:surveyId',
     name: 'survey-fill',
-    component: () => import('../views/SurveyResponse.vue'),
+    component: () => import('../views/survey/SurveyResponse.vue'),
     meta: {
       requiresLogin: true
     }
@@ -455,7 +455,7 @@ const routes = [
   {
     path: '/organisations/:OrganisationId/methods/:methodId/surveys/:surveyId/result/:id',
     name: 'method-survey-result',
-    component: () => import('../views/SurveyUserResult.vue'),
+    component: () => import('../views/survey/SurveyUserResult.vue'),
     meta: {
       requiresLogin: true
     }
@@ -463,7 +463,7 @@ const routes = [
   {
     path: '/organisations/:OrganisationId/esea-accounts/:EseaAccountId/surveys/:surveyId/results',
     name: 'survey-results',
-    component: () => import('../views/SurveyResults'),
+    component: () => import('../views/survey/SurveyResults'),
     meta: {
       requiresLogin: true
     }
@@ -479,7 +479,7 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     name: '404',
-    component: () => import('../views/Logout.vue')
+    component: () => import('../views/user/Logout.vue')
 }
 ]
 

@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import MyMethods from '../components/MyMethods'
+import MyMethods from '../../components/MyMethods'
 export default {
     components: {
         MyMethods

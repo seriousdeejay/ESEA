@@ -1,7 +1,7 @@
 <template>
     <Button label="New Campaign" icon="pi pi-plus" class="p-button-success p-d-flex p-mx-5" @click="createCampaignDialog = true" />
     <Divider />
-    <div class="p-grid p-m-5">
+    <div v-if="campaigns.length" class="p-grid p-m-5">
         <div v-for="campaign in campaigns" :key="campaign.name" class="p-col-12 p-md-6 p-lg-4" style="width: 450px">
             <div class="p-p-3" :class="campaign.hover ? 'p-shadow-10 p-m-1' : 'p-shadow-5 p-m-2'" style="border-radius: 3px" :style="(campaign.hover ? styleObject : '')"  @mouseover="campaign.hover=true" @mouseleave="campaign.hover = false" @click="goToCampaign(campaign)">
                 <h3>{{campaign.name}}</h3>
@@ -19,6 +19,7 @@
             </div>
         </div>
     </div>
+    <div v-else class="p-text-italic">There are no campaigns to display, create one!</div>
 
     <Dialog v-model:visible="createCampaignDialog" style="width: 700px" contentStyle="height: 600px" header="Campaign Details" class="p-fluid p-text-left" modal="false" dismissableMask="true">
         <div class="p-field ">

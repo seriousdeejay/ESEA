@@ -5,7 +5,7 @@
         <div class="card p-m-5 p-shadow-2">
           <Toolbar>
                 <template #left>
-                        <Button label="Create Network" icon="pi pi-plus" class="p-button-success p-mx-2" @click="openCreateNetworkDialog" />
+                        <Button label="Create Network" icon="pi pi-plus" class="p-button-success" @click="openCreateNetworkDialog" />
                 </template>
                 <template #right>
                     <span class="p-input-icon-left">
@@ -42,7 +42,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import PersonalisedDatatable from '../components/PersonalisedDatatable'
+import PersonalisedDatatable from '../../components/PersonalisedDatatable'
 
 export default {
         components: {

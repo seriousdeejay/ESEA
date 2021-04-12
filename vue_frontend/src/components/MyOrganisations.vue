@@ -1,9 +1,9 @@
 <template>
     <Toolbar>
         <template #left>
-            <ToggleButton v-if="selectionEnabled" v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" class="p-mr-2" />
             <div v-if="networkOrganisations">
                 <div v-if="!addingProcess">
+                    <ToggleButton v-if="selectionEnabled" v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" class="p-mr-2" />
                     <Button label="Invite Organisations" icon="pi pi-plus" class="p-button-success p-mr-2" @click="addableOrganisations()" />
                     <Button label="Remove Organisations" icon="pi pi-trash" class="p-button-danger" @click="confirmationDialog = true" :disabled="!selectedRows.length" />
                 </div>
@@ -14,7 +14,7 @@
             </div>
             <div v-else>
                 <Button label="Create Organisation" icon="pi pi-plus" class="p-button-success p-mr-2" @click="createDialog = true" />
-                <Button label="Delete Organisation" icon="pi pi-trash" class="p-button-danger" @click="confirmationDialog = true" :disabled="!selectedRows.length" />
+                <!-- <Button label="Delete Organisation" icon="pi pi-trash" class="p-button-danger" @click="confirmationDialog = true" :disabled="!selectedRows.length" /> -->
             </div>
         </template>
         <template #right>

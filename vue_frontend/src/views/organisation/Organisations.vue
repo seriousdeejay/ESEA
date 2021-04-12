@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import MyOrganisations from '../components/MyOrganisations'
+import MyOrganisations from '../../components/MyOrganisations'
 
 export default {
     components: {

@@ -1,10 +1,10 @@
 <template>
     <Toolbar>
         <template #left>
-            <ToggleButton v-if="selectionEnabled" v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" class="p-mr-2" />
             <Button label="Create Method" icon="pi pi-plus" class="p-button-success p-mr-2" @click="importDialog = true" />
             <div v-if="networkMethods">
                 <div v-if="!addingProcess">
+                        <ToggleButton v-if="selectionEnabled" v-model="selectionToggle" onLabel="Selecting: Enabled" offLabel="Selecting: Disabled" onIcon="pi pi-check" offIcon="pi pi-times" class="p-mr-2" />
                         <Button label="Add Methods" icon="pi pi-plus" class="p-button-success p-mr-2" @click="addableMethods()" />
                         <Button label="Remove Methods" icon="pi pi-trash" class="p-button-danger" @click="confirmationDialog = true" :disabled="!selectedRows.length" />
                 </div>
@@ -12,9 +12,6 @@
                     <Button label="Show network methods" class="p-button-success p-mr-2" @click="initialize()" />
                     <Button label="Add selected Methods" class="p-button-primary p-mr-2" @click="confirmationDialog = true" :disabled="!selectedRows.length" />
                 </div>
-            </div>
-            <div v-else>
-                <Button label="Delete Method" icon="pi pi-trash" class="p-button-danger" @click="confirmationDialog = true" :disabled="!selectedRows.length" />
             </div>
         </template>
 
@@ -33,7 +30,7 @@
             <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field" />
         </DataTable>
     </div>
-    <div v-else class="p-p-3 p-text-bold"> {{addingProcess? 'There are no methods to add!' : 'This network has no methods, add some!'}}</div>
+    <div v-else class="p-p-3 p-text-bold"> {{addingProcess? 'There are no methods to add, create one first!' : 'This network has no methods, add one!'}}</div>
 
     <Dialog v-model:visible="confirmationDialog" :style="{width: '450px'}" header="Confirm" :modal="true">
       <div class="confirmation-content">
@@ -167,6 +164,7 @@ export default {
             this.$toast.add({ severity: 'info', summary: 'Method Selected', detail: `${event.data.name}`, life: 3000 })
             if (!this.selectionToggle) {
                 this.setMethod({ ...event.data })
+                this.$router.push({ name: 'methoddetails', params: { id: event.data.id } })
                 this.$router.push({ name: 'networkmethod', params: { NetworkId: this.network.id, MethodId: this.method.id } })
             }
        }

@@ -1,7 +1,7 @@
 from rest_framework.response import Response 
 from rest_framework import viewsets, response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.renderers import JSONRenderer
 from django.shortcuts import get_object_or_404
 from django.core.files.storage import FileSystemStorage
@@ -12,9 +12,9 @@ from django.db.models import Q
 import os
 import yaml
 
-from ..models import Method, Organisation, CustomUser, Topic, DirectIndicator, Survey
-from ..serializers import MethodSerializer
-from ..utils import process_yaml_method
+from ..models import Method, Organisation, CustomUser, Topic, DirectIndicator, IndirectIndicator, Survey
+from ..serializers import MethodSerializer, SurveyResponseCalculationSerializer
+from ..utils import process_yaml_method, merge_indicators
 
 
 class MethodViewSet(viewsets.ModelViewSet):
@@ -52,7 +52,36 @@ class MethodViewSet(viewsets.ModelViewSet):
                 print('%s (%s)' % (e.message, type(e)))
         serializer = MethodSerializer(method_object)
         return Response(serializer.data)
-        
+    
+    @action(detail=False, methods=['get'])
+    def indicators(self, request):
+        method = self.request.GET.get('method', None)
+        print(method)
+                # eseaaccount = get_object_or_404(EseaAccount, pk=esea_account_pk)
+                # respondents = SurveyResponse.objects.filter(esea_account=esea_account_pk) #Respondent.objects.filter(organisation__esea_accounts=74)
+                # # print(respondents)
+                # responses = SurveyResponse.objects.filter(esea_account=esea_account_pk, finished=True)
+
+                # question_responses = QuestionResponse.objects.filter(survey_response__esea_account=esea_account_pk, survey_response__finished=True)
+                # # print(question_responses)
+
+        indirect_indicators = IndirectIndicator.objects.filter(topic__method=method)
+        direct_indicators = DirectIndicator.objects.filter(topic__method=method)
+                
+                # for item in question_responses:
+                #     s = QuestionResponseSerializer(item, many=True)
+            
+                # for di in direct_indicators:
+                #     print(di.key)
+                #serializer = SurveyResponseCalculationSerializer(direct_indicators, many=True)
+        indicators = merge_indicators(direct_indicators, indirect_indicators) #calculate_indicators(indirect_indicators, direct_indicators)
+        print(indicators)
+        # for indicator in indicators.values():
+        #             #print(indicator.key, '---', indicator.value)
+        #             if indicator.value is None:
+        #                 print(indicator.key)                        
+        serializer = SurveyResponseCalculationSerializer(indicators.values(), many=True)
+        return Response({ "indicators": serializer.data })
 
 @method_decorator(csrf_exempt, name='dispatch')
 @api_view(['GET', 'POST'])

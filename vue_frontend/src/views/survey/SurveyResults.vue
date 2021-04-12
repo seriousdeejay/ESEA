@@ -43,7 +43,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import SurveyQuestionResults from '../components/survey/SurveyQuestionResults'
+import SurveyQuestionResults from '../../components/survey/SurveyQuestionResults'
 export default {
     components: {
         SurveyQuestionResults

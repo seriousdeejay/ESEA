@@ -17,7 +17,7 @@
                 <small><small>{{question.description}}</small></small></p>
             </div>
             <div v-else>
-                <p  class="p-text-left p-m-0" style="color: lightgrey;"><small>No Description</small>
+                <p class="p-text-left p-m-0" style="color: lightgrey;"><small>No Description</small>
                 </p></div>
 </div>
 </template>

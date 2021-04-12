@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { AxiosInstance } from '../plugins/axios'
+import { AxiosInstance } from '../../plugins/axios'
 
 export default {
     data () {

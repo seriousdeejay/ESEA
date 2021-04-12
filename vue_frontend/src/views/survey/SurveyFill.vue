@@ -46,7 +46,7 @@
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
-import SurveyQuestion from '../components/survey/SurveyQuestion'
+import SurveyQuestion from '../../components/survey/SurveyQuestion'
 import ProgressBar from 'primevue/progressbar'
 
 // import axios from 'axios'
