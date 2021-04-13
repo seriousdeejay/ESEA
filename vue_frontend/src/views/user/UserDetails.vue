@@ -1,8 +1,11 @@
 <template>
     <div class="p-d-flex p-jc-center">
+        <div>
+            <div class="p-d-flex p-jc-center">
+                <div><h1> {{user.username}}'s Profile</h1>
+                {{currentuser.username}} {{user.username}}</div>
+            </div>
         <div class="card p-px-5">
-            <h1> {{user.username}}'s Profile</h1>
-            {{currentuser.username}} {{user.username}}
             <Divider />
             <div class="p-grid nested-grid p-p-5" style="width: 1000px">
                 <div class="p-col-7 p-text-left p-p-3">
@@ -22,17 +25,15 @@
                     </div>
                 </div>
                 <div class="p-col-1"></div>
-                <div class="p-col-4 p-shadow-1" style="border-style: solid; border-color: #f2f2f2; border-width: thin; opacity: 0.6">
-                    Avatar here
-                </div>
-                <div class="p-mt-5">
-                </div>
+                <img class="p-shadow-5" :src="user.image" alt="Profile Avatar" style="max-width: 200px; max-height: 200px; border-radius: 50%;" format="PNG">
+                <!-- <div class="p-col-4 p-shadow-1" style="border-style: solid; border-color: #f2f2f2; border-width: thin; opacity: 0.6"> -->
             </div>
             <Divider />
             <div v-if="currentuser === user.username" class="p-d-flex p-jc-start">
                 <Button label="Edit Profile" class="p-button-raised p-button-primary p-mr-2" @click="editProfile" />
                 <Button label="Delete Account" class="p-button-raised p-button-danger" @click="(deleteAccountDialog = true)" /> <!-- If user profile belongs to logged in user-->
             </div>
+        </div>
         </div>
     </div>
 

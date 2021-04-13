@@ -5,7 +5,7 @@
         <div class="p-col-12 p-text-justify"><h4 class="p-text-bold">Description</h4>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis mi sit amet faucibus malesuada. Vestibulum fringilla sed dui bibendum laoreet. Donec suscipit sit amet leo et mattis. Aenean mattis tempus turpis a vulputate. Nunc bibendum pulvinar neque, nec mattis nisl tincidunt ut. Nam a quam id justo dictum pulvinar. Sed luctus dictum ligula, id sagittis tellus aliquam id. Vestibulum auctor vestibulum turpis.
         </div>
-         <div class="p-col-12 p-p-5 p-m-5" style="border: 1px solid lightgray; background-color: white; border-radius: 5px;">
+         <div class="p-col-12 p-p-5 p-my-5" style="border: 1px solid lightgray; background-color: white; border-radius: 5px;">
             <div v-if="Tasks">
                 <h4>No tasks!</h4>
                 <p class="p-text-italic">
@@ -27,7 +27,7 @@
         </div>
     </div>
     <div class="p-col-1">
-        <Divider layout="vertical"></Divider>
+        <Divider layout="vertical" />
     </div>
     <div class="p-col-2">
         <div class="p-grid">

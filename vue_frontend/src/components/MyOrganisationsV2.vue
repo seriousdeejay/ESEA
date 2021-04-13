@@ -1,8 +1,7 @@
 <template>
     <!-- <my-organisations network-organisations selection-enabled></my-organisations> -->
-    <br>
-    <div class="p-d-flex p-text-left p-jc-between p-mx-5" style="min-width: 600px;">
-        <div v-if="true">
+    <div class="p-d-flex p-jc-between p-m-5" style="min-width: 600px;">
+        <div v-if="networkOrganisations">
             <Button :label="'Invite Organisation'" icon="pi pi-plus" class="p-button-success p-button-sm p-mr-2" @click="addableOrganisations()" />
             <Button :label="removeMode ? 'Select the organisation to remove': 'Enable Remove Mode'" icon="pi pi-trash" class="p-button-danger p-button-sm" :disabled="!organisations.length" @click="removeMode = !removeMode" />
         </div>
@@ -14,7 +13,6 @@
         </span>
     </div>
     <Divider />
-    {{inviteMode}}
     <div v-if="organisations.length" class="p-grid p-m-5">
         <div v-for="organisation in filteredList" :key="organisation.id" class="p-col-12 p-md-6 p-lg-4" style="width: 300px; height: auto;">
             <div class="p-p-3" :class="organisation.hover ? 'p-shadow-2 p-m-1' : 'p-shadow-1 p-m-2'" :style="(organisation.hover ? styleObject: '')" @mouseover="organisation.hover=true" @mouseleave="organisation.hover = false" @click="goToOrganisation(organisation)">
@@ -89,8 +87,15 @@ export default {
     components: {
         MultiSelect
     },
+    props: {
+     networkOrganisations: {
+            type: Boolean,
+            default: false
+        }
+    },
     data () {
         return {
+            styleObject: { backgroundColor: '#EFEEEE' },
             search: '',
             selectedOrganisations: [],
             organisationsToInvite: '',

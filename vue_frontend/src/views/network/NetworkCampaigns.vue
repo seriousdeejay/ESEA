@@ -2,19 +2,19 @@
     <Button label="New Campaign" icon="pi pi-plus" class="p-button-success p-d-flex p-mx-5" @click="createCampaignDialog = true" />
     <Divider />
     <div v-if="campaigns.length" class="p-grid p-m-5">
-        <div v-for="campaign in campaigns" :key="campaign.name" class="p-col-12 p-md-6 p-lg-4" style="width: 450px">
-            <div class="p-p-3" :class="campaign.hover ? 'p-shadow-10 p-m-1' : 'p-shadow-5 p-m-2'" style="border-radius: 3px" :style="(campaign.hover ? styleObject : '')"  @mouseover="campaign.hover=true" @mouseleave="campaign.hover = false" @click="goToCampaign(campaign)">
+        <div v-for="campaign in campaigns" :key="campaign.name" class="p-col-12 p-md-6 p-lg-4" style="width: 400px">
+            <div class="p-p-3" :class="campaign.hover ? 'p-shadow-2 p-m-1' : 'p-shadow-1 p-m-0'" style="border-radius: 3px" :style="(campaign.hover ? styleObject : '')"  @mouseover="campaign.hover=true" @mouseleave="campaign.hover = false" @click="goToCampaign(campaign)">
                 <h3>{{campaign.name}}</h3>
+                <img :src="campaign.image" alt="Campaign Image" style="max-width: 150px; max-height: 150px; border-radius: 50%;" format="PNG">
                 <Divider />
-                <div class="p-text-left p-ml-5">
-                    <p>Method: <span class="p-text-bold">{{campaign.method}}</span></p>
-                    <p>Participating Organisations: <span class="p-text-bold">{{campaign.organisation_accounts.length}}</span></p>
+                <div class="p-d-flex p-jc-between p-mx-3">
+                    <p>Start: <span class="p-text-bold">{{ dateFixer(campaign.open_survey_date, 'MM/DD/YYYY') }}</span></p>
+                    <p>End: <span class="p-text-bold">{{ dateFixer(campaign.close_survey_date) }}</span></p>
                 </div>
                 <Divider />
-                <div class="p-d-flex p-jc-between p-mx-2">
-                    <p>Opening on: <span class="p-text-bold">{{ dateFixer(campaign.open_survey_date, 'MM/DD/YYYY') }}</span></p>
-                    <!-- If closing data has passed  closed on :-->
-                    <p>Closing on: <span class="p-text-bold">{{ dateFixer(campaign.close_survey_date) }}</span></p>
+                <div class="p-text-left p-ml-3">
+                    <p>Method: <span class="p-text-bold">{{campaign.method}}</span></p> <!-- Should be method name instead of pk! -->
+                    <p>Participating Organisations: <span class="p-text-bold">{{campaign.organisation_accounts.length}}</span></p>
                 </div>
             </div>
         </div>
@@ -83,10 +83,10 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
 import Calendar from 'primevue/calendar'
 import Dropdown from 'primevue/dropdown'
 import MultiSelect from 'primevue/multiselect'
-import { mapActions, mapState } from 'vuex'
 import dateFixer from '../../utils/datefixer'
 
 export default {
@@ -126,8 +126,8 @@ export default {
         this.initialize()
     },
     methods: {
-        dateFixer,
         ...mapActions('campaign', ['fetchCampaigns', 'createCampaign', 'setCampaign']),
+        dateFixer,
         async initialize () {
             this.campaignForm.close_survey_date = new Date(this.campaignForm.close_survey_date.setDate(this.campaignForm.open_survey_date.getDate() + 30))
             await this.fetchCampaigns({ nId: this.$route.params.NetworkId })
@@ -140,7 +140,6 @@ export default {
                     this.campaignForm.organisations.push(this.selectedOrganisations[index].name)
                 }
                 await this.createCampaign({ nId: this.$route.params.NetworkId, data: this.campaignForm })
-                console.log(this.campaign)
                 this.$router.push({ name: 'networkcampaign', params: { NetworkId: this.$route.params.NetworkId, CampaignId: this.campaign.id } })
                 this.createCampaignDialog = false
             }
@@ -148,7 +147,6 @@ export default {
         },
         async goToCampaign (campaign) {
             await this.setCampaign(campaign)
-            console.log(campaign)
             this.$router.push({ name: 'networkcampaign', params: { CampaignId: campaign.id } })
         }
     }

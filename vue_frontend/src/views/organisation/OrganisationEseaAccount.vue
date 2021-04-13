@@ -19,10 +19,6 @@
         <ProgressBar :value="survey.current_response_rate + 10" :showValue="true">
             '{{survey.name}}' - Response Rate: {{survey.current_response_rate + 10}}%
         </ProgressBar>
-        <Divider />
-        <ProgressBar :value="survey.current_response_rate + 30" :showValue="true">
-            '{{survey.name}}' - Response Rate: {{survey.current_response_rate + 30}}%
-        </ProgressBar>
     </div>
     <TabView>
 
@@ -54,7 +50,7 @@
             </Column>
             <Column field="required_response_rate" header="Response Rate Threshold" sortable>
                 <template #body='{data}'>
-                    {{data.required_response_rate+40}}%
+                    {{data.required_response_rate}}%
                 </template>
             </Column>
             <Column headerStyle="width: 15rem; text-align: center" bodyStyle="text-align: center; overflow: visible">
@@ -69,7 +65,13 @@
             d
         </TabPanel>
         <TabPanel header="Settings">
-            d
+            <div class="p-col-8 p-fluid p-text-left p-p-5" style="width: 600px">
+
+                    <div class="p-d-flex p-jc-between">
+                        <Button label="Save ESEA Account Details" class="p-button-primary p-button-sm p-mr-5" @click="editCampaign" :disabled="false"/>
+                        <Button label="Delete ESEA Account" class="p-button-danger p-button-sm p-ml-5" @click="deleteCampaignDialog = true" />
+                    </div>
+                </div>
         </TabPanel>
     </TabView>
     {{surveyy}}
@@ -105,6 +107,7 @@ import ProgressBar from 'primevue/progressbar'
 import Listbox from 'primevue/listbox'
 import SplitButton from 'primevue/splitbutton'
 import dateFixer from '../../utils/datefixer'
+import moment from 'moment'
 
 export default {
     components: {
@@ -145,7 +148,22 @@ export default {
     computed: {
         ...mapState('eseaAccount', ['eseaAccount']),
         ...mapState('survey', ['surveys']),
-        ...mapState('campaign', ['campaign'])
+        ...mapState('campaign', ['campaign']),
+        timeline () {
+            const jsondate = new Date().toJSON()
+            var currentdate = moment(jsondate, 'YYYY-MM-DD')
+            var admission = moment(this.campaign.open_survey_date, 'YYYY-MM-DD')
+            var discharge = moment(this.campaign.close_survey_date, 'YYYY-MM-DD')
+            var progress = (admission.diff(currentdate, 'days') / admission.diff(discharge, 'days')) * 100
+            return progress
+        },
+        campaigntimeleft () {
+            const jsondate = new Date().toJSON()
+            var currentdate = moment(jsondate, 'YYYY-MM-DD')
+            var discharge = moment(this.campaign.close_survey_date, 'YYYY-MM-DD')
+            var daysleft = (discharge.diff(currentdate, 'days'))
+            return daysleft
+        }
     },
     created () {
         this.initialize()

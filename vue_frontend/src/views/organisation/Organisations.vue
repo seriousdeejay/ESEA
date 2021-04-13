@@ -1,4 +1,5 @@
 <template>
+    <my-organisations2 />
     <div class="organisations">
         <h1>Organisations Overview</h1>
         <Toast position="top-right"/>
@@ -10,10 +11,12 @@
 
 <script>
 import MyOrganisations from '../../components/MyOrganisations'
+import MyOrganisations2 from '../../components/MyOrganisationsV2'
 
 export default {
     components: {
-       MyOrganisations
+       MyOrganisations,
+       MyOrganisations2
     },
     data () {
         return {

@@ -1,4 +1,5 @@
 <template>
+<my-users />
     <div class="users">
         <h1>Manage Users</h1>
         <Toast position="top-right"/>
@@ -25,11 +26,13 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import PersonalisedDatatable from '../../components/PersonalisedDatatable'
+import MyUsers from '../../components/MyUsersV2'
 
 export default {
     name: 'Users',
     components: {
-      PersonalisedDatatable
+      PersonalisedDatatable,
+      MyUsers
     },
     data () {
         return {

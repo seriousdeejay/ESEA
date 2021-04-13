@@ -12,7 +12,7 @@ class CampaignSerializer(serializers.ModelSerializer):
     # method = serializers.StringRelatedField()
     class Meta:
         model = Campaign
-        fields = ['id', 'name', 'network', 'method', 'organisation_accounts', 'open_survey_date', 'close_survey_date']
+        fields = ['id', 'name', 'image', 'network', 'method', 'organisation_accounts', 'open_survey_date', 'close_survey_date']
         depth = 1
 
     

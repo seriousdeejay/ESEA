@@ -165,7 +165,7 @@ export default {
             if (!this.selectionToggle) {
                 this.setMethod({ ...event.data })
                 this.$router.push({ name: 'methoddetails', params: { id: event.data.id } })
-                this.$router.push({ name: 'networkmethod', params: { NetworkId: this.network.id, MethodId: this.method.id } })
+                // this.$router.push({ name: 'networkmethod', params: { NetworkId: this.network.id, MethodId: this.method.id } })
             }
        }
     }

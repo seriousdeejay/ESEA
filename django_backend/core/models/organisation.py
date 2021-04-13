@@ -6,7 +6,7 @@ class Organisation(models.Model):
     ispublic = models.BooleanField(default=True)
     name = models.CharField(max_length=255, unique=False, blank=False)
     description = models.TextField(max_length=1000, blank=True)
-    # image = models.ImageField(blank=True, upload_to="organisation/", default="organisation/default.png")
+    image = models.ImageField(blank=True, upload_to="organisation/", default="organisation/sustainability-circle.png")
     created_by = models.ForeignKey('CustomUser', editable=False, on_delete=models.SET_NULL, null=True)
     esea_accounts = models.ManyToManyField('Method', through="EseaAccount", through_fields=('organisation', 'method'), related_name='organisations', blank=True)
 
