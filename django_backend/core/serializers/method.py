@@ -7,7 +7,9 @@ class MethodSerializer(serializers.ModelSerializer):
     created_by = serializers.StringRelatedField()
     #surveyresponses = SurveyResponseSerializer(source='responses', read_only=True)
     # surveys = SurveySerializer(many=True, read_only=True)
-    surveys = SurveyDetailSerializer(many=True)
+    surveys = SurveyDetailSerializer(required=False, many=True)
+    networks = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+
     class Meta:
         model = Method
         fields = ['id', 'ispublic', 'name', 'description', 'created_by', 'networks', 'organisations', 'surveys']

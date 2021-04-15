@@ -1,6 +1,5 @@
 <template>
 <div class="p-grid nested-grid p-px-2" style="min-height: 60vh;">
-    <img :src="organisation.image" alt="Profile Avatar" style="max-width: 200px; max-height: 200px; border-radius: 50%;" format="PNG">
     <div class="p-col-9">
         <!-- <div class="p-grid">
             <div class="p-col-12 p-d-flex p-jc-end">

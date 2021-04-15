@@ -1,11 +1,13 @@
 import MethodService from '../../../services/MethodService'
 import { AxiosInstance } from '../../../plugins/axios'
 
+const baseMethod = { name: 'Untitled method', description: '...' }
+
 export default {
     namespaced: true,
     state: {
         methods: [],
-        method: {},
+        method: { },
         error: []
     },
     mutations: {
@@ -62,6 +64,17 @@ export default {
                 })
             .catch(err => { reject(err) })
             })
+        },
+        async createMethod ({ commit, state, dispatch }) {
+            const { response, error } = await MethodService.post({ data: baseMethod })
+            if (error) {
+                commit('setError', { error })
+                return
+            }
+            console.log(response.data)
+            await dispatch('fetchMethods', {})
+            dispatch('setMethod', response.data)
+            // commit('setMethod', response)
         },
         async updateMethod ({ state, commit }) {
             const id = state.method.id

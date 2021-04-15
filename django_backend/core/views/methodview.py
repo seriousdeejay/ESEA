@@ -34,8 +34,10 @@ class MethodViewSet(viewsets.ModelViewSet):
         return Method.objects.filter(Q(created_by=self.request.user) | Q(ispublic = True))
 
     def create(self, serializer):
+        print(self.request.data)
         serializer = MethodSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
+        print('check')
         serializer.save(created_by=self.request.user)
         return Response(serializer.data)
 

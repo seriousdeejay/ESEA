@@ -1,16 +1,20 @@
 <template>
-    <Button label="New Campaign" icon="pi pi-plus" class="p-button-success p-d-flex p-mx-5" @click="createCampaignDialog = true" />
+    <div class="p-field p-fluid"><InputText id="description" v-model="something" autofocus required="true" /></div>
+    <div class="p-d-flex p-jc-between p-m-5">
+        <Button label="New Campaign" icon="pi pi-plus" class="p-button-success p-d-flex p-mx-5" @click="createCampaignDialog = true" />
+        <span class="p-input-icon-left">
+            <i class="pi pi-search" /><InputText v-model="search" placeholder="Search..." />
+        </span>
+    </div>
     <Divider />
     <div v-if="campaigns.length" class="p-grid p-m-5">
         <div v-for="campaign in campaigns" :key="campaign.name" class="p-col-12 p-md-6 p-lg-4" style="width: 400px">
-            <div class="p-p-3" :class="campaign.hover ? 'p-shadow-2 p-m-1' : 'p-shadow-1 p-m-0'" style="border-radius: 3px" :style="(campaign.hover ? styleObject : '')"  @mouseover="campaign.hover=true" @mouseleave="campaign.hover = false" @click="goToCampaign(campaign)">
-                <h3>{{campaign.name}}</h3>
+            <div class="p-p-3" :class="campaign.hover ? 'p-shadow-1 p-m-1' : 'p-shadow-1 p-m-0'" style="border-radius: 3px" :style="(campaign.hover ? styleObject : '')"  @mouseover="campaign.hover=true" @mouseleave="campaign.hover = false" @click="goToCampaign(campaign)">
+                    <p class="p-text-light">{{ dateFixer(campaign.open_survey_date, 'MMMM Do YYYY') }} - {{ dateFixer(campaign.close_survey_date, 'MMMM Do YYYY') }}</p> <!-- MM/Do/YYYY' -->
+                    <!-- <span class="p-text-italic">{{ dateFixer(campaign.close_survey_date, 'MMMM Do YYYY') }}</span> -->
                 <img :src="campaign.image" alt="Campaign Image" style="max-width: 150px; max-height: 150px; border-radius: 50%;" format="PNG">
-                <Divider />
-                <div class="p-d-flex p-jc-between p-mx-3">
-                    <p>Start: <span class="p-text-bold">{{ dateFixer(campaign.open_survey_date, 'MM/DD/YYYY') }}</span></p>
-                    <p>End: <span class="p-text-bold">{{ dateFixer(campaign.close_survey_date) }}</span></p>
-                </div>
+                 <p class="p-text-italic">{{campaign.name}}</p>
+
                 <Divider />
                 <div class="p-text-left p-ml-3">
                     <p>Method: <span class="p-text-bold">{{campaign.method}}</span></p> <!-- Should be method name instead of pk! -->
@@ -23,10 +27,10 @@
 
     <Dialog v-model:visible="createCampaignDialog" style="width: 700px" contentStyle="height: 600px" header="Campaign Details" class="p-fluid p-text-left" modal="false" dismissableMask="true">
         <div class="p-field ">
+            <div class="p-field p-fluid"><InputText id="description" v-model="something" autofocus required="true" /></div>
             <label for="name">Name<span style="color:red">*</span></label>
-            <InputText id="name" v-model.trim="campaignForm.name" required="true" autofocus :class="{'p-invalid': submitted && !campaignForm.name}" />
+            <InputText id="name" v-model.trim="campaignForm.name" required="true" :class="{'p-invalid': submitted && !campaignForm.name}" />
             <small class="p-error" v-if="submitted && !campaignForm.name">A name is required.</small>
-
         </div>
 
         <div class="p-grid">

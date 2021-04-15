@@ -15,7 +15,7 @@
     <Divider />
     <div v-if="organisations.length" class="p-grid p-m-5">
         <div v-for="organisation in filteredList" :key="organisation.id" class="p-col-12 p-md-6 p-lg-4" style="width: 300px; height: auto;">
-            <div class="p-p-3" :class="organisation.hover ? 'p-shadow-2 p-m-1' : 'p-shadow-1 p-m-2'" :style="(organisation.hover ? styleObject: '')" @mouseover="organisation.hover=true" @mouseleave="organisation.hover = false" @click="goToOrganisation(organisation)">
+            <div class="p-p-3" :class="organisation.hover ? 'p-shadow-2 p-m-1' : 'p-shadow-0 p-m-2'" :style="(organisation.hover ? styleObject: '')" @mouseover="organisation.hover=true" @mouseleave="organisation.hover = false" @click="goToOrganisation(organisation)">
                 <img :src="organisation.image" alt="Profile Avatar" style="max-width: 150px; max-height: 150px; border-radius: 50%;" format="PNG">
                 <p class="p-text-italic">{{organisation.name}}</p>
             </div>

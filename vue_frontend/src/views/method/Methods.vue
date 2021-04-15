@@ -1,6 +1,7 @@
 <template>
     <div class="methods">
         <h1>Methods Overview</h1>
+        <Button label="Method Wizard" @click="goToMethodCreate" />
         <Toast position="top-right"/>
         <div class="card p-m-5 p-shadow-2">
             <my-methods :columns="columns" selection-enabled></my-methods>
@@ -31,6 +32,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import MyMethods from '../../components/MyMethods'
 export default {
     components: {
@@ -46,6 +48,13 @@ export default {
                 { field: 'networks.length', header: 'Networks' },
                 { field: 'organisations.length', header: 'Organisations' }
                 ]
+        }
+    },
+    methods: {
+        ...mapActions('method', ['createMethod']),
+        async goToMethodCreate () {
+            this.createMethod({})
+            this.$router.push({ name: 'method-create' })
         }
     }
 }

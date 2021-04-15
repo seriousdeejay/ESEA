@@ -429,6 +429,14 @@ const routes = [
     }
   },
   {
+    path: '/methods/create',
+    name: 'method-create',
+    component: () => import('../views/method/MethodCreate'),
+    meta: {
+      requiresLogin: true
+    }
+  },
+  {
     path: '/methods/:id',
     name: 'methoddetails',
     component: () => import('../views/method/MethodDetails.vue'),

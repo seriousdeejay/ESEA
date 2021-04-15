@@ -23,7 +23,7 @@
                     </div>
                     <div class="p-col-12 p-d-flex p-jc-between">
                         <h3>{{indicator.formula? 'Indirect Indicator value': 'Direct Indicator value'}}: <span class="p-text-light p-text-italic p-ml-5">'{{decimalrounder(indicator.value) || 'No Value to Display'}}'</span></h3>
-                        <Button label="Learn more about this Topic" class="p-button-info  p-button-outlined" @click="goesnowhere" />
+                        <Button label="Learn more about this Indicator" class="p-button-info  p-button-outlined" @click="goesnowhere" />
                     </div>
                 </div>
                 <Divider class="p-m-5"/>
