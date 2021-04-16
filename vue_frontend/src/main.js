@@ -3,7 +3,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 // import IdleVue from 'idle-vue'
-import { useVuelidate } from '@vuelidate/core'
+// import { useVuelidate } from '@vuelidate/core'
+// import Vuelidate from 'vuelidate'
+// import Vuelidate from 'vuelidate'
+// import VuelidatePlugin from '@vuelidate/core'
 import Primevue from 'primevue/config'
 import ToastService from 'primevue/toastservice'
 
@@ -53,7 +56,7 @@ router.beforeEach((to, from, next) => {
     }
   })
 
-const app = createApp(App).use(store).use(router).use(Primevue).use(ToastService).use(useVuelidate) // after 10sec idle .use(IdleVue, { idleTime: 5000, store })
+const app = createApp(App).use(store).use(router).use(Primevue).use(ToastService) // .use(Vuelidate) // .use(Vuelidate) // after 10sec idle .use(IdleVue, { idleTime: 5000, store })
 
 app.component('Menubar', Menubar)
 app.component('Menu', Menu)

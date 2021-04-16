@@ -1,3 +1,3 @@
-import { required, maxLength, email, sameAs } from 'vuelidate/lib/validators'
+import { required, maxLength, minLength, email, sameAs } from 'vuelidate/lib/validators'
 
-export { required, maxLength, email, sameAs }
+export { required, maxLength, minLength, email, sameAs }

@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import MyMethods from '../../components/MyMethods'
 export default {
     components: {
@@ -50,11 +50,14 @@ export default {
                 ]
         }
     },
+    computed: {
+        ...mapState('method', ['method'])
+    },
     methods: {
         ...mapActions('method', ['createMethod']),
         async goToMethodCreate () {
-            this.createMethod({})
-            this.$router.push({ name: 'method-create' })
+            await this.createMethod({})
+            this.$router.push({ name: 'method-create', params: { id: this.method.id } })
         }
     }
 }

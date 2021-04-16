@@ -429,7 +429,7 @@ const routes = [
     }
   },
   {
-    path: '/methods/create',
+    path: '/methods/:id/create',
     name: 'method-create',
     component: () => import('../views/method/MethodCreate'),
     meta: {
