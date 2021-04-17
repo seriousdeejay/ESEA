@@ -1,21 +1,19 @@
 <template>
-    <div v-if="active">
-        <form ref="form" class="p-fluid" @submit.prevent="!v$.$invalid">
-            <div class="p-field p-mb-5">
-                <span class="p-float-label">
-                    <InputText id="topicname" ref="input" v-model="lazyTopic.name" :placeholder="nameLabel" :class="{'p-invalid': submitted && !lazyTopic.name }" @blur="updateName" />
-                </span>
-                <div class="p-error p-text-italic" v-for="error in nameErrors" :key="error"><small>{{error}}</small></div>
-            </div>
-            <div v-if="!lazyTopic.parent_topic" class="p-field">
-                <span class="p-float-label">
-                    <InputText v-model="lazyTopic.description" placeholder="Topic Description" @blur="updateDescription" />
-                </span>
-                <div class="p-error p-text-italic" v-for="error in descriptionErrors" :key="error"><small>{{error}}</small></div>
-            </div>
-        </form>
-    </div>
-    <topic-card v-else :name="lazyTopic.name" :description="lazyTopic.description" :is-sub-topic="!isMainTopic" />
+    <form v-if="active" ref="form" class="p-fluid p-input-filled p-text-left p-p-5" @submit.prevent="!v$.$invalid" style="border: 1px solid lightgrey;">
+        <div class="p-field p-mb-3">
+            <span class="p-float-label">
+                <InputText id="topicname" ref="input" v-model="lazyTopic.name" :placeholder="nameLabel" :class="{'borderless': nameErrors.length }" class="p-inputtext-lg" @blur="updateName" />
+            </span>
+            <div class="p-error p-text-italic" v-for="error in nameErrors" :key="error"><small>{{error}}</small></div>
+        </div>
+        <div v-if="!lazyTopic.parent_topic" class="p-field">
+            <span class="p-float-label">
+                <InputText v-model="lazyTopic.description" placeholder="Topic Description" class="p-inputtext-sm" @blur="updateDescription" @focus="$event.target.select()" />
+            </span>
+            <div class="p-error p-text-italic" v-for="error in descriptionErrors" :key="error"><small>{{error}}</small></div>
+        </div>
+    </form>
+    <topic-card v-else :name="lazyTopic.name" :description="lazyTopic.description" :is-sub-topic="!isMainTopic" class="p-shadow-1 p-p-1" />
 </template>
 
 <script>
@@ -58,7 +56,7 @@ export default {
         },
         nameErrors () {
             return HandleValidationErrors(
-                this.$v.lazyTopic.name,
+                this.v$.lazyTopic.name,
                 this.errors.name
             )
         },
@@ -75,9 +73,11 @@ export default {
                 this.lazyTopic = { ...val }
             }
         },
-        'v$.lazyTopic$invalid': function () {
+        'v$.lazyTopic.$invalid': function () {
+            console.log(this.lazyTopic)
             if (this.v$.lazyTopic.$invalid) { return }
             if (isEqual(this.topic, this.lazyTopic)) { return }
+            console.log('saving')
             this.$emit('input', this.lazyTopic)
         },
         active (val) {
@@ -92,12 +92,12 @@ export default {
     validations: {
         lazyTopic: {
             name: { required, maxLength: maxLength(120) },
-            description: {}
+            description: { }
         }
     },
     mounted () {
         if (!this.lazyTopic.name) {
-            this.$refs.input.focus()
+            this.$refs.topicname.focus()
         }
     },
     created () {
@@ -119,3 +119,14 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.p-inputtext {
+    border: none;
+    border-bottom: 1px solid lightgrey;
+}
+.borderless {
+    border-bottom: 1px solid red;
+
+}
+</style>

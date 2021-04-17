@@ -9,10 +9,12 @@ import method from './modules/method/method'
 import survey from './modules/method/survey'
 import topic from './modules/method/topic'
 import question from './modules/method/question'
+import indirectIndicator from './modules/method/indirect_indicator'
 import campaign from './modules/campaign'
 import eseaAccount from './modules/esea_account'
 import surveyResponse from './modules/method/survey/survey_response'
 import surveyResults from './modules/method/survey/survey_results'
+
 const vuexLocalStorage = new VuexPersistance({
   storage: window.localStorage
 //  ... can be used to use local storage
@@ -29,6 +31,7 @@ export default createStore({
     survey,
     topic,
     question,
+    indirectIndicator,
     campaign,
     eseaAccount,
     surveyResponse,

@@ -1,10 +1,12 @@
 <template>
-    <p :class="isSubTopic ? '' : 'p-text-bold'">
+    <div class="p-text-italic">
+    <h3 :class="isSubTopic ? 'p-text-light' : ''">
         {{ name }}
+    </h3>
+    <p>
+        {{ description || 'No Description' }}
     </p>
-    <p v-if="description">
-        {{ description }}
-    </p>
+    </div>
 </template>
 
 <script>

@@ -2,7 +2,7 @@ from django.urls import path, include, re_path
 from rest_framework_nested import routers
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
-from .views import (respondentview, userview, networkview, organisationview, methodview, surveyview, topicview, direct_indicatorview, survey_responseview, campaignview, esea_accountview)
+from .views import (respondentview, userview, networkview, organisationview, methodview, surveyview, topicview, direct_indicatorview, indirect_indicatorview, survey_responseview, campaignview, esea_accountview)
 
 
 router = routers.DefaultRouter()
@@ -25,6 +25,7 @@ method_router = routers.NestedSimpleRouter(router, r'methods', lookup="method")
 method_router.register(r'surveys', surveyview.SurveyViewSet, basename="method-surveys")
 method_router.register(r'topics', topicview.TopicViewSet, basename="method-topics")     ## /methods/{pk}/topics & /methods/{pk}/topics/{pk}/
 method_router.register(r'questions', direct_indicatorview.DirectIndicatorViewSet, basename="method-questions")
+method_router.register(r'indirect-indicators', indirect_indicatorview.IndirectIndicatorViewSet, basename="method-indirect-indicators")
 
 survey_router = routers.NestedSimpleRouter(method_router, r'surveys', lookup="survey")
 survey_router.register(r'organisations', organisationview.OrganisationViewSet, basename="survey-organisations")

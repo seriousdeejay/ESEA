@@ -1,14 +1,31 @@
 <template>
-<div class="p-grid p-mt-5">
-    <div class="p-fixed" style="width: 200px">
-        {{method}}
+
+<div class="p-grid p-m-0">
+    <method-tree-sidebar class="p-col-fixed" style="width: 300px; border-right: 1px solid lightgrey;"/>
+    <div class="p-col p-m-5 p-p-5">
+            <method-form :method="method" @input="updateMethod($event)" />
+        <Divider />
+        <div v-for="(topic, topicIndex) in items" :key="`topic-${topicIndex}`" class="p-col-12">
+            <topic-form ref="items" :topic="topic" :active="activeItem.objType === topic.objType && activeItem.id === topic.id" @input="saveActive('topic', $event)" @click="toggleActive(topic)" /> <!-- @click.native="toggleActive(topic)" -->
+            <template v-for="(topicChild, index) in topic.children" :key="`topicChild-${index}`">
+                <component :is="`${topicChild.objType}-form`" ref="items" :topic="topicChild" :question="topicChild" :errors="errors[topicChild.objType] && errors[topicChild.objType][topicChild.id]" :indirect-indicator="topicChild" :active="activeItem.objType === topicChild.objType && activeItem.id === topicChild.id" @input="saveActive(topicChild.objType, $event)" @click="toggleActive(topicChild)" />
+                <template v-for="(subTopicChild, index) in topicChild.children" :key="`subTopicChild-${index}`">
+                    <!-- <component /> -->
+                </template>
+                {{topicChild}}
+            </template>
+        </div>
+        <Button label="Add New Topic" icon="pi pi-plus" class="p-button-text" @click="addTopic" />
     </div>
-    <div class="p-col">
-        <method-form :method="method" @input="updateMethod($event)" />
-    </div>
-    <div v-for="(topic, topicIndex) in items" :key="`topic-${topicIndex}`">
-        mydiv
-        <topic-form ref="items" :topic="topic" :active="activeItem.objType === topic.objType && activeItem.id === topic.id" @input="saveActive('topic', $event)"  /> <!-- @click.native="toggleActive(topic)" -->
+    <div class="p-col-fixed p-d-flex p-ai-center" style="width: 150px; border: 1px solid lightgrey;">
+        <div>
+            <div v-for="option in addBar" :key="option.choice" class="p-d-flex p-jc-center p-ai-center" style="height: 100px; width: 100px; border: 1px solid lightgrey" :style="(option.hover ? 'background-color: lightgrey;' : '')" @mouseover="option.hover=true" @mouseleave="option.hover=false" @click="addBarMethod(option.choice)">
+                <div>
+                    <i :class="option.icon? option.icon : 'pi pi-plus'" />
+                    <p class="p-text-italic p-m-2">{{option.choice}}</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <!-- Method creation wizard -->
@@ -16,6 +33,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
+import MethodTreeSidebar from '../../components/MethodTreeSideBar'
 import MethodForm from '../../components/forms/MethodForm'
 import TopicForm from '../../components/forms/TopicForm'
 // import QuestionForm from '../../components/forms/QuestionForm'
@@ -24,22 +42,29 @@ import getMethodItems from '../../utils/getMethodItems'
 
 export default {
     components: {
+        MethodTreeSidebar,
         MethodForm,
         TopicForm
     },
     data () {
         return {
-            updateToolbar: 0
+            updateToolbar: 0,
+            addBar: [
+                { choice: 'question' },
+                { choice: 'subtopic' },
+                { choice: 'calculation' },
+                { choice: 'delete', icon: 'pi pi-trash' }
+            ]
         }
     },
     computed: {
         ...mapState('method', ['method', 'error']),
         ...mapState('topic', { topics: 'topics', activeTopic: 'topic', topicErrors: 'errors' }),
         ...mapGetters('topic', ['methodTopics', 'subTopics']),
-        // ...mapState('question', { activeQuestion: 'question', questionErrors: 'errors' }),
-        // ...mapGetters('question', ['topicQuestions']),
-        // ...mapState('indirectIndicator', { activeIndirectIndicator: 'indirectIndicator', indirectIndicatorErrors: 'errors' }),
-        // ...mapGetters('indirectIndicator', ['topicIndirectIndicators']),
+        ...mapState('question', { activeQuestion: 'question', questionErrors: 'errors' }),
+        ...mapGetters('question', ['topicQuestions']),
+        ...mapState('indirectIndicator', { activeIndirectIndicator: 'indirectIndicator', indirectIndicatorErrors: 'errors' }),
+        ...mapGetters('indirectIndicator', ['topicIndirectIndicators']),
         items () {
             return getMethodItems(
                 this.methodTopics,
@@ -76,8 +101,8 @@ export default {
     methods: {
         ...mapActions('method', ['fetchMethod', 'updateMethod', 'saveMethod']),
         ...mapActions('topic', ['fetchTopics', 'updateTopic', 'addNewTopic', 'deleteTopic']), // setTopic
-        // ...mapActions('question', ['fetchQuestions, setQuestion, addNewQuestion, deleteQuestion, updateQuestion']),
-        // ...mapActions('indirectIndicator', ['fetchIndirectIndicators', 'addNewIndirectIndicator', 'updateIndirectIndicator', 'setIndirectIndicator', 'deleteIndirectIndicator']),
+        ...mapActions('question', ['fetchQuestions', 'setQuestion', 'addNewQuestion', 'deleteQuestion', 'updateQuestion']),
+        ...mapActions('indirectIndicator', ['fetchIndirectIndicators', 'addNewIndirectIndicator', 'updateIndirectIndicator', 'setIndirectIndicator', 'deleteIndirectIndicator']),
         async initialize () {
             const methodId = parseInt(this.$route.params.id, 10)
             if (this.method.id !== methodId) {
@@ -87,8 +112,8 @@ export default {
                 }
             }
             await this.fetchTopics({ mId: this.method.id })
-            // await this.fetchQuestions({ mId: this.method.id })
-            // await this.fetchIndirectIndicators({ mId: this.method.id })
+            await this.fetchQuestions({ mId: this.method.id })
+            await this.fetchIndirectIndicators({ mId: this.method.id })
             // this.toggleActive({ objType: 'topic' })
         },
         addTopic () {
@@ -101,14 +126,67 @@ export default {
             this.setQuestion()
             this.setIndirectIndicator()
         },
+        addQuestion () {
+            console.log('..........')
+            this.addNewQuestion({ topic: this.activeTopic.id })
+            this.setIndirectIndicator()
+        },
+        addIndirectIndicator () {
+            this.addNewIndirectIndicator({ topic: this.activeTopic.id })
+            this.setQuestion()
+        },
         toggleActive (item) {
-            // fill in
+            const { objType } = item
+            const topic = { id: item.topic || item.id }
+            this.setTopic(topic)
+            if (objType === 'topic') {
+                this.setQuestion()
+                this.setIndirectIndicator()
+            } else if (objType === 'question' && item.id !== this.activeQuestion.id) {
+                this.setQuestion(item)
+                this.setIndirectIndicator()
+            } else if (objType === 'calculation' && item.id !== this.activeIndirectIndicator.id) {
+                this.setIndirectIndicator(item)
+                this.setQuestion()
+            }
         },
         saveActive (type, object) {
-            // fill in
+            if (type === 'topic') {
+                this.updateTopic({
+                    mId: this.method.id,
+                    topic: object
+                })
+            }
+            if (type === 'question') {
+                this.updateQuestion({
+                    mId: this.method.id,
+                    question: object
+                })
+            }
+            if (type === 'calculation') {
+                this.updateIndirectIndicator({
+                    mId: this.method.id,
+                    indirectIndicator: object
+                })
+            }
         },
         deleteActive () {
-            // fill in
+            const { objType, id } = this.activeitem
+            if (objType === 'topic') {
+                this.deleteTopic({ mId: this.method.id, id })
+            }
+            if (objType === 'question') {
+                this.deleteQuestion({ mId: this.method.id, id })
+            }
+            if (objType === 'calculation') {
+                this.deleteIndirectIndicator({ mId: this.method.id, id })
+            }
+        },
+        addBarMethod (choice) {
+            if (choice === 'question') { this.addQuestion() }
+            if (choice === 'subtopic') { this.addSubTopic() }
+            if (choice === 'calculation') { this.addIndirectIndicator() }
+            if (choice === 'delete') { this.deleteActive() }
         }
     }
 }

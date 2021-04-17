@@ -2,20 +2,20 @@
     <!-- {{ v$.lazyMethod.name.$invalid }}
     {{ v$.lazyMethod.description.$invalid }}
     invalid: {{ this.v$.lazyMethod.$invalid }} {{ v$.$invalid }} -->
-    <form ref="form" class="p-fluid" @submit.prevent="!v$.$invalid">
+    <form ref="form" class="p-fluid p-input-filled p-text-left" @submit.prevent="!v$.$invalid">
         <div class="p-field p-mb-5">
             <span class="p-float-label">
-                <InputText id="methodname" type="text" v-model="lazyMethod.name" :class="{'p-invalid': nameErrors.length}" @blur="updateName" />
+                <InputText id="methodname" type="text" v-model="lazyMethod.name"  :class="{'borderless': nameErrors.length}"  @blur="updateName"  />
                 <label for="methodname">Method Name</label>
             </span>
             <div class="p-error p-text-italic" v-for="error in nameErrors" :key="error"><small>{{error}}</small></div>
         </div>
         <div class="p-field">
             <span class="p-float-label">
-                <InputText id="methoddescription" type="text" v-model="lazyMethod.description" :class="{'p-invalid': !lazyMethod.description}" @blur="updateDescription" />
+                <InputText id="methoddescription" type="text" v-model="lazyMethod.description" :class="{'borderless': descriptionErrors.length}" @blur="updateDescription" />
                 <label for="methoddescription">Method Description</label>
             </span>
-            <div class="p-error p-text-italic p-pt-1" v-for="error in descriptionErrors" :key="error">{{error}}</div>
+            <div class="p-error p-text-italic p-pt-1" v-for="error in descriptionErrors" :key="error"><small>{{error}}</small></div>
         </div>
     </form>
 </template>
@@ -105,3 +105,14 @@ export default {
         //     }
         // }
 </script>
+
+<style lang="scss" scoped>
+.p-inputtext {
+    border: none;
+    border-bottom: 1px solid lightgrey;
+}
+.borderless {
+    border-bottom: 1px solid red;
+
+}
+</style>

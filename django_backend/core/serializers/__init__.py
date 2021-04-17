@@ -7,7 +7,7 @@ from .method import MethodSerializer
 from .survey import (SurveyOverviewSerializer, SurveyDetailSerializer)
 from .topic import TopicSerializer
 from .direct_indicator import DirectIndicatorSerializer
-#from .indirect_indicator import IndirectIndicatorSerializer
+from .indirect_indicator import IndirectIndicatorSerializer
 from .question_option import QuestionOptionSerializer
 
 from .campaign import CampaignSerializer

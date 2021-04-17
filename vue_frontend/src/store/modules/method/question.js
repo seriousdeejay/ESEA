@@ -1,4 +1,8 @@
+// import { random, debounce, isInteger } from 'lodash'
+import { isInteger } from 'lodash'
 import QuestionService from '../../../services/QuestionService'
+
+// const baseQuestion = { key: '', name: '', prefix: '', default: '', suffix: '', type: 'NUMBER', options: []}
 
 export default {
     namespaced: true,
@@ -6,7 +10,24 @@ export default {
         questions: [],
         question: {},
         error: undefined
+		// debouncers: {},
+		// errors: {},
+		// isSaved: {}
     },
+	getters: {
+		getById: state => id => state.questions.find(object => object.id === id),
+		topicQuestions: (state) => {
+			const filtered = {}
+			state.questions.forEach((question) => { filtered[question.topic] = !filtered[question.topic] ? [question] : [...filtered[question.topic], question] })
+			return filtered
+		},
+		getValidQuestionKeyNumber: (state) => {
+			const indicators = state.questions
+				.map(indicator => parseInt(indicator.key.match(/[^_]*$/), 10))
+				.filter(indicator => isInteger(indicator))
+			return indicators.length ? Math.max(...indicators) + 1 : 1
+		}
+	},
     mutations: {
         setQuestions (state, { data }) {
 			state.questions = data
@@ -41,30 +62,31 @@ export default {
 				if (item.id !== id) return item
 				return Object.assign(item, data)
 			})
+		}
+		/*
+		addNewQuestion (state, { topic }) {
+			const question = { ...baseQuestion, id: random(-1000000, -1), topic }
+			state.questions.push(question)
+			state.question = question
 		},
-		// addNewQuestion (state, { topic }) {
-		// 	const question = { ...baseQuestion, id: random(-1000000, -1), topic }
-		// 	state.questions.push(question)
-		// 	state.question = question
-		// },
-		// setDebouncer (state, { id, commit }) {
-		// 	state.debouncers[id] = debounce(
-		// 		async ({ oId, mId, question }) => {
-		// 			const method = question.id > 0 ? 'put' : 'post'
-		// 			const { response, error } = await QuestionService[method](
-		// 				{ oId, mId, id, data: question }
-		// 			)
-		// 			if (error) {
-		// 				commit('setError', { error, id: question.id })
-		// 				return
-		// 			}
-		// 			commit('setError', { error: {}, id: question.id })
-		// 			commit('setIsSaved', { id: question.id, isSaved: true })
-		// 			commit('updateList', { id: question.id, data: response.data })
-		// 		},
-		// 		1000
-		// 	)
-		// },
+		setDebouncer (state, { id, commit }) {
+			state.debouncers[id] = debounce(
+				async ({ oId, mId, question }) => {
+					const method = question.id > 0 ? 'put' : 'post'
+					const { response, error } = await QuestionService[method](
+						{ oId, mId, id, data: question }
+					)
+					if (error) {
+						commit('setError', { error, id: question.id })
+						return
+					}
+					commit('setError', { error: {}, id: question.id })
+					commit('setIsSaved', { id: question.id, isSaved: true })
+					commit('updateList', { id: question.id, data: response.data })
+				},
+				1000
+			)
+		},
 		setIsSaved (state, { id, isSaved = false }) {
 			if (id) {
 				state.isSaved = {
@@ -73,6 +95,7 @@ export default {
 				}
 			}
 		}
+		*/
 	},
     actions: {
         async fetchQuestions ({ commit }, payload) {
