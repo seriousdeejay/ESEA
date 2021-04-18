@@ -3,7 +3,7 @@
     <h3 :class="isSubTopic ? 'p-text-light' : ''">
         {{ name }}
     </h3>
-    <p>
+    <p v-if="description">
         {{ description || 'No Description' }}
     </p>
     </div>

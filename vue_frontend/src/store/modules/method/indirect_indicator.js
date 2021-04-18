@@ -31,7 +31,7 @@ export default {
     },
     mutations: {
         setIndirectIndicators (state, { data }) {
-            state.indirectIndicators = data
+            state.indirectIndicators = data || {}
             state.debouncers = {}
             state.errors = {}
             state.isSaved = {}

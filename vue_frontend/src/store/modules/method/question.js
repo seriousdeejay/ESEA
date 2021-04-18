@@ -1,18 +1,17 @@
-// import { random, debounce, isInteger } from 'lodash'
-import { isInteger } from 'lodash'
+import { random, debounce, isInteger } from 'lodash'
 import QuestionService from '../../../services/QuestionService'
 
-// const baseQuestion = { key: '', name: '', prefix: '', default: '', suffix: '', type: 'NUMBER', options: []}
+const baseQuestion = { key: '', name: '', min: '', default: '', max: '', type: 'NUMBER', options: [] }
 
 export default {
     namespaced: true,
     state: {
         questions: [],
         question: {},
-        error: undefined
-		// debouncers: {},
-		// errors: {},
-		// isSaved: {}
+        error: undefined,
+		debouncers: {},
+		errors: {},
+		isSaved: {}
     },
 	getters: {
 		getById: state => id => state.questions.find(object => object.id === id),
@@ -62,8 +61,7 @@ export default {
 				if (item.id !== id) return item
 				return Object.assign(item, data)
 			})
-		}
-		/*
+		},
 		addNewQuestion (state, { topic }) {
 			const question = { ...baseQuestion, id: random(-1000000, -1), topic }
 			state.questions.push(question)
@@ -71,10 +69,10 @@ export default {
 		},
 		setDebouncer (state, { id, commit }) {
 			state.debouncers[id] = debounce(
-				async ({ oId, mId, question }) => {
+				async ({ mId, question }) => {
 					const method = question.id > 0 ? 'put' : 'post'
 					const { response, error } = await QuestionService[method](
-						{ oId, mId, id, data: question }
+						{ mId, id, data: question }
 					)
 					if (error) {
 						commit('setError', { error, id: question.id })
@@ -95,7 +93,6 @@ export default {
 				}
 			}
 		}
-		*/
 	},
     actions: {
         async fetchQuestions ({ commit }, payload) {
@@ -116,8 +113,9 @@ export default {
 			}
 			commit('deleteQuestion', payload)
         },
-        updateQuestion ({ state, commit }, { oId, mId, question }) {
-			if (!question || !oId || !mId) return
+        updateQuestion ({ state, commit }, { mId, question }) {
+			console.log('yeeeee')
+			if (!question || !mId) return
 			if (!state.debouncers[question.id]) {
 				commit('setDebouncer', { id: question.id, commit })
 			}
@@ -126,7 +124,7 @@ export default {
 			}
 			commit('setIsSaved', { id: question.id })
 			if (!question.name || !question.key) return
-			state.debouncers[question.id]({ oId, mId, question })
+			state.debouncers[question.id]({ mId, question })
 		},
 		setQuestion ({ state, commit }, { id } = {}) {
 			const data = state.questions.find(questions => questions.id === id)

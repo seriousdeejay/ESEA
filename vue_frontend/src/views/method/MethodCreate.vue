@@ -3,20 +3,20 @@
 <div class="p-grid p-m-0">
     <method-tree-sidebar class="p-col-fixed" style="width: 300px; border-right: 1px solid lightgrey;"/>
     <div class="p-col p-m-5 p-p-5">
-            <method-form :method="method" @input="updateMethod($event)" />
+        <method-form :method="method" @input="updateMethod($event)" />
         <Divider />
         <div v-for="(topic, topicIndex) in items" :key="`topic-${topicIndex}`" class="p-col-12">
             <topic-form ref="items" :topic="topic" :active="activeItem.objType === topic.objType && activeItem.id === topic.id" @input="saveActive('topic', $event)" @click="toggleActive(topic)" /> <!-- @click.native="toggleActive(topic)" -->
             <template v-for="(topicChild, index) in topic.children" :key="`topicChild-${index}`">
                 <component :is="`${topicChild.objType}-form`" ref="items" :topic="topicChild" :question="topicChild" :errors="errors[topicChild.objType] && errors[topicChild.objType][topicChild.id]" :indirect-indicator="topicChild" :active="activeItem.objType === topicChild.objType && activeItem.id === topicChild.id" @input="saveActive(topicChild.objType, $event)" @click="toggleActive(topicChild)" />
                 <template v-for="(subTopicChild, index) in topicChild.children" :key="`subTopicChild-${index}`">
-                    <!-- <component /> -->
+                    <component :is="`${subTopicChild.objType}-form`" ref="items" :topic="subTopicChild" :question="subTopicChild" :errors="errors[subTopicChild.objType] && errors[subTopicChild.objType][subTopicChild.id]" :indirect-indicator="subTopicChild" :active="activeItem.objType === subTopicChild.objType && activeItem.id === subTopicChild.id" @input="saveActive(subTopicChild.objType, $event)" @click="toggleActive(subTopicChild)" />
                 </template>
-                {{topicChild}}
             </template>
         </div>
         <Button label="Add New Topic" icon="pi pi-plus" class="p-button-text" @click="addTopic" />
     </div>
+    <!-- <question-form :question="activeQuestion" :active="true" /> -->
     <div class="p-col-fixed p-d-flex p-ai-center" style="width: 150px; border: 1px solid lightgrey;">
         <div>
             <div v-for="option in addBar" :key="option.choice" class="p-d-flex p-jc-center p-ai-center" style="height: 100px; width: 100px; border: 1px solid lightgrey" :style="(option.hover ? 'background-color: lightgrey;' : '')" @mouseover="option.hover=true" @mouseleave="option.hover=false" @click="addBarMethod(option.choice)">
@@ -36,7 +36,7 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import MethodTreeSidebar from '../../components/MethodTreeSideBar'
 import MethodForm from '../../components/forms/MethodForm'
 import TopicForm from '../../components/forms/TopicForm'
-// import QuestionForm from '../../components/forms/QuestionForm'
+import QuestionForm from '../../components/forms/QuestionForm'
 // import CalculationForm from '../../components/form/CalculationForm'
 import getMethodItems from '../../utils/getMethodItems'
 
@@ -44,7 +44,8 @@ export default {
     components: {
         MethodTreeSidebar,
         MethodForm,
-        TopicForm
+        TopicForm,
+        QuestionForm
     },
     data () {
         return {
@@ -100,7 +101,7 @@ export default {
     },
     methods: {
         ...mapActions('method', ['fetchMethod', 'updateMethod', 'saveMethod']),
-        ...mapActions('topic', ['fetchTopics', 'updateTopic', 'addNewTopic', 'deleteTopic']), // setTopic
+        ...mapActions('topic', ['fetchTopics', 'setTopic', 'updateTopic', 'addNewTopic', 'deleteTopic']),
         ...mapActions('question', ['fetchQuestions', 'setQuestion', 'addNewQuestion', 'deleteQuestion', 'updateQuestion']),
         ...mapActions('indirectIndicator', ['fetchIndirectIndicators', 'addNewIndirectIndicator', 'updateIndirectIndicator', 'setIndirectIndicator', 'deleteIndirectIndicator']),
         async initialize () {
@@ -151,6 +152,7 @@ export default {
             }
         },
         saveActive (type, object) {
+            console.log('!!', 'type:', type, 'object:', object)
             if (type === 'topic') {
                 this.updateTopic({
                     mId: this.method.id,
@@ -158,10 +160,13 @@ export default {
                 })
             }
             if (type === 'question') {
+                if (object.key) {
+                console.log('////', object)
                 this.updateQuestion({
                     mId: this.method.id,
                     question: object
                 })
+                }
             }
             if (type === 'calculation') {
                 this.updateIndirectIndicator({
@@ -171,7 +176,13 @@ export default {
             }
         },
         deleteActive () {
-            const { objType, id } = this.activeitem
+            console.log(this.activeItem)
+            console.log(this.activeItem.objType)
+            const objType = this.activeItem.objType
+            const id = this.activeItem.id
+            // const { objType, id } = this.activeitem
+            console.log('ss')
+            console.log('dd', objType)
             if (objType === 'topic') {
                 this.deleteTopic({ mId: this.method.id, id })
             }

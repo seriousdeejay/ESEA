@@ -4,6 +4,14 @@ import surveyThankYou from '../views/survey/SurveyThankYou'
 
 const routes = [
   {
+    path: '/test/',
+    name: 'test-page',
+    component: () => import('../components/forms/QuestionForm'),
+    meta: {
+      requiresLogin: false
+    }
+  },
+  {
     path: '/survey-fill/:uniquetoken',
     name: 'survey-fill-page',
     components: {

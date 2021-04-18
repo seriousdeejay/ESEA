@@ -1,5 +1,5 @@
 <template>
-    <form v-if="active" ref="form" class="p-fluid p-input-filled p-text-left p-p-5" @submit.prevent="!v$.$invalid" style="border: 1px solid lightgrey;">
+    <form v-if="active" ref="form" class="p-fluid p-input-filled p-text-left p-p-5" @submit.prevent="!v$.$invalid" :style="cssProps">
         <div class="p-field p-mb-3">
             <span class="p-float-label">
                 <InputText id="topicname" ref="input" v-model="lazyTopic.name" :placeholder="nameLabel" :class="{'borderless': nameErrors.length }" class="p-inputtext-lg" @blur="updateName" />
@@ -65,6 +65,14 @@ export default {
                 this.v$.lazyTopic.description,
                 this.errors.description
             )
+        },
+        cssProps () {
+            const props = { border: '1px solid lightgrey' }
+            if (this.active) {
+                props.border = '2px solid #9ecaed'
+                props['background-color'] = 'white'
+            }
+            return props
         }
     },
     watch: {
@@ -73,26 +81,29 @@ export default {
                 this.lazyTopic = { ...val }
             }
         },
-        'v$.lazyTopic.$invalid': function () {
-            console.log(this.lazyTopic)
-            if (this.v$.lazyTopic.$invalid) { return }
-            if (isEqual(this.topic, this.lazyTopic)) { return }
-            console.log('saving')
-            this.$emit('input', this.lazyTopic)
+        lazyTopic: {
+            handler (val) {
+            setTimeout(() => {
+                if (this.v$.$invalid) { return }
+                if (isEqual(this.topic, this.lazyTopic)) { return }
+                this.$emit('input', this.lazyTopic)
+                }, 200)
+            },
+            deep: true
         },
         active (val) {
             if (!val) {
                 this.v$.$touch()
             } else {
-                this.$nextTick(() => this.$refs.input && this.$refs.input.focus())
+                // this.$nextTick(() => this.$refs.input && this.$refs.input.focus())
             }
         }
     },
     setup: () => ({ v$: useVuelidate() }),
     validations: {
         lazyTopic: {
-            name: { required, maxLength: maxLength(120) },
-            description: { }
+            name: { required, maxLength: maxLength(120), $lazy: true },
+            description: { maxLength: maxLength(255), $lazy: true }
         }
     },
     mounted () {

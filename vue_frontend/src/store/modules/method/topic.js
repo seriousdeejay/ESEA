@@ -75,10 +75,10 @@ export default {
 		},
         setDebouncer (state, { id, commit }) {
 			state.debouncers[id] = debounce(
-				async ({ oId, mId, topic }) => {
+				async ({ mId, topic }) => {
 					const method = topic.id > 0 ? 'put' : 'post'
 					const { response, error } = await TopicService[method](
-						{ oId, mId, id, data: topic }
+						{ mId, id, data: topic }
 					)
 					if (error) {
 						commit('setError', { error, id: topic.id })
@@ -123,27 +123,27 @@ export default {
             commit('setIsSaved', { id: topic.id })
             if (!topic.name) { return }
             state.debouncers[topic.id]({ mId, topic })
-        }
-        /*
+        },
         async deleteTopic ({ commit }, payload) {
-            const { response, error } = await TopicService.delete(payload)
-            if (error) {
-                commit('setError', { error })
-                return
+            if (payload.id > 0) {
+                const { error } = await TopicService.delete(payload)
+                if (error) {
+                    commit('setError', { error })
+                    return
+                }
             }
             commit('deleteTopic', payload)
-        }
-        setTopic ( state, commit ) { id } = {} {
+        },
+        setTopic ({ state, commit }, { id } = {}) {
             const data = state.topics.find(topic => topic.id === id)
             if (data && data.id === state.topic.id) { return }
-            commit('setTOpic', { data })
+            commit('setTopic', { data })
         },
-        resetError({ commit }) {
+        resetError ({ commit }) {
             commit('setError', { error: undefined })
         },
-        resetTopics({ commit }) {
+        resetTopics ({ commit }) {
             commit('resetTopics')
         }
-        */
     }
 }
