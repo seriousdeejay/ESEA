@@ -13,7 +13,9 @@ class DirectIndicatorViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
     
-    def create(self, request, organisation_pk, method_pk):
+    def create(self, request, method_pk):
+        print('check')
+        print(request.data)
         request.data['method'] = int(method_pk)
         serializer = DirectIndicatorSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

@@ -6,7 +6,7 @@ const routes = [
   {
     path: '/test/',
     name: 'test-page',
-    component: () => import('../components/forms/QuestionForm'),
+    component: () => import('../components/forms/CalculationForm'),
     meta: {
       requiresLogin: false
     }

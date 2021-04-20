@@ -1,8 +1,8 @@
 <template>
-    <form v-if="active" ref="form" class="p-fluid p-input-filled p-text-left p-p-5" @submit.prevent="!v$.$invalid" :style="cssProps">
+    <form v-if="active" ref="form" class="p-fluid p-input-filled p-p-5" @submit.prevent="!v$.$invalid" :style="cssProps">
         <div class="p-field p-mb-3">
             <span class="p-float-label">
-                <InputText id="topicname" ref="input" v-model="lazyTopic.name" :placeholder="nameLabel" :class="{'borderless': nameErrors.length }" class="p-inputtext-lg" @blur="updateName" />
+                <InputText id="topicname" ref="input" v-model="lazyTopic.name" :placeholder="nameLabel" :class="{'borderless': nameErrors.length }" @blur="updateName" />
             </span>
             <div class="p-error p-text-italic" v-for="error in nameErrors" :key="error"><small>{{error}}</small></div>
         </div>
@@ -13,7 +13,7 @@
             <div class="p-error p-text-italic" v-for="error in descriptionErrors" :key="error"><small>{{error}}</small></div>
         </div>
     </form>
-    <topic-card v-else :name="lazyTopic.name" :description="lazyTopic.description" :is-sub-topic="!isMainTopic" class="p-shadow-1 p-p-1" />
+    <topic-card v-else :name="lazyTopic.name" :description="lazyTopic.description" :is-sub-topic="!isMainTopic" style="border: 1px solid #e8e8e8;" />
 </template>
 
 <script>
@@ -84,7 +84,7 @@ export default {
         lazyTopic: {
             handler (val) {
             setTimeout(() => {
-                if (this.v$.$invalid) { return }
+                if (this.v$.lazyTopic.$invalid) { return }
                 if (isEqual(this.topic, this.lazyTopic)) { return }
                 this.$emit('input', this.lazyTopic)
                 }, 200)

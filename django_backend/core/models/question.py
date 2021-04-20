@@ -31,6 +31,7 @@ class Question(models.Model):
     name = models.CharField(max_length=255, blank=False)
     description = models.TextField(blank=True, null=True)
     instruction = models.TextField(blank=True, null=True)
+    default = models.CharField(max_length=255, blank=True, default="")
     topic = models.ForeignKey('Topic', related_name="questions_of_topic", on_delete=models.CASCADE)     # Needed, cause a many to many field can not be 'on_delete=models.CASCADE'
     topics = models.ManyToManyField("Topic", through="DirectIndicator")
 

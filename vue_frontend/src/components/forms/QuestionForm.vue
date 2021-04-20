@@ -1,6 +1,5 @@
 <template>
-    <div class="p-d-flex p-jc-center">
-        <form ref="form" v-if="active" class="p-grid p-p-5 p-m-5" @submit.prevent="save" style="width: 800px; border: 1px solid lightblue;" :style="cssProps" >
+        <form ref="form" v-if="active" class="p-grid p-px-5 p-pt-5" @submit.prevent="save" :style="cssProps"  >
             <div class="p-grid p-col-12 p-fluid">
                 <div class="p-col-3 p-field">
                     <span class="p-float-label">
@@ -51,31 +50,34 @@
                     </span>
                 </div>
             </div>
-            <div v-if="lazyQuestion.options && lazyQuestion.options.length" class="p-grid p-pt-5">
+            <div v-if="lazyQuestion.options && lazyQuestion.options.length" class="p-grid p-py-5">
                 <option-form v-for="(option, index) in lazyQuestion.options" :key="`option-${index}`" :option="option" @delete="deleteOption(option)" class="p-col-12" />
                 <Button label="Add Option" class="p-button-text" @click="newOption" />
 
             </div>
         </form>
-        <div v-else>
-            {{question}}
-            {{lazyQuestion}}
-            <p>{{ question.key }}</p>
-            <p>{{ question.name }}</p>
-            <p v-if="!question.options.length">
-                <span>{{ questionType }}</span>
-                <span> {{ question.min }}</span>
-                <span>{{ question.default }}</span>
-                <span>{{ question.max }}</span>
-            </p>
+        <div v-else class="p-grid p-jc-center p-ai-center p-px-5" :style="cssProps">
+            <i class="pi pi-question p-col-1" style="fontSize: 2rem"></i>
+            <div class="p-col-11">
+            <p><span class="p-text-bold">Question:</span> {{ question.name }}</p>
+            <div class="p-d-flex p-jc-between p-mr-5 p-pr-5">
+            <p><span class="p-text-bold">Key:</span> {{ question.key }}</p>
+            <p><span class="p-text-bold">Type:</span> {{ questionType }}</p>
+            </div>
+            </div>
+            <Divider />
+            <div v-if="!question.options.length" class="p-d-flex p-jc-between">
+                <p><span class="p-text-bold">Default value:</span> {{ question.default || 0 }}</p>
+                <p v-if="question.min"><span class="p-text-bold">Minimum:</span> {{ question.min }}</p>
+                <p v-if="question.max"><span class="p-text-bold">Maximum:</span> {{ question.max }}</p>
+            </div>
             <template v-else>
-                <div v-for="(option, index) in question.options" :key="index" class="p-field-checkbox">
+                <div v-for="(option, index) in question.options" :key="index" class="p-field-checkbox p-col-12">
                     <Checkbox :id="index" name="option" :value="text" v-model="ss" />
                     <label :for="index"><span class="p-text-bold">Text:</span> '{{option.text}}'<span class="p-text-bold"> - Value:</span> '{{option.value}}'</label>
                 </div>
             </template>
         </div>
-    </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -145,7 +147,6 @@ export default {
                 setTimeout(() => {
                 if (this.v$.lazyQuestion.$invalid) { return }
                 if (isEqual(this.question, val)) { return }
-                console.log('>>>', val)
                 this.$emit('input', cloneDeep(val))
                 }, 200)
             },
@@ -185,14 +186,11 @@ export default {
             }
         },
         updateName () {
-            console.log(this.lazyQuestion.name)
             this.v$.lazyQuestion.name.$touch()
         },
         changeQuestionType (e) {
-            console.log(e.value)
             this.lazyQuestion.type = e.value
             const typesWithOptions = ['RADIO', 'CHECKBOX']
-            console.log('>>>', this.lazyQuestion)
             if (typesWithOptions.includes(e.value) && !this.lazyQuestion.options.length) {
                 this.lazyQuestion.options = [
                     { text: 'option 1', value: 'value' },

@@ -1,11 +1,14 @@
 <template>
-    <div class="p-text-italic">
-    <h3 :class="isSubTopic ? 'p-text-light' : ''">
-        {{ name }}
-    </h3>
-    <p v-if="description">
-        {{ description || 'No Description' }}
-    </p>
+    <div class="p-px-5 p-py-1" style="background-color: #dcdcdc">
+        <h3 v-if="isSubTopic">
+            Subtopic: <span class="p-text-light p-text-italic">{{ name }}</span>
+        </h3>
+        <h2 v-else>
+            Parenttopic: <span class="p-text-light p-text-italic">{{ name }}</span>
+        </h2>
+        <p v-if="description">
+            {{ description }}
+        </p>
     </div>
 </template>
 

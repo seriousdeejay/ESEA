@@ -2,7 +2,7 @@
     <!-- {{ v$.lazyMethod.name.$invalid }}
     {{ v$.lazyMethod.description.$invalid }}
     invalid: {{ this.v$.lazyMethod.$invalid }} {{ v$.$invalid }} -->
-    <form ref="form" class="p-fluid p-input-filled p-text-left" @submit.prevent="!v$.$invalid">
+    <form ref="form" class="p-fluid  p-text-left" @submit.prevent="!v$.$invalid">
         <div class="p-field p-mb-5">
             <span class="p-float-label">
                 <InputText id="methodname" type="text" v-model="lazyMethod.name"  :class="{'borderless': nameErrors.length}"  @blur="updateName"  />
