@@ -1,5 +1,5 @@
 <template>
-    <div class="p-px-5 p-py-1" style="background-color: #dcdcdc">
+    <div class="p-px-5 p-py-1 p-shadow-2" style="border-bottom: 2px solid lightgrey; background-color: #f1f1f1;"> <!-- #dcdcdc"> -->
         <h3 v-if="isSubTopic">
             Subtopic: <span class="p-text-light p-text-italic">{{ name }}</span>
         </h3>

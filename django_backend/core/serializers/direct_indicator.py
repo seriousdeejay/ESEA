@@ -14,6 +14,7 @@ class DirectIndicatorSerializer(serializers.Serializer):
     key = serializers.CharField(max_length=45, required=True)
     description = serializers.CharField(required=False, allow_blank=True)
     instruction = serializers.CharField(required=False, allow_blank=True)
+    default = serializers.CharField(required=False, allow_blank=True)
     options = QuestionOptionSerializer(many=True)
     min_number = serializers.IntegerField(required=False)
     max_number = serializers.IntegerField(required=False)
@@ -86,6 +87,7 @@ class DirectIndicatorSerializer(serializers.Serializer):
                 "answertype": instance.question.answertype,
                 "description": instance.question.description,
                 "instruction": instance.question.instruction,
+                "default": instance.question.default,
                 # "prefix": instance.question.prefix,
                 # "suffix": instance.question.suffix,
                 # "default": instance.question.default,

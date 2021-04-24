@@ -7,8 +7,8 @@ from .question_option import QuestionOption
 
 
 class questionManager(models.Manager):
-    def create(self, isMandatory, name, topic, answertype, description=None, instruction=None, options=None):
-        question = Question(isMandatory=isMandatory, name=name, topic=topic, answertype=answertype, description=description, instruction=instruction)
+    def create(self, isMandatory, name, topic, answertype, description=None, instruction=None, default=None, options=None):
+        question = Question(isMandatory=isMandatory, name=name, topic=topic, answertype=answertype, description=description, instruction=instruction, default=default)
         question.save()
 
         if question.answertype in (question.QUESTION_TYPES_WITH_OPTIONS):
@@ -85,7 +85,7 @@ class Question(models.Model):
                 return question
         return False
 
-    def update(self, name, answertype, options, description=None, instruction=None) -> "Question":
+    def update(self, name, answertype, options, description=None, instruction=None, default=None) -> "Question":
         question: Question = Question.findQuestion(name, answertype, options, description)
         if question and question.id != self.id:
             self.delete()
@@ -94,6 +94,8 @@ class Question(models.Model):
         self.name = name
         self.answertype = answertype
         self.description = description
+        self.instruction = instruction
+        self.default = default
         self.save()
 
         if not self.hasOptions(options):

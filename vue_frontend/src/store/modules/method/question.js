@@ -1,7 +1,7 @@
 import { random, debounce, isInteger } from 'lodash'
 import QuestionService from '../../../services/QuestionService'
 
-const baseQuestion = { key: '', name: '', min: '', default: '', max: '', type: 'NUMBER', options: [] }
+const baseQuestion = { key: '', name: '', description: 'optional description', isMandatory: true, default: 0, answertype: 'NUMBER', options: [] }
 
 export default {
     namespaced: true,
@@ -64,6 +64,7 @@ export default {
 		},
 		addNewQuestion (state, { topic }) {
 			const question = { ...baseQuestion, id: random(-1000000, -1), topic }
+			console.log(question)
 			state.questions.push(question)
 			state.question = question
 		},

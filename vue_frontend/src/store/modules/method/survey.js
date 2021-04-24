@@ -1,4 +1,6 @@
 import SurveyService from '../../../services/SurveyService'
+import { debounce, random } from 'lodash'
+const baseSurvey = { name: 'new Survey', description: '', stakeholder: '', rate: 0, questions: [], anonymous: false }
 
 export default {
     namespaced: true,
@@ -6,15 +8,20 @@ export default {
         surveys: [],
         survey: {},
         error: undefined,
-        errors: {}
+		debouncers: {},
+        errors: {},
+		isSaved: {}
     },
+	getters: {
+		getById: state => id => state.surveys.find(object => object.id === id)
+	},
     mutations: {
         setSurveys (state, { data }) {
             state.surveys = data
-            // state.debouncers = {};
-			// state.errors = {};
-			// state.isSaved = {};
-			// state.error = undefined;
+            state.debouncers = {}
+			state.errors = {}
+			state.isSaved = {}
+			state.error = undefined
         },
         setSurvey (state, { data }) {
             state.survey = data || {}
@@ -34,49 +41,50 @@ export default {
                 return
 			}
 			state.error = error
-        }
-        // updateList(state, { id, data }) {
-		// 	if (id !== data.id) {
-		// 		delete state.debouncers[id];
-		// 		delete state.errors[id];
-		// 		delete state.isSaved[id];
-		// 	}
-
-		// 	state.surveys = state.surveys.map((item) => {
-		// 		if (item.id !== id) return item;
-		// 		return Object.assign(item, data);
-		// 	});
-		// },
-		// addNewSurvey(state) {
-		// 	const survey = { ...baseSurvey, id: random(-1000000, -1) };
-		// 	state.surveys.push(survey);
-		// },
-		// setIsSaved(state, { id, isSaved = false }) {
-		// 	if (id) {
-		// 		state.isSaved = {
-		// 			...state.isSaved,
-		// 			[id]: isSaved,
-		// 		};
-		// 	}
-		// },
-		// setDebouncer(state, { id, commit }) {
-		// 	state.debouncers[id] = debounce(
-		// 		async ({ oId, mId, survey }) => {
-		// 			const method = survey.id > 0 ? 'put' : 'post';
-		// 			const { response, error } = await SurveyService[method](
-		// 				{ oId, mId, id, data: survey },
-		// 			);
-		// 			if (error) {
-		// 				commit('setError', { error, id: survey.id });
-		// 				return;
-		// 			}
-		// 			commit('setError', { error: {}, id: survey.id });
-		// 			commit('setIsSaved', { id: survey.id, isSaved: true });
-		// 			commit('updateList', { id: survey.id, data: response.data });
-		// 		},
-		// 		1000,
-		// 	);
-    },
+        },
+        updateList (state, { id, data }) {
+			if (id !== data.id) {
+			delete state.debouncers[id]
+			delete state.errors[id]
+			delete state.isSaved[id]
+			}
+			state.surveys = state.surveys.map((item) => {
+				if (item.id !== id) return item
+				return Object.assign(item, data)
+			})
+		},
+		addNewSurvey (state) {
+			console.log('yeees')
+			const survey = { ...baseSurvey, id: random(-1000000, -1) }
+			state.surveys.push(survey)
+		},
+		setIsSaved (state, { id, isSaved = false }) {
+			if (id) {
+				state.isSaved = {
+					...state.isSaved,
+					[id]: isSaved
+				}
+			}
+		},
+		setDebouncer (state, { id, commit }) {
+			state.debouncers[id] = debounce(
+				async ({ oId, mId, survey }) => {
+					const method = survey.id > 0 ? 'put' : 'post'
+					const { response, error } = await SurveyService[method](
+						{ oId, mId, id, data: survey }
+						)
+					if (error) {
+						commit('setError', { error, id: survey.id })
+						return
+					}
+					commit('setError', { error: {}, id: survey.id })
+					commit('setIsSaved', { id: survey.id, isSaved: true })
+					commit('updateList', { id: survey.id, data: response.data })
+				},
+				1000
+				)
+			}
+	},
     actions: {
         async fetchSurveys ({ commit }, payload) {
             const { response, error } = await SurveyService.get(payload)

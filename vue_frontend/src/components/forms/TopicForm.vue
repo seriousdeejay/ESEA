@@ -13,7 +13,7 @@
             <div class="p-error p-text-italic" v-for="error in descriptionErrors" :key="error"><small>{{error}}</small></div>
         </div>
     </form>
-    <topic-card v-else :name="lazyTopic.name" :description="lazyTopic.description" :is-sub-topic="!isMainTopic" style="border: 1px solid #e8e8e8;" />
+    <topic-card v-else :name="lazyTopic.name" :description="lazyTopic.description" :is-sub-topic="!isMainTopic" />
 </template>
 
 <script>
@@ -84,7 +84,7 @@ export default {
         lazyTopic: {
             handler (val) {
             setTimeout(() => {
-                if (this.v$.lazyTopic.$invalid) { return }
+                if (this.v$.$invalid) { return }
                 if (isEqual(this.topic, this.lazyTopic)) { return }
                 this.$emit('input', this.lazyTopic)
                 }, 200)
@@ -116,7 +116,7 @@ export default {
     },
     methods: {
         initialize () {
-            if (!this.lazyTopic.name) {
+            if (this.lazyTopic.name === 'topic') {
                 const name = this.lazyTopic.parent_topic ? 'subtopic' : 'topic'
                 this.lazyTopic.name = `Untitled ${name}`
             }

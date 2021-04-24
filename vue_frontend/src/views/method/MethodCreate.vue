@@ -1,25 +1,27 @@
 <template>
-
-<div class="p-grid p-m-0" style="background-color: white;">
-    <method-tree-sidebar class="p-col-fixed" style="width: 300px; border-right: 1px solid lightgrey;"/>
-    <div class="p-col p-m-5 p-p-5 p-text-left p-shadow-5">
-        <method-form :method="method" @input="updateMethod($event)" />
-        <Divider />
-        <div v-for="(topic, topicIndex) in items" :key="`topic-${topicIndex}`" class="p-shadow-2 p-pb-5" style="background-color: #f7f7f7;">
+<method-header />
+<method-form :method="method" @input="updateMethod($event)" />
+<div class="p-d-flex">
+    <div style="width: 300px; border-top: 5px solid lightgrey;">
+        <Button label="Open ESEA Method Creation Guide" class="p-button-info p-button-lg p-p-5" />
+        <method-tree-sidebar />
+    </div>
+    <div class="p-col p-m-0 p-p-0 p-text-left p-fluid" style="min-width: 800px; border: 5px solid lightgrey;">
+        <div v-for="(topic, topicIndex) in items" :key="`topic-${topicIndex}`" class="" style="background-color: #fcfcfc;"> <!-- #f7f7f7 #e6f3ff-->
             <topic-form ref="items" :topic="topic" :active="activeItem.objType === topic.objType && activeItem.id === topic.id" @input="saveActive('topic', $event)" @click="toggleActive(topic)" /> <!-- @click.native="toggleActive(topic)" -->
             <div v-for="(topicChild, index) in topic.children" :key="`topicChild-${index}`" >
-                <div class=" p-m-5" style="border: 1px solid lightgrey; background-color: white;">
-                <component :is="`${topicChild.objType}-form`" ref="items" :topic="topicChild" :question="topicChild" :errors="errors[topicChild.objType] && errors[topicChild.objType][topicChild.id]" :indirect-indicator="topicChild" :active="activeItem.objType === topicChild.objType && activeItem.id === topicChild.id" @input="saveActive(topicChild.objType, $event)" @click="toggleActive(topicChild)" />
-                <div v-for="(subTopicChild, index) in topicChild.children" :key="`subTopicChild-${index}`">
-                    <component :is="`${subTopicChild.objType}-form`" ref="items" :topic="subTopicChild" :question="subTopicChild" :indirect-indicator="subTopicChild" :errors="errors[subTopicChild.objType] && errors[subTopicChild.objType][subTopicChild.id]" :active="activeItem.objType === subTopicChild.objType && activeItem.id === subTopicChild.id" @input="saveActive(subTopicChild.objType, $event)" @click="toggleActive(subTopicChild)"  class="p-my-5 p-mx-5" />
-                </div>
+                <div class="p-shadow-5 p-m-5 p-pb-2" style="background-color: #fcfcfc;">
+                    <component :is="`${topicChild.objType}-form`" ref="items" :topic="topicChild" :question="topicChild" :errors="errors[topicChild.objType] && errors[topicChild.objType][topicChild.id]" :indirect-indicator="topicChild" :active="activeItem.objType === topicChild.objType && activeItem.id === topicChild.id" @input="saveActive(topicChild.objType, $event)" @click="toggleActive(topicChild)" />
+                    <div v-for="(subTopicChild, index) in topicChild.children" :key="`subTopicChild-${index}`">
+                        <component :is="`${subTopicChild.objType}-form`" ref="items" :topic="subTopicChild" :question="subTopicChild" :indirect-indicator="subTopicChild" :errors="errors[subTopicChild.objType] && errors[subTopicChild.objType][subTopicChild.id]" :active="activeItem.objType === subTopicChild.objType && activeItem.id === subTopicChild.id" @input="saveActive(subTopicChild.objType, $event)" @click="toggleActive(subTopicChild)" class="p-m-5" />
+                    </div>
+                    <!-- <Button label="Add Question" icon="pi pi-plus" class="p-button-text p-text-left p-p-5" @click="addQuestion()" /> -->
                 </div>
             </div>
         </div>
-        <Button label="Add New Topic" icon="pi pi-plus" class="p-button-text" @click="addTopic" />
+        <Button label="Add New Topic" icon="pi pi-plus" class="p-col-12 p-button-text p-text-left p-p-5" @click="addTopic" />
     </div>
-    <!-- <question-form :question="activeQuestion" :active="true" /> -->
-    <div class="p-col-fixed p-d-flex p-ai-center" style="width: 150px; border: 1px solid lightgrey;">
+    <div class="p-d-flex p-ai-center" style="width: 100px; background-color: #fcfcfc; border-top: 5px solid lightgrey;">
         <div>
             <div v-for="option in addBar" :key="option.choice" class="p-d-flex p-jc-center p-ai-center" style="height: 100px; width: 100px; border: 1px solid lightgrey" :style="(option.hover ? 'background-color: lightgrey;' : '')" @mouseover="option.hover=true" @mouseleave="option.hover=false" @click="addBarMethod(option.choice)">
                 <div>
@@ -35,6 +37,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
+import MethodHeader from '../../components/MethodHeader'
 import MethodTreeSidebar from '../../components/MethodTreeSideBar'
 import MethodForm from '../../components/forms/MethodForm'
 import TopicForm from '../../components/forms/TopicForm'
@@ -44,6 +47,7 @@ import getMethodItems from '../../utils/getMethodItems'
 
 export default {
     components: {
+        MethodHeader,
         MethodTreeSidebar,
         MethodForm,
         TopicForm,
@@ -139,6 +143,7 @@ export default {
             this.setQuestion()
         },
         toggleActive (item) {
+            console.log(item)
             const { objType } = item
             const topic = { id: item.topic || item.id }
             this.setTopic(topic)
@@ -195,6 +200,9 @@ export default {
             if (choice === 'subtopic') { this.addSubTopic() }
             if (choice === 'calculation') { this.addIndirectIndicator() }
             if (choice === 'delete') { this.deleteActive() }
+        },
+        tester () {
+            console.log('tester')
         }
     }
 }

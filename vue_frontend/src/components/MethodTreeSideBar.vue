@@ -1,8 +1,11 @@
 <template>
 <div>
-    <h3 class="p-text-left">Indicator Libary</h3>
-    <Divider />
-    <Tree :value="items" v-model:selectionKeys="selectedKey1" selectionMode="single" @nodeSelect="activateItem" />
+    <h2>Indicator Libary</h2>
+    <div v-if="items.length">
+    <Tree :value="items" v-model:selectionKeys="selectedKey1" selectionMode="single" :expandedKeys="expandedKeys" @nodeSelect="activateItem" style="border-top: 3px solid lightgrey;" />
+    <!-- <TreeSelect /> -->
+    </div>
+    <div v-else> No components to display!</div>
     <!-- {{selectedKey1}}
     {{items}} -->
 </div>
@@ -12,14 +15,17 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import getMethodItems from '../utils/getMethodItems'
 import Tree from 'primevue/tree'
+// import TreeSelect from 'primevue/treeselect'
 
 export default {
     components: {
         Tree
+        // TreeSelect
     },
     data () {
         return {
-            selectedKey1: null
+            selectedKey1: null,
+            expandedKeys: {}
         }
     },
     computed: {
@@ -36,9 +42,27 @@ export default {
 				this.subTopics,
 				this.topicQuestions,
 				this.topicIndirectIndicators)
-            const arr = []
-            data.forEach(el => arr.push({ label: el.name, key: el.name }))
-            return arr
+
+            for (const topic of data) {
+                topic.label = topic.name
+                for (const subtopic of topic.children) {
+                    subtopic.label = subtopic.name
+                    for (const indicator of subtopic.children) {
+                        indicator.label = indicator.key
+                        if (indicator.objType === 'calculation') {
+                            indicator.icon = 'pi pi-percentage'
+                        } else {
+                            indicator.icon = 'pi pi-pencil'
+                        }
+                    }
+                }
+            }
+            return data
+            // const arr = []
+            // console.log('::', data)
+            // data.forEach(el => console.log(el)) // arr.push({ label: el.name, key: el.name }))
+            // return arr
+            // return arr
 			// return getMethodItems(
             //     this.methodTopics,
             //     this.subTopics,
@@ -59,6 +83,9 @@ export default {
 				this.itemsOpen.push(`topic_${this.activeTopic.parent_topic}`)
 			}
         }
+    },
+    mounted () {
+        this.expandAll()
     },
     methods: {
         ...mapActions('topic', ['setTopic']),
@@ -93,6 +120,21 @@ export default {
 					formula: `${this.activeIndirectIndicator.formula} [${item.key}]`
 				}
 			})
+        },
+        expandAll () {
+            for (const node of this.items) {
+                this.expandNode(node)
+            }
+
+            this.expandedKeys = { ...this.expandedKeys }
+        },
+        expandNode (node) {
+            this.expandedKeys[node.key] = true
+            if (node.children && node.children.length) {
+                for (const child of node.children) {
+                    this.expandNode(child)
+                }
+            }
         }
     }
 }

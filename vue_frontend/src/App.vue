@@ -1,6 +1,6 @@
 <template>
   <div v-if="accessToken!=null"> <!--style="min-height: 800px; height: auto; min-width: 1100px; background-color: #F8F9FA;"-->
-    <Menubar :model="items" v-if="accessToken!=null" style="background-color: #EFEEEE;">
+    <Menubar :model="items" v-if="accessToken!=null" class="p-shadow-5" style="background-color: #EFEEEE; position: fixed; width: 100%; z-index: 1000;">
         <template #start>
             <img alt="logo" src="./assets/logo.png" height="40" class="p-mr-5">
         </template>

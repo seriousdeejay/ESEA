@@ -39,12 +39,12 @@ class DirectIndicator(models.Model):
     def __str__(self):
         return self.question.name
 
-    def update(self, isMandatory, key, topic, name, answertype, options=None, description=None, instruction=None, min_number=None, max_number=None):
+    def update(self, isMandatory, key, topic, name, answertype, options=None, description=None, instruction=None, default=None, min_number=None, max_number=None):
         self.key = key
         self.min_number = min_number
         self.max_number = max_number
         self.topic = topic
-        self.question = self.question.update(name=name, answertype=answertype, options=options, description=description, instruction=instruction)
+        self.question = self.question.update(name=name, answertype=answertype, options=options, description=description, instruction=instruction, default=default)
         self.save()
         return self
 

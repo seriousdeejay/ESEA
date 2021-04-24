@@ -1,21 +1,18 @@
 <template>
-    <!-- {{ v$.lazyMethod.name.$invalid }}
-    {{ v$.lazyMethod.description.$invalid }}
-    invalid: {{ this.v$.lazyMethod.$invalid }} {{ v$.$invalid }} -->
-    <form ref="form" class="p-fluid  p-text-left" @submit.prevent="!v$.$invalid">
-        <div class="p-field p-mb-5">
+    <form ref="form"  class="p-fluid p-p-5 p-input-filled p-inputtext-lg" @click="tester()"> <!-- @submit.prevent="!v$.$invalid" -->
+        <div class=" p-mb-5">
             <span class="p-float-label">
-                <InputText id="methodname" type="text" v-model="lazyMethod.name"  :class="{'borderless': nameErrors.length}"  @blur="updateName"  />
-                <label for="methodname">Method Name</label>
+                <InputText id="methodname" type="text" v-model="lazyMethod.name"  :class="{'borderless': nameErrors.length}" @blur="updateName"  />
+                <label for="methodname"><span class="p-text-bold" style="font-size: 18px;">Method Name</span></label>
             </span>
-            <div class="p-error p-text-italic" v-for="error in nameErrors" :key="error"><small>{{error}}</small></div>
+            <div class="p-error p-text-italic p-pt-1" v-for="error in nameErrors" :key="error">{{error}}</div>
         </div>
-        <div class="p-field">
+        <div>
             <span class="p-float-label">
                 <InputText id="methoddescription" type="text" v-model="lazyMethod.description" :class="{'borderless': descriptionErrors.length}" @blur="updateDescription" />
-                <label for="methoddescription">Method Description</label>
+                <label for="methoddescription"><span class="p-text-bold" style="font-size: 16px;">Method Description</span></label>
             </span>
-            <div class="p-error p-text-italic p-pt-1" v-for="error in descriptionErrors" :key="error"><small>{{error}}</small></div>
+            <div class="p-error p-text-italic p-pt-1" v-for="error in descriptionErrors" :key="error">{{error}}</div>
         </div>
     </form>
 </template>
@@ -84,6 +81,9 @@ export default {
         },
         updateDescription () {
             this.v$.lazyMethod.description.$touch()
+        },
+        tester () {
+            console.log('works!')
         }
     }
 }

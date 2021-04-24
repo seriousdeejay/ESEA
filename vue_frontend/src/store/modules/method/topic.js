@@ -1,7 +1,7 @@
 import { debounce, random } from 'lodash'
 import TopicService from '../../../services/TopicService'
 
-const baseTopic = { name: '', description: '', questions: [] }
+const baseTopic = { name: 'topic', description: '', questions: [] }
 
 export default {
     namespaced: true,

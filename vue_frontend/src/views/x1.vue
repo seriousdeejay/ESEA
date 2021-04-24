@@ -1,7 +1,7 @@
     <template>
     <h1>Networks Overview</h1>
     <!-- <div class="networks">
-        
+
         <Toast position="top-right"/>
         <div class="card p-m-5 p-shadow-2">
           <Toolbar>
@@ -18,7 +18,6 @@
             </Toolbar>
             <personalised-datatable table-name="networks" selectionToggle :columns="NetworkColumns" :filters="filters"
             :custom-data="networks" @item-redirect="goToNetwork"/>
-            
 
             <DataTable ref="dt" :value="networks" v-model:selection="selectedNetworks" selectionMode="single" dataKey="id" @row-select="goToNetwork"
             :paginator="true" :rows="10" :filters="filters" paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -42,7 +41,7 @@
             </DataTable>
         </div>
     </div> -->
-  
+
     <Dialog v-model:visible="networkDialog" :style="{width: '450px'}" header="Network Details" :modal="true" class="p-fluid">
         <div class="p-field">
             <label for="name">Name</label>
@@ -71,11 +70,11 @@
  <script>
 // Potentially remove @blur if it won't be used
  import { mapState, mapActions } from 'vuex'
- import PersonalisedDatatable from '../components/PersonalisedDatatable'
+ // import PersonalisedDatatable from '../components/PersonalisedDatatable'
 
  export default {
      components: {
-         PersonalisedDatatable
+         // PersonalisedDatatable
      },
      data () {
         return {

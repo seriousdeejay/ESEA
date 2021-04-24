@@ -6,7 +6,7 @@ const routes = [
   {
     path: '/test/',
     name: 'test-page',
-    component: () => import('../components/forms/CalculationForm'),
+    component: () => import('../components/MethodHeader'),
     meta: {
       requiresLogin: false
     }
@@ -437,9 +437,17 @@ const routes = [
     }
   },
   {
-    path: '/methods/:id/create',
+    path: '/methods/:id/method-design',
     name: 'method-create',
     component: () => import('../views/method/MethodCreate'),
+    meta: {
+      requiresLogin: true
+    }
+  },
+  {
+    path: '/methods/:id/survey-creation',
+    name: 'survey-create',
+    component: () => import('../views/method/SurveyCreate'),
     meta: {
       requiresLogin: true
     }
