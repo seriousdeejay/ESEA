@@ -39,5 +39,11 @@
             [{
                 "name": "Organisation 3",
             }]
+
+    Survey
+        POST request
+        {
+            "name": "Survey 1"
+        }
     
     '''

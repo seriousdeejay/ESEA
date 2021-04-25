@@ -43,7 +43,7 @@ router.register(r'public-surveys', surveyview.PublicSurveyViewSet, basename='pub
 urlpatterns = [
     path('account/register/', userview.RegisterUserView.as_view(), name='user_registration'),
     path('api-token/', TokenObtainPairView.as_view()),
-    path('ap-refresh/', TokenRefreshView.as_view()),
+    path('api-refresh/', TokenRefreshView.as_view()),
     path('import-yaml/', methodview.upload_yaml),
     path('import-employees/<int:eseaaccount_pk>/<int:survey_pk>/', esea_accountview.import_employees, name="import_employees_of_organisation"),
     path('send-surveys/', organisationview.send_surveys, name="send_surveys_to_emails"),

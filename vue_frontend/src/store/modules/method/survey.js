@@ -1,5 +1,6 @@
 import SurveyService from '../../../services/SurveyService'
 import { debounce, random } from 'lodash'
+
 const baseSurvey = { name: 'new Survey', description: '', stakeholder: '', rate: 0, questions: [], anonymous: false }
 
 export default {

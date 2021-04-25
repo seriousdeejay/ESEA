@@ -11,7 +11,7 @@
     </Menubar>
     <my-bread-crumb />
     <!-- <h1>Breadcrumb with Chosen Network>Chosen Organisation>Chosen Method</h1> -->
-    <router-view/>
+    <router-view />
   </div>
   <div v-else class="centered">
     <router-view style="background-color: white;" />
@@ -21,6 +21,7 @@
 <script>
 import { mapState } from 'vuex'
 import MyBreadCrumb from './components/MyBreadCrumb'
+
 export default {
   components: {
     MyBreadCrumb
@@ -100,6 +101,13 @@ export default {
   },
   computed: {
     ...mapState('authentication', ['accessToken', 'currentuser'])
+    // isIdle () {
+    //   return this.$store.state.idleVue.isIdle
+    // },
+    // onIdle () {
+    //   console.log('user idled')
+    //   return this.$store.state.idleVue
+    // }
   }
 }
 </script>

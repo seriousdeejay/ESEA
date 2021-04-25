@@ -38,6 +38,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+
 export default {
     name: 'login',
     data () {
@@ -52,8 +53,8 @@ export default {
     },
     methods: {
         ...mapActions('authentication', ['userLogin']),
-        login () {
-            this.userLogin({
+        async login () {
+            await this.userLogin({
                 username: this.username,
                 password: this.password
             })

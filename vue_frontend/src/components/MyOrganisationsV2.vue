@@ -129,7 +129,12 @@ export default {
     methods: {
         ...mapActions('organisation', ['fetchOrganisations', 'setOrganisation', 'createOrganisation']),
         async initialize () {
-            await this.fetchOrganisations({ query: `?network=${this.$route.params.NetworkId}` })
+            if (this.networkOrganisations) {
+                await this.fetchOrganisations({ query: `?network=${this.network?.id || 0}` })
+            } else {
+                await this.fetchOrganisations({})
+            }
+            // await this.fetchOrganisations({ query: `?network=${this.$route.params.NetworkId}` })
         },
         async createNewOrganisation () {
             this.submitted = false

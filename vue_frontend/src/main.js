@@ -47,6 +47,7 @@ import Sidebar from 'primevue/sidebar'
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresLogin)) {
       if (!store.getters['authentication/loggedIn']) {
+        console.log('sss')
         next({ name: 'login' })
       } else {
         next()
@@ -56,7 +57,20 @@ router.beforeEach((to, from, next) => {
     }
   })
 
-const app = createApp(App).use(store).use(router).use(Primevue).use(ToastService) // .use(Vuelidate) // .use(Vuelidate) // after 10sec idle .use(IdleVue, { idleTime: 5000, store })
+// const eventsHub = createApp()
+// const options = {
+//   eventEmitter: eventsHub,
+//   idleTime: 2000,
+//   startAtIdle: false,
+//   store
+// }
+const app = createApp(App).use(store).use(router).use(Primevue).use(ToastService) // .use(IdleVue, options) // .use(Vuelidate) // .use(Vuelidate) // after 10sec idle .use(IdleVue, { idleTime: 5000, store })
+// app.use(IdleVue, {
+//   eventEmitter: eventsHub,
+//   idleTime: 3000,
+//   store,
+//   startAtIdle: false
+// })
 
 app.component('Menubar', Menubar)
 app.component('Menu', Menu)

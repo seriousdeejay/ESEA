@@ -6,7 +6,7 @@ from .stakeholder_group import StakeholderGroup
 
 
 class SurveyManager(models.Manager):
-    def create(self, name, description, anonymous, method, stakeholdergroup, rate=0):
+    def create(self, name, description, method, stakeholdergroup, rate=0, anonymous=None):
         stakeholdergroup, _ = StakeholderGroup.objects.get_or_create(name=stakeholdergroup)
         survey = Survey(name=name, description=description, rate=rate, anonymous=anonymous, method=method)
         survey.save()

@@ -80,6 +80,7 @@ export default {
         ...mapActions('organisation', ['fetchOrganisations']),
         ...mapActions('user', ['fetchUsers']),
         async initialize () {
+            'checking it'
             await this.fetchNetworks({})
             await this.fetchOrganisations({})
             await this.fetchUsers({})

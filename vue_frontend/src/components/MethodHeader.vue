@@ -48,7 +48,7 @@ export default {
     },
     methods: {
         goToMethods () {
-            this.$route.push({ name: 'methods' })
+            this.$router.push({ name: 'methods' })
         },
         goToPage (page) {
             page.params = { id: this.$route.params.id }

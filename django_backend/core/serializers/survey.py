@@ -6,14 +6,14 @@ from .direct_indicator import DirectIndicatorSerializer
 
 class SurveyOverviewSerializer(serializers.ModelSerializer):
     stakeholders = serializers.StringRelatedField(many=True)
-    finished_responses = serializers.StringRelatedField(many=True)
+    finished_responses = serializers.StringRelatedField(many=True, required=False)
  
     class Meta:
         model = Survey
         fields = ['id', 'name', 'description', 'rate', 'anonymous', 'questions', 'method', 'stakeholders', 'responses', 'finished_responses', 'response_rate']
         read_only_fields=['method']
 
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data): 
         if 'stakeholder_groups' in validated_data:
             validated_data['stakeholder_groups'] = self.update_stakeholders(
             stakeholder_groups=instance.stakeholder_groups, 
