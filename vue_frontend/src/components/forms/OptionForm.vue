@@ -1,10 +1,10 @@
 <template>
     <div class="p-grid p-col-12">
         <div class="p-col-6">
-        <InputText id="optiontext" type="text" v-model="lazyOption.text" placeholder="Option text" :class="{'borderless': true}" @blur="dd"  />
+        <InputText id="optiontext" type="text" v-model="lazyOption.text" placeholder="Option text" :class="{'borderless': v$.lazyOption.text.$invalid}" />
         </div>
         <div class="p-col-5">
-        <InputText id="optionvalue" type="text" v-model="lazyOption.value" placeholder="Option text" :class="{'borderless': true}" @blur="dd"  />
+        <InputText id="optionvalue" type="number" v-model="lazyOption.value" placeholder="Option value" :class="{'borderless': v$.lazyOption.value.$invalid}" />
         </div>
         <Button icon="pi pi-trash" class="p-col p-button-danger p-button-text" @click="deleteOption" />
     </div>
@@ -31,8 +31,9 @@ export default {
             this.lazyOption = val
         },
         lazyOption (val) {
-            if (val !== this.option) {
-                this.update()
+            if (this.v$.lazyQuestion.$invalid) { return }
+            if (val !== this.option && val.text && val.value) {
+                 this.$emit('update', this.lazyOption)
             }
         }
     },
@@ -44,12 +45,19 @@ export default {
         }
     },
     methods: {
-        update () {
-            this.$emit('update', this.lazyOption)
-        },
         deleteOption () {
             this.$emit('delete')
         }
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.p-inputtext {
+    border: none;
+    border-bottom: 1px solid lightgrey;
+}
+.borderless {
+    border-bottom: 1px solid red;
+}
+</style>

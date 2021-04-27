@@ -192,8 +192,8 @@ export default {
             const typesWithOptions = ['RADIO', 'CHECKBOX']
             if (typesWithOptions.includes(e.value) && !this.lazyQuestion.options.length) {
                 this.lazyQuestion.options = [
-                    { text: 'option 1', value: 'value' },
-                    { text: 'option 2', value: 'value' }
+                    { text: 'option 1', value: 1 },
+                    { text: 'option 2', value: 2 }
                 ]
             } else if (!typesWithOptions.includes(e)) {
                 this.lazyQuestion.options = []

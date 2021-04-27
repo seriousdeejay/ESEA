@@ -29,6 +29,8 @@
                     <label for ="calculationformula">Formula</label>
                 </span>
                 <div class="p-error p-text-italic p-pt-1" v-for="error in formulaErrors" :key="error">{{error}}</div>
+                {{indirectIndicator}}
+                {{lazyIndirectIndicator}}
             </div>
         </form>
     </div>
@@ -103,10 +105,15 @@ export default {
         },
         lazyIndirectIndicator: {
             handler (val) {
-                setTimeout(() => {
+                console.log('>', this.indirectIndicator)
+                console.log('check', this.indirectIndicator, val)
                 if (this.v$.lazyIndirectIndicator.$invalid) { return }
+                console.log('check2')
                 if (isEqual(this.indirectIndicator, val)) { return }
-                this.$emit('input', cloneDeep(val))
+                console.log('check3')
+                setTimeout(() => {
+                console.log('-------', val)
+                this.$emit('changedinput', cloneDeep(val))
                 }, 200)
             },
             deep: true

@@ -31,6 +31,7 @@ class DirectIndicatorViewSet(viewsets.ViewSet):
 
     def update(self, request, method_pk, pk):
         request.data['method'] = int(method_pk)
+        print(request.data)
         direct_indicator = get_object_or_404(DirectIndicator, pk=pk, topic__method=method_pk)
         serializer = DirectIndicatorSerializer(direct_indicator, data=request.data)
         serializer.is_valid(raise_exception=True)
